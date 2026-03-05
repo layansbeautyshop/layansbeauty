@@ -416,6 +416,29 @@
       transform: scale(1.15) rotate(-5deg);
     }
 
+    /* Creative category badge (replaces icon) */
+    .category-badge {
+      width: 72px;
+      height: 72px;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 30px rgba(232,165,165,0.08);
+      font-weight: 700;
+      color: white;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.25rem;
+      transform: translateY(0);
+      transition: transform 0.35s ease, box-shadow 0.35s ease;
+      background: linear-gradient(135deg, #F5E6E6 0%, #FFEFF0 100%);
+    }
+
+    .category-card:hover .category-badge {
+      transform: translateY(-6px) scale(1.03) rotate(-4deg);
+      box-shadow: 0 18px 40px rgba(232,165,165,0.12);
+    }
+
     /* Quantity Controls */
     .quantity-btn {
       transition: all 0.2s ease;
@@ -933,13 +956,36 @@
     let cart = [];
     let selectedShades = {};
 
-    // Navigation
-    function navigateTo(page) {
+    // Navigation (updates browser history so back/forward works)
+    function navigateTo(page, replace = false) {
+      if (!page) page = 'home';
       currentPage = page;
       renderPage();
       window.scrollTo({ top: 0, behavior: 'smooth' });
-      document.getElementById('mobile-menu').classList.add('hidden');
+      const mobileMenu = document.getElementById('mobile-menu');
+      if (mobileMenu) mobileMenu.classList.add('hidden');
+
+      // Update history state so browser back/forward navigates between pages
+      try {
+        const state = { page };
+        if (replace) {
+          history.replaceState(state, '', '#' + page);
+        } else {
+          history.pushState(state, '', '#' + page);
+        }
+      } catch (e) {
+        // some environments may restrict pushState, ignore failures
+        console.warn('history API not available', e);
+      }
     }
+
+    // Handle browser back/forward
+    window.addEventListener('popstate', (event) => {
+      const page = (event.state && event.state.page) ? event.state.page : (location.hash ? location.hash.replace('#', '') : 'home');
+      currentPage = page || 'home';
+      renderPage();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
 
     function toggleMobileMenu() {
       const menu = document.getElementById('mobile-menu');
@@ -1009,7 +1055,10 @@
 
       // Use shade-level stock if available, otherwise fall back to product stock
       const shadeStock = (shade.stock !== undefined) ? shade.stock : product.stock;
-      if (shadeStock === 0) return;
+      if (shadeStock === 0) {
+        showUnavailableFeedback('عذراً، هذا اللون غير متوفر');
+        return;
+      }
 
       const existingItem = cart.find(item => item.productId === productId && item.shadeId === shadeId);
 
@@ -1036,6 +1085,14 @@
       const feedback = document.createElement('div');
       feedback.className = 'fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-[#E8A5A5] text-white px-6 py-4 rounded-full shadow-xl z-50 fade-in font-medium';
       feedback.textContent = 'تمت الإضافة إلى السلة';
+      document.body.appendChild(feedback);
+      setTimeout(() => feedback.remove(), 2000);
+    }
+
+    function showUnavailableFeedback(message = 'هذا اللون غير متوفر') {
+      const feedback = document.createElement('div');
+      feedback.className = 'fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-stone-700 text-white px-6 py-4 rounded-full shadow-xl z-50 fade-in font-medium';
+      feedback.textContent = message;
       document.body.appendChild(feedback);
       setTimeout(() => feedback.remove(), 2000);
     }
@@ -1067,7 +1124,12 @@
       const modal = document.getElementById('product-modal');
       const content = document.getElementById('modal-content');
 
-      const currentShade = selectedShades[productId] || product.shades[0];
+      const firstAvailableShade = product.shades.find(s => ((s.stock !== undefined) ? s.stock > 0 : product.stock > 0));
+      const currentShade = (selectedShades[productId] && ((selectedShades[productId].stock !== undefined)
+        ? selectedShades[productId].stock > 0
+        : product.stock > 0))
+        ? selectedShades[productId]
+        : (firstAvailableShade || product.shades[0]);
 
       content.innerHTML = `
         <div class="grid md:grid-cols-2 gap-12 h-full">
@@ -1090,29 +1152,34 @@
             <div class="mb-8">
               <p class="text-stone-700 font-medium mb-4">اختاري اللون:</p>
               <div class="flex flex-wrap gap-4">
-                ${product.shades.map(shade => `
+                ${product.shades.map(shade => {
+          const sStock = (shade.stock !== undefined) ? shade.stock : product.stock;
+          const sOutOfStock = sStock === 0;
+          return `
                   <button 
-                    onclick="selectModalShade('${productId}', '${category}', '${shade.id}')"
-                    class="shade-btn w-12 h-12 rounded-full border-3 border-white shadow-md transition-all ${currentShade.id === shade.id ? 'selected' : ''}"
-                    style="background: ${shade.color};"
-                    title="${shade.name}"
-                  ></button>
-                `).join('')}
+                    onclick="event.stopPropagation(); ${sOutOfStock ? `showUnavailableFeedback('عذراً، هذا اللون غير متوفر')` : `selectModalShade('${productId}', '${category}', '${shade.id}')`}"
+                    class="shade-btn w-12 h-12 rounded-full border-3 border-white shadow-md transition-all ${currentShade.id === shade.id ? 'selected' : ''} ${sOutOfStock ? 'opacity-40' : ''}"
+                    style="background: ${shade.color}; position:relative; ${sOutOfStock ? 'cursor:not-allowed;' : ''}"
+                    title="${shade.name}${sOutOfStock ? ' - غير متوفر' : ''}"
+                  >
+                    ${sOutOfStock ? `<span style=\"position:absolute;inset:0;display:flex;align-items:center;justify-content:center;\"><svg xmlns='http://www.w3.org/2000/svg' class='w-5 h-5 text-white' viewBox='0 0 24 24' fill='none' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 18L18 6M6 6l12 12'/></svg></span>` : ''}
+                  </button>
+                `}).join('')}
               </div>
               <p class="text-sm text-stone-500 mt-4">اللون المختار: <span class="font-medium text-stone-700">${currentShade.name}</span></p>
             </div>
             
-            ${product.stock === 0 ? `
-              <div class="text-center py-6 bg-rose-50 rounded-2xl">
-                <p class="text-stone-400 font-medium">غير متوفر حالياً</p>
-              </div>
-            ` : `
+            ${product.shades.some(s => ((s.stock !== undefined) ? s.stock > 0 : product.stock > 0)) ? `
               <button 
                 onclick="addToCart('${productId}', '${category}', '${currentShade.id}'); closeProductModal();"
                 class="btn-primary text-white py-4 px-8 rounded-full text-lg font-medium"
               >
                 أضيفي إلى السلة
               </button>
+            ` : `
+              <div class="text-center py-6 bg-rose-50 rounded-2xl">
+                <p class="text-stone-400 font-medium">غير متوفر حالياً</p>
+              </div>
             `}
           </div>
         </div>
@@ -1124,6 +1191,11 @@
     function selectModalShade(productId, category, shadeId) {
       const product = products[category].find(p => p.id === productId);
       const shade = product.shades.find(s => s.id === shadeId);
+      const sStock = (shade && shade.stock !== undefined) ? shade.stock : product.stock;
+      if (sStock === 0) {
+        showUnavailableFeedback('عذراً، هذا اللون غير متوفر');
+        return;
+      }
       selectedShades[productId] = shade;
       openProductModal(productId, category);
     }
@@ -1134,10 +1206,17 @@
 
     // Render Functions
     function renderProductCard(product, category, index) {
-      const currentShade = selectedShades[product.id] || product.shades[0];
-      // Out of stock = selected shade has no stock (or product has no stock if shade.stock not set)
-      const shadeStock = currentShade ? ((currentShade.stock !== undefined) ? currentShade.stock : product.stock) : 0;
-      const isOutOfStock = shadeStock === 0;
+      // Prefer a previously selected shade if it's still available, otherwise pick the first available shade
+      const firstAvailableShade = product.shades.find(s => ((s.stock !== undefined) ? s.stock > 0 : product.stock > 0));
+      const currentShade = (selectedShades[product.id] && ((selectedShades[product.id].stock !== undefined)
+        ? selectedShades[product.id].stock > 0
+        : product.stock > 0))
+        ? selectedShades[product.id]
+        : (firstAvailableShade || product.shades[0]);
+
+      // Product-level availability: true if any shade (or product-level stock) is available
+      const productAvailable = product.shades.some(s => ((s.stock !== undefined) ? s.stock > 0 : product.stock > 0));
+      const isOutOfStock = !productAvailable;
 
       return `
         <div class="product-card rounded-3xl overflow-hidden slide-up" style="animation-delay: ${index * 0.1}s;">
@@ -1171,18 +1250,20 @@
           const sOutOfStock = sStock === 0;
           return `
                     <button 
-                      onclick="event.stopPropagation(); selectShade('${product.id}', '${shade.id}', '${category}')"
+                      onclick="event.stopPropagation(); ${sOutOfStock ? `showUnavailableFeedback('عذراً، هذا اللون غير متوفر')` : `selectShade('${product.id}', '${shade.id}', '${category}')`}"
                       class="shade-btn w-8 h-8 rounded-full border-2 border-white shadow-md transition-all ${currentShade && currentShade.id === shade.id ? 'selected' : ''} ${sOutOfStock ? 'opacity-30' : ''}"
                       style="background: ${shade.color}; ${sOutOfStock ? 'cursor:not-allowed; position:relative;' : ''}"
                       title="${shade.name}${sOutOfStock ? ' - غير متوفر' : ''}"
-                    ></button>
+                    >
+                      ${sOutOfStock ? `<span style=\"position:absolute;inset:0;display:flex;align-items:center;justify-content:center;\"><svg xmlns='http://www.w3.org/2000/svg' class='w-4 h-4 text-white' viewBox='0 0 24 24' fill='none' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 18L18 6M6 6l12 12'/></svg></span>` : ''}
+                    </button>
                   `;
         }).join('')}
               </div>
             </div>
             
             <button 
-              onclick="event.stopPropagation(); addToCart('${product.id}', '${category}', '${currentShade ? currentShade.id : ''}')"
+              onclick="event.stopPropagation(); ${isOutOfStock ? `showUnavailableFeedback('عذراً، هذا المنتج غير متوفر حالياً')` : `addToCart('${product.id}', '${category}', '${currentShade ? currentShade.id : ''}')`}"
               class="btn-primary w-full text-white py-3 rounded-full text-sm font-medium ${isOutOfStock ? 'opacity-50' : ''}"
               ${isOutOfStock ? 'disabled' : ''}
             >
@@ -1196,6 +1277,11 @@
     function selectShade(productId, shadeId, category) {
       const product = products[category].find(p => p.id === productId);
       const shade = product.shades.find(s => s.id === shadeId);
+      const sStock = (shade && shade.stock !== undefined) ? shade.stock : product.stock;
+      if (sStock === 0) {
+        showUnavailableFeedback('عذراً، هذا اللون غير متوفر');
+        return;
+      }
       selectedShades[productId] = shade;
       renderPage();
     }
@@ -1226,13 +1312,13 @@
 
     function renderHomePage() {
       const categories = [
-        { key: 'face', name: 'الوجه', nameEn: 'Face', color: '#f8d7da' },
-        { key: 'lips', name: 'الشفاه', nameEn: 'Lips', color: '#f4c2c2' },
-        { key: 'eyes', name: 'العيون', nameEn: 'Eyes', color: '#d4a5a5' },
-        { key: 'foundation', name: 'الأساس', nameEn: 'Foundation', color: '#e8d4bc' },
-        { key: 'setting', name: 'مثبتات', nameEn: 'Setting', color: '#f5e6d3' },
-        { key: 'gifts', name: 'هدايا', nameEn: 'Gifts', color: '#fce4ec' },
-        { key: 'packages', name: 'باكدجات', nameEn: 'Packages', color: '#f8bbd9' }
+        { key: 'face', name: 'الوجه', nameEn: 'Face' },
+        { key: 'lips', name: 'الشفاه', nameEn: 'Lips' },
+        { key: 'eyes', name: 'العيون', nameEn: 'Eyes' },
+        { key: 'foundation', name: 'الأساس', nameEn: 'Foundation' },
+        { key: 'setting', name: 'مثبتات', nameEn: 'Setting' },
+        { key: 'gifts', name: 'هدايا', nameEn: 'Gifts' },
+        { key: 'packages', name: 'باكدجات', nameEn: 'Packages' }
       ];
 
       return `
@@ -1249,9 +1335,25 @@
               <div class="hero-divider mt-8 w-24 h-[1px] bg-[#E8A5A5] mx-auto rounded-full"></div>
             </div>
           </div>
-          
+
           <div class="section-divider"></div>
-          
+
+          <!-- Featured Products (now shown before collections) -->
+          <div class="my-20">
+            <div class="text-center mb-12">
+              <h2 class="text-3xl font-bold text-stone-700">منتجات مميزة</h2>
+              <p class="cursive-english text-rose-400 mt-2">Featured Collection</p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+              ${products.lips.length > 0 ? renderProductCard(products.lips[0], 'lips', 0) : ''}
+              ${products.foundation.length > 0 ? renderProductCard(products.foundation[0], 'foundation', 1) : ''}
+              ${products.eyes.length > 0 ? renderProductCard(products.eyes[0], 'eyes', 2) : ''}
+              ${products.packages.length > 0 ? renderProductCard(products.packages[0], 'packages', 3) : ''}
+            </div>
+          </div>
+
+          <div class="section-divider"></div>
+
           <!-- Categories Grid -->
           <div class="my-20">
             <div class="text-center mb-12">
@@ -1265,29 +1367,11 @@
                   class="category-card p-6 md:p-8 rounded-3xl text-center slide-up"
                   style="animation-delay: ${index * 0.08}s; background: white; border: 1px solid #F5E6E6;"
                 >
-                  <div class="category-icon w-16 h-16 md:w-20 md:h-20 mx-auto mb-4 rounded-full bg-white/70 flex items-center justify-center transition-all">
-                    <div class="w-8 h-8 md:w-10 md:h-10 rounded-full" style="background: ${cat.color};"></div>
-                  </div>
+                  <!-- words only: no icon/badge -->
                   <h3 class="font-bold text-stone-700 text-lg">${cat.name}</h3>
                   <p class="cursive-english text-sm text-stone-500">${cat.nameEn}</p>
                 </button>
               `).join('')}
-            </div>
-          </div>
-          
-          <div class="section-divider"></div>
-          
-          <!-- Featured Products -->
-          <div class="my-20">
-            <div class="text-center mb-12">
-              <h2 class="text-3xl font-bold text-stone-700">منتجات مميزة</h2>
-              <p class="cursive-english text-rose-400 mt-2">Featured Collection</p>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-              ${products.lips.length > 0 ? renderProductCard(products.lips[0], 'lips', 0) : ''}
-              ${products.foundation.length > 0 ? renderProductCard(products.foundation[0], 'foundation', 1) : ''}
-              ${products.eyes.length > 0 ? renderProductCard(products.eyes[0], 'eyes', 2) : ''}
-              ${products.packages.length > 0 ? renderProductCard(products.packages[0], 'packages', 3) : ''}
             </div>
           </div>
         </div>
@@ -1771,6 +1855,13 @@
         loadDefaultProducts();
       }
       try {
+        // If there's a hash in the URL, use it as the initial page; otherwise default to 'home'
+        const hashPage = (location.hash && location.hash.length > 1) ? location.hash.replace('#', '') : null;
+        const initialPage = (history.state && history.state.page) ? history.state.page : (hashPage || 'home');
+        currentPage = initialPage;
+        // Replace the history entry so popstate has a consistent state
+        try { history.replaceState({ page: initialPage }, '', '#' + initialPage); } catch (e) {}
+
         renderPage();
         updateCartCount();
       } catch (e) {
