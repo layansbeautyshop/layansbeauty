@@ -479,10 +479,6 @@
       box-sizing: border-box;
     }
   </style>
-  <!-- Supabase CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <!-- EmailJS CDN for order notifications -->
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
 
 <body>
@@ -614,9 +610,12 @@
       </div>
     </footer>
   </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <script>
-    // Configuration
-    const defaultConfig = {
+
+const defaultConfig = {
       store_name: 'متجر ليان',
       store_name_english: "Layan's Beauty Shop",
       instagram_url: 'https://www.instagram.com/layansbeautyshop/',
@@ -624,26 +623,18 @@
 
     let config = { ...defaultConfig };
 
-    // ─── EMAIL NOTIFICATION SETUP ───────────────────────────────────────────
-    // To receive order emails, create a FREE account at https://emailjs.com
-    // Then replace the three values below with your own credentials.
-    // See setup instructions in the README or ask for help.
     const EMAIL_CONFIG = {
       serviceId: 'service_mv74rko',
       templateId: 'template_vavvxop',
       publicKey: '2nzPj2ekNkGugeeOM'
     };
-    // ────────────────────────────────────────────────────────────────────────
-
-    // Supabase Initialization
     const supabaseUrl = 'https://mdfrvmsruwzhhszoqumn.supabase.co';
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1kZnJ2bXNydXd6aGhzem9xdW1uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2NTMyOTksImV4cCI6MjA4ODIyOTI5OX0.rwIAoCZSVecvyvZA6Vhm1tPbzSBhgggpdy_xJ6aKjbM';
-    // The supabase-js v2 CDN exposes the library on window.supabase
     const supabaseClient = (window.supabase && typeof window.supabase.createClient === 'function')
       ? window.supabase.createClient(supabaseUrl, supabaseKey)
       : null;
 
-    // Product Data (State)
+
     let products = {
       face: [], lips: [], eyes: [], foundation: [], setting: [], gifts: [], packages: []
     };
@@ -1045,26 +1036,89 @@
       }
     }
 
-    function addToCart(productId, category, shadeId) {
-      const product = products[category].find(p => p.id === productId);
+    async function addToCart(productId, category, shadeId) {
+      let product = products[category].find(p => p.id === productId);
       if (!product) return;
+
+      // If Supabase is available, fetch latest product row to reflect any admin changes
+      if (supabaseClient) {
+        try {
+          // Try fetching by the existing id (string), but fall back to numeric id if not found.
+          let prodRow = null;
+          let fetchErr = null;
+
+          ({ data: prodRow, error: fetchErr } = await supabaseClient
+            .from('products')
+            .select('id, shades, stock')
+            .eq('id', productId)
+            .maybeSingle());
+
+          if (!fetchErr && !prodRow) {
+            const numericId = Number(productId);
+            if (Number.isFinite(numericId)) {
+              try {
+                const res = await supabaseClient
+                  .from('products')
+                  .select('id, shades, stock')
+                  .eq('id', numericId)
+                  .maybeSingle();
+                prodRow = res.data;
+                fetchErr = res.error;
+              } catch (e) {
+                fetchErr = e;
+              }
+            }
+          }
+
+          if (!fetchErr && prodRow) {
+            // Update local product entry with latest stock/shades
+            const localList = products[category] || [];
+            const local = localList.find(p => String(p.id) === String(productId) || String(p.id) === String(prodRow.id));
+            if (local) {
+              if (Array.isArray(prodRow.shades)) {
+                local.shades = prodRow.shades;
+              }
+              if (prodRow.stock !== undefined && prodRow.stock !== null) {
+                local.stock = prodRow.stock;
+              }
+              // rebind product to updated local reference
+              product = local;
+            }
+          } else if (fetchErr) {
+            console.error('Failed to refresh product before addToCart:', fetchErr);
+          }
+        } catch (err) {
+          console.error('Failed to refresh product before addToCart:', err);
+        }
+      }
 
       const shade = product.shades.find(s => s.id === shadeId);
       if (!shade) return;
 
-      // Use shade-level stock if available, otherwise fall back to product stock
-      const shadeStock = (shade.stock !== undefined) ? shade.stock : product.stock;
-      if (shadeStock === 0) {
-        showUnavailableFeedback('عذراً، هذا اللون غير متوفر');
+      // Normalize stock value
+      const shadeStock = getStock(product, shade); // null means unknown/unlimited
+
+      // Current reserved quantity in cart for this product+shade
+      const existingItem = cart.find(item => item.productId === productId && item.shadeId === shadeId);
+      const reserved = existingItem ? existingItem.quantity : 0;
+
+      console.log('addToCart check', { productId, shadeId, reserved, shadeStock, productLocalStock: product.stock });
+
+      // If we have a numeric stock, ensure we don't exceed it
+      if (shadeStock !== null) {
+        if (reserved >= shadeStock) {
+          showUnavailableFeedback('عذراً، الكمية المتاحة من هذا اللون نفدت');
+          return;
+        }
+      } else {
+        // If stock is unknown (no numeric info), block adding to avoid unlimited adds
+        showUnavailableFeedback('الكمية غير معروفة حالياً — يرجى تحديث الصفحة');
+        console.warn('addToCart aborted: unknown stock for', productId, shadeId);
         return;
       }
 
-      const existingItem = cart.find(item => item.productId === productId && item.shadeId === shadeId);
-
       if (existingItem) {
-        if (existingItem.quantity < shadeStock) {
-          existingItem.quantity++;
-        }
+        existingItem.quantity++;
       } else {
         cart.push({
           productId,
@@ -1096,6 +1150,20 @@
       setTimeout(() => feedback.remove(), 2000);
     }
 
+    // Helper: normalize stock values (handles strings/numbers/missing values)
+    function getStock(product, shade) {
+      // Prefer explicit shade stock, otherwise product stock, otherwise treat as unlimited (null)
+      const raw = (shade && shade.stock !== undefined && shade.stock !== null)
+        ? shade.stock
+        : (product && product.stock !== undefined && product.stock !== null)
+          ? product.stock
+          : null;
+
+      if (raw === null) return null; // unknown/unlimited
+      const n = Number(raw);
+      return Number.isFinite(n) ? n : null;
+    }
+
     function removeFromCart(index) {
       cart.splice(index, 1);
       updateCartCount();
@@ -1105,13 +1173,15 @@
     function updateQuantity(index, change) {
       const item = cart[index];
       const newQty = item.quantity + change;
-      const shadeStock = (item.shade.stock !== undefined) ? item.shade.stock : item.product.stock;
+      const shadeStock = getStock(item.product, item.shade); // null = unlimited
 
       if (newQty <= 0) {
         removeFromCart(index);
-      } else if (newQty <= shadeStock) {
+      } else if (shadeStock === null || newQty <= shadeStock) {
         item.quantity = newQty;
         renderPage();
+      } else {
+        showUnavailableFeedback('عذراً، الكمية المتاحة من هذا اللون نفدت');
       }
     }
 
@@ -1152,8 +1222,8 @@
               <p class="text-stone-700 font-medium mb-4">اختاري اللون:</p>
               <div class="flex flex-wrap gap-4">
                 ${product.shades.map(shade => {
-          const sStock = (shade.stock !== undefined) ? shade.stock : product.stock;
-          const sOutOfStock = sStock === 0;
+          const sStock = getStock(product, shade);
+          const sOutOfStock = (sStock !== null && sStock <= 0);
           return `
                   <button 
                     onclick="event.stopPropagation(); ${sOutOfStock ? `showUnavailableFeedback('عذراً، هذا اللون غير متوفر')` : `selectModalShade('${productId}', '${category}', '${shade.id}')`}"
@@ -1168,7 +1238,7 @@
               <p class="text-sm text-stone-500 mt-4">اللون المختار: <span class="font-medium text-stone-700">${currentShade.name}</span></p>
             </div>
             
-            ${product.shades.some(s => ((s.stock !== undefined) ? s.stock > 0 : product.stock > 0)) ? `
+            ${product.shades.some(s => { const st = getStock(product, s); return st === null ? true : st > 0; }) ? `
               <button 
                 onclick="addToCart('${productId}', '${category}', '${currentShade.id}'); closeProductModal();"
                 class="btn-primary text-white py-4 px-8 rounded-full text-lg font-medium"
@@ -1190,8 +1260,8 @@
     function selectModalShade(productId, category, shadeId) {
       const product = products[category].find(p => p.id === productId);
       const shade = product.shades.find(s => s.id === shadeId);
-      const sStock = (shade && shade.stock !== undefined) ? shade.stock : product.stock;
-      if (sStock === 0) {
+      const sStock = getStock(product, shade);
+      if (sStock !== null && sStock <= 0) {
         showUnavailableFeedback('عذراً، هذا اللون غير متوفر');
         return;
       }
@@ -1206,16 +1276,21 @@
     // Render Functions
     function renderProductCard(product, category, index) {
       // Prefer a previously selected shade if it's still available, otherwise pick the first available shade
-      const firstAvailableShade = product.shades.find(s => ((s.stock !== undefined) ? s.stock > 0 : product.stock > 0));
-      const currentShade = (selectedShades[product.id] && ((selectedShades[product.id].stock !== undefined)
-        ? selectedShades[product.id].stock > 0
-        : product.stock > 0))
-        ? selectedShades[product.id]
+  const firstAvailableShade = product.shades.find(s => { const st = getStock(product, s); return (st !== null && st > 0); });
+      const selectedShadeObj = selectedShades[product.id];
+      const selectedShadeStock = selectedShadeObj ? getStock(product, selectedShadeObj) : null;
+      const currentShade = (selectedShadeObj && (selectedShadeStock === null ? true : selectedShadeStock > 0))
+        ? selectedShadeObj
         : (firstAvailableShade || product.shades[0]);
 
-      // Product-level availability: true if any shade (or product-level stock) is available
-      const productAvailable = product.shades.some(s => ((s.stock !== undefined) ? s.stock > 0 : product.stock > 0));
-      const isOutOfStock = !productAvailable;
+  // Product-level availability: true if any shade (or product-level stock) is available
+  const productAvailable = product.shades.some(s => { const st = getStock(product, s); return (st !== null && st > 0); });
+  const isOutOfStock = !productAvailable;
+
+  // Determine reserved quantity for the current shade in the cart
+  const reservedForCurrent = cart.reduce((sum, it) => (String(it.productId) === String(product.id) && String(it.shadeId) === String(currentShade.id)) ? sum + it.quantity : sum, 0);
+  const currentShadeStock = getStock(product, currentShade);
+  const canAddCurrent = (currentShadeStock === null) ? true : (reservedForCurrent < currentShadeStock);
 
       return `
         <div class="product-card rounded-3xl overflow-hidden slide-up" style="animation-delay: ${index * 0.1}s;">
@@ -1245,8 +1320,8 @@
               <p class="text-xs text-stone-500 mb-3 font-medium">اختاري اللون:</p>
               <div class="flex flex-wrap gap-2">
                 ${product.shades.map(shade => {
-          const sStock = (shade.stock !== undefined) ? shade.stock : product.stock;
-          const sOutOfStock = sStock === 0;
+          const sStock = getStock(product, shade);
+          const sOutOfStock = (sStock !== null && sStock <= 0);
           return `
                     <button 
                       onclick="event.stopPropagation(); ${sOutOfStock ? `showUnavailableFeedback('عذراً، هذا اللون غير متوفر')` : `selectShade('${product.id}', '${shade.id}', '${category}')`}"
@@ -1262,11 +1337,11 @@
             </div>
             
             <button 
-              onclick="event.stopPropagation(); ${isOutOfStock ? `showUnavailableFeedback('عذراً، هذا المنتج غير متوفر حالياً')` : `addToCart('${product.id}', '${category}', '${currentShade ? currentShade.id : ''}')`}"
-              class="btn-primary w-full text-white py-3 rounded-full text-sm font-medium ${isOutOfStock ? 'opacity-50' : ''}"
-              ${isOutOfStock ? 'disabled' : ''}
+              onclick="event.stopPropagation(); ${isOutOfStock ? `showUnavailableFeedback('عذراً، هذا المنتج غير متوفر حالياً')` : (!canAddCurrent ? `showUnavailableFeedback('عذراً، الكمية المتاحة من هذا اللون نفدت')` : `addToCart('${product.id}', '${category}', '${currentShade ? currentShade.id : ''}')`)}"
+              class="btn-primary w-full text-white py-3 rounded-full text-sm font-medium ${isOutOfStock || !canAddCurrent ? 'opacity-50' : ''}"
+              ${isOutOfStock || !canAddCurrent ? 'disabled' : ''}
             >
-              ${isOutOfStock ? 'غير متوفر' : 'أضيفي للسلة'}
+              ${isOutOfStock ? 'غير متوفر' : (!canAddCurrent ? 'الكمية نفدت' : 'أضيفي للسلة')}
             </button>
           </div>
         </div>
@@ -1276,8 +1351,8 @@
     function selectShade(productId, shadeId, category) {
       const product = products[category].find(p => p.id === productId);
       const shade = product.shades.find(s => s.id === shadeId);
-      const sStock = (shade && shade.stock !== undefined) ? shade.stock : product.stock;
-      if (sStock === 0) {
+      const sStock = getStock(product, shade);
+      if (sStock !== null && sStock <= 0) {
         showUnavailableFeedback('عذراً، هذا اللون غير متوفر');
         return;
       }
@@ -1624,6 +1699,14 @@
         created_at: new Date().toISOString()
       };
 
+      // Capture a snapshot of the cart items with shade IDs for stock updates
+      const cartSnapshot = cart.map(item => ({
+        productId: item.productId,
+        shadeId: item.shade.id,
+        quantity: item.quantity,
+        category: item.category
+      }));
+
       // We'll try each external action separately and avoid failing the whole flow if one external service is down.
       let supabaseOk = false;
       let emailOk = false;
@@ -1644,6 +1727,66 @@
         console.log('Supabase client not available; skipping DB save.');
       }
 
+      // 1b) Update product / shade stocks in Supabase (best-effort)
+      if (supabaseClient && cartSnapshot.length > 0) {
+        for (const ci of cartSnapshot) {
+          try {
+            // Fetch current product row
+            const { data: prodRow, error: fetchErr } = await supabaseClient
+              .from('products')
+              .select('id, shades, stock')
+              .eq('id', ci.productId)
+              .maybeSingle();
+
+            if (fetchErr) {
+              console.error('Failed to fetch product for stock update:', ci.productId, fetchErr);
+              continue;
+            }
+
+            if (!prodRow) {
+              console.warn('No product row found for', ci.productId);
+              continue;
+            }
+
+            let updatePayload = {};
+
+            if (Array.isArray(prodRow.shades) && prodRow.shades.length > 0) {
+              // Try to update matching shade stock
+              const newShades = prodRow.shades.map(s => {
+                if (s && (s.id === ci.shadeId || String(s.id) === String(ci.shadeId))) {
+                  const current = (s.stock !== undefined) ? Number(s.stock) : (prodRow.stock !== undefined ? Number(prodRow.stock) : null);
+                  if (current !== null) {
+                    s = { ...s, stock: Math.max(0, current - ci.quantity) };
+                    console.log(`Decremented shade ${ci.shadeId} of product ${ci.productId} to`, s.stock);
+                  }
+                }
+                return s;
+              });
+              updatePayload.shades = newShades;
+            } else if (prodRow.stock !== undefined) {
+              // No shades array, decrement top-level stock
+              updatePayload.stock = Math.max(0, Number(prodRow.stock) - ci.quantity);
+              console.log(`Decremented product ${ci.productId} stock to`, updatePayload.stock);
+            }
+
+            // Send update if there's something to update
+            if (Object.keys(updatePayload).length > 0) {
+              const { error: updErr } = await supabaseClient
+                .from('products')
+                .update(updatePayload)
+                .eq('id', ci.productId);
+              if (updErr) {
+                console.error('Failed to update product stock for', ci.productId, updErr);
+              } else {
+                console.log('Product stock updated for', ci.productId);
+              }
+            }
+          } catch (err) {
+            console.error('Error updating stock for', ci.productId, err);
+          }
+        }
+      }
+
       // 2) Send email notification via EmailJS (best-effort)
       try {
         const emailConfigReady =
@@ -1651,29 +1794,43 @@
           EMAIL_CONFIG.templateId !== 'YOUR_TEMPLATE_ID' &&
           EMAIL_CONFIG.publicKey !== 'YOUR_PUBLIC_KEY';
 
-        if (emailConfigReady && window.emailjs) {
-          const itemsList = orderData.items
-            .map(i => `${i.name} (${i.shade}) × ${i.quantity} — ₪${i.price * i.quantity}`)
-            .join('\n');
+        if (emailConfigReady) {
+          // Lazy-load EmailJS only when sending an email to reduce initial load time
+          try {
+            await loadEmailJS();
+          } catch (e) {
+            console.error('Failed to load EmailJS library:', e);
+          }
 
-          window.emailjs.init({ publicKey: EMAIL_CONFIG.publicKey });
+          if (window.emailjs) {
+            const itemsList = orderData.items
+              .map(i => `${i.name} (${i.shade}) × ${i.quantity} — ₪${i.price * i.quantity}`)
+              .join('\n');
 
-          await window.emailjs.send(EMAIL_CONFIG.serviceId, EMAIL_CONFIG.templateId, {
-            to_email: 'layansextras@gmail.com',
-            customer_name: orderData.customer_name,
-            phone: orderData.phone,
-            address: orderData.address,
-            address_alt: orderData.address_alt,
-            phone_alt: orderData.phone_alt,
-            items_list: itemsList,
-            total: `₪${total}`,
-            notes: orderData.notes || '—',
-            order_date: new Date().toLocaleString('ar-SA')
-          });
-          emailOk = true;
-          console.log('Order email sent via EmailJS');
+            try {
+              window.emailjs.init(EMAIL_CONFIG.publicKey);
+              await window.emailjs.send(EMAIL_CONFIG.serviceId, EMAIL_CONFIG.templateId, {
+                to_email: 'layansextras@gmail.com',
+                customer_name: orderData.customer_name,
+                phone: orderData.phone,
+                address: orderData.address,
+                address_alt: orderData.address_alt,
+                phone_alt: orderData.phone_alt,
+                items_list: itemsList,
+                total: `₪${total}`,
+                notes: orderData.notes || '—',
+                order_date: new Date().toLocaleString('ar-SA')
+              });
+              emailOk = true;
+              console.log('Order email sent via EmailJS');
+            } catch (err) {
+              console.error('EmailJS send failed:', err);
+            }
+          } else {
+            console.log('EmailJS not available after dynamic load; skipping email.');
+          }
         } else {
-          console.log('EmailJS not configured or not available; skipping email.');
+          console.log('EmailJS not configured; skipping email.');
         }
       } catch (err) {
         console.error('EmailJS send failed:', err);
@@ -1688,30 +1845,58 @@
         return;
       }
 
-      // Consider the order placed (at least one backend received it). Clear cart and show confirmation.
+      // Consider the order placed (at least one backend received it). Update local state, clear cart and show confirmation.
+      // Update in-memory product stocks to immediately reflect changes in the UI
+      try {
+        if (cartSnapshot.length > 0) {
+          for (const ci of cartSnapshot) {
+            const prodList = products[ci.category] || [];
+            const localProd = prodList.find(p => String(p.id) === String(ci.productId));
+            if (!localProd) continue;
+
+            if (Array.isArray(localProd.shades) && localProd.shades.length > 0) {
+              localProd.shades = localProd.shades.map(s => {
+                if (s && (s.id === ci.shadeId || String(s.id) === String(ci.shadeId))) {
+                  const current = (s.stock !== undefined) ? Number(s.stock) : (localProd.stock !== undefined ? Number(localProd.stock) : null);
+                  if (current !== null) {
+                    return { ...s, stock: Math.max(0, current - ci.quantity) };
+                  }
+                }
+                return s;
+              });
+            } else if (localProd.stock !== undefined) {
+              localProd.stock = Math.max(0, Number(localProd.stock) - ci.quantity);
+            }
+          }
+        }
+      } catch (err) {
+        console.error('Error updating local product stocks:', err);
+      }
+
       cart = [];
       updateCartCount();
-      showOrderConfirmation();
+      // Pass the email status so the confirmation page can show whether an email was sent
+      showOrderConfirmation(emailOk);
     }
 
-    function showOrderConfirmation() {
-      const mainContent = document.getElementById('main-content');
-      mainContent.innerHTML = `
-                <div class="fade-in text-center py-32">
-                    <div class="w-28 h-28 mx-auto mb-8 rounded-full bg-gradient-to-br from-green-100 to-emerald-100 flex items-center justify-center">
-                        <svg class="w-14 h-14 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                        </svg>
-                    </div>
-                    <h2 class="text-4xl font-bold text-stone-700 mb-4">شكراً لكِ!</h2>
-                    <p class="text-stone-600 text-lg mb-3">تم استلام طلبك بنجاح</p>
-                    <p class="text-stone-500 mb-10"></p>
-                    <button onclick="cart = []; updateCartCount(); navigateTo('home');" class="btn-primary text-white px-8 py-4 rounded-full font-medium">
-                        العودة للتسوق
-                    </button>
-                </div>
-            `;
-    }
+  function showOrderConfirmation(emailOk = true) {
+    const mainContent = document.getElementById('main-content');
+    mainContent.innerHTML = `
+        <div class="fade-in text-center py-32">
+          <div class="w-28 h-28 mx-auto mb-8 rounded-full bg-gradient-to-br from-green-100 to-emerald-100 flex items-center justify-center">
+            <svg class="w-14 h-14 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+            </svg>
+          </div>
+          <h2 class="text-4xl font-bold text-stone-700 mb-4">شكراً لكِ!</h2>
+          <p class="text-stone-600 text-lg mb-3">تم استلام طلبك بنجاح</p>
+          ${emailOk ? `<p class="text-stone-500 mb-6">تم إرسال إشعار عبر البريد الإلكتروني إلى فريق المتجر.</p>` : `<p class="text-amber-600 mb-6">لم نتمكن من إرسال إشعار عبر البريد الإلكتروني. يرجى التحقق من صندوق الرسائل المزعجة أو التواصل معنا عبر الانستغرام.</p>`}
+          <button onclick="cart = []; updateCartCount(); navigateTo('home');" class="btn-primary text-white px-8 py-4 rounded-full font-medium">
+            العودة للتسوق
+          </button>
+        </div>
+      `;
+  }
 
     function renderCustomOrderPage() {
       return `
@@ -1908,6 +2093,23 @@
       } catch (e) {
         console.error('renderPage failed:', e);
       }
+    }
+
+    // Lazy loader for EmailJS
+    function loadEmailJS() {
+      if (window.emailjs) return Promise.resolve(window.emailjs);
+      if (window._emailjsLoader) return window._emailjsLoader;
+
+      window._emailjsLoader = new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
+        s.async = true;
+        s.onload = () => resolve(window.emailjs);
+        s.onerror = (e) => reject(e || new Error('Failed to load EmailJS'));
+        document.head.appendChild(s);
+      });
+
+      return window._emailjsLoader;
     }
 
     // Ensure DOM is ready before initializing
