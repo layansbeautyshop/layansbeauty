@@ -974,7 +974,6 @@
           history.pushState(state, '', '#' + page);
         }
       } catch (e) {
-        // some environments may restrict pushState, ignore failures
         console.warn('history API not available', e);
       }
     }
@@ -1582,15 +1581,34 @@
       btn.disabled = true;
       btn.textContent = 'جاري إرسال الطلب...';
 
+      // Basic validation
+      const customerName = document.getElementById('cust-name').value.trim();
+      const address = document.getElementById('cust-address').value.trim();
+      const phone = document.getElementById('cust-phone').value.trim();
+
+      if (!customerName || !address || !phone) {
+        alert('الرجاء ملء الحقول المطلوبة: الاسم، العنوان، ورقم الهاتف.');
+        btn.disabled = false;
+        btn.textContent = 'تأكيد الطلب 🌸';
+        return;
+      }
+
       const deliveryEl = document.querySelector('input[name="delivery"]:checked');
-      const deliveryPrice = deliveryEl ? parseInt(deliveryEl.value) : 0;
+      const deliveryPrice = deliveryEl ? parseInt(deliveryEl.value || '0') : 0;
       const subtotal = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
       const total = subtotal + deliveryPrice;
 
+      if (!cart || cart.length === 0) {
+        alert('سلة التسوق فارغة. يرجى إضافة منتجات قبل المتابعة.');
+        btn.disabled = false;
+        btn.textContent = 'تأكيد الطلب 🌸';
+        return;
+      }
+
       const orderData = {
-        customer_name: document.getElementById('cust-name').value,
-        address: document.getElementById('cust-address').value,
-        phone: document.getElementById('cust-phone').value,
+        customer_name: customerName,
+        address: address,
+        phone: phone,
         address_alt: document.getElementById('cust-address-alt').value || '',
         phone_alt: document.getElementById('cust-phone-alt').value || '',
         notes: document.getElementById('cust-notes').value || '',
@@ -1606,17 +1624,28 @@
         created_at: new Date().toISOString()
       };
 
-      try {
-        // 1) Save to Supabase
-        if (supabaseClient) {
+      // We'll try each external action separately and avoid failing the whole flow if one external service is down.
+      let supabaseOk = false;
+      let emailOk = false;
+
+      // 1) Save to Supabase (best-effort)
+      if (supabaseClient) {
+        try {
           const { error } = await supabaseClient
             .from('orders')
             .insert([orderData]);
           if (error) throw error;
+          supabaseOk = true;
           console.log('Order saved to Supabase');
+        } catch (err) {
+          console.error('Supabase save failed:', err);
         }
+      } else {
+        console.log('Supabase client not available; skipping DB save.');
+      }
 
-        // 2) Send email notification via EmailJS
+      // 2) Send email notification via EmailJS (best-effort)
+      try {
         const emailConfigReady =
           EMAIL_CONFIG.serviceId !== 'YOUR_SERVICE_ID' &&
           EMAIL_CONFIG.templateId !== 'YOUR_TEMPLATE_ID' &&
@@ -1641,16 +1670,28 @@
             notes: orderData.notes || '—',
             order_date: new Date().toLocaleString('ar-SA')
           });
+          emailOk = true;
           console.log('Order email sent via EmailJS');
+        } else {
+          console.log('EmailJS not configured or not available; skipping email.');
         }
+      } catch (err) {
+        console.error('EmailJS send failed:', err);
+      }
 
-        showOrderConfirmation();
-      } catch (error) {
-        console.error('Error placing order:', error);
+      // Finalize: if both external actions failed, notify the user and don't clear their cart so they can try again.
+      if (!supabaseOk && !emailOk) {
+        console.error('Both Supabase and EmailJS failed; aborting checkout.');
         alert('عذراً، حدث خطأ أثناء إتمام الطلب. يرجى المحاولة مرة أخرى أو التواصل معنا عبر الانستغرام.');
         btn.disabled = false;
         btn.textContent = 'تأكيد الطلب 🌸';
+        return;
       }
+
+      // Consider the order placed (at least one backend received it). Clear cart and show confirmation.
+      cart = [];
+      updateCartCount();
+      showOrderConfirmation();
     }
 
     function showOrderConfirmation() {
@@ -1664,7 +1705,7 @@
                     </div>
                     <h2 class="text-4xl font-bold text-stone-700 mb-4">شكراً لكِ!</h2>
                     <p class="text-stone-600 text-lg mb-3">تم استلام طلبك بنجاح</p>
-                    <p class="text-stone-500 mb-10">سيتم التواصل معكِ قريباً لتأكيد الطلب والتوصيل</p>
+                    <p class="text-stone-500 mb-10"></p>
                     <button onclick="cart = []; updateCartCount(); navigateTo('home');" class="btn-primary text-white px-8 py-4 rounded-full font-medium">
                         العودة للتسوق
                     </button>
