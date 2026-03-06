@@ -511,7 +511,7 @@
                 id="products-dropdown"><button onclick="navigateTo('face'); closeProductsDropdown();"
                   class="dropdown-item w-full text-right px-6 py-3 hover:bg-[#FFF9F9] transition-all text-gray-700 font-medium">الوجه
                   • Face</button> <button onclick="navigateTo('lips'); closeProductsDropdown();"
-                  class="dropdown-item w-full text-right px-6 py-3 hover:bg-[#FFF9F9] transition-all text-gray-700 font-medium">الشاه
+                  class="dropdown-item w-full text-right px-6 py-3 hover:bg-[#FFF9F9] transition-all text-gray-700 font-medium">الشفاه
                   • Lips</button> <button onclick="navigateTo('eyes'); closeProductsDropdown();"
                   class="dropdown-item w-full text-right px-6 py-3 hover:bg-[#FFF9F9] transition-all text-gray-700 font-medium">العيون
                   • Eyes</button> <button onclick="navigateTo('foundation'); closeProductsDropdown();"
@@ -551,7 +551,7 @@
           <button onclick="navigateTo('face'); toggleMobileMenu();"
             class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF9F9] transition-colors text-sm font-medium border border-[#F5E6E6]">الوجه</button>
           <button onclick="navigateTo('lips'); toggleMobileMenu();"
-            class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF9F9] transition-colors text-sm font-medium border border-[#F5E6E6]">الشاه</button>
+            class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF9F9] transition-colors text-sm font-medium border border-[#F5E6E6]">الشفاه</button>
           <button onclick="navigateTo('eyes'); toggleMobileMenu();"
             class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF9F9] transition-colors text-sm font-medium border border-[#F5E6E6]">العيون</button>
           <button onclick="navigateTo('foundation'); toggleMobileMenu();"
@@ -637,7 +637,19 @@ const defaultConfig = {
     };
 
     async function fetchProducts() {
+      // Ensure supabaseClient is initialized (try to re-create if the SDK attached late)
+      if (!supabaseClient && window.supabase && typeof window.supabase.createClient === 'function') {
+        try {
+          supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+        } catch (e) {
+          console.warn('Failed to create supabase client during fetchProducts init:', e);
+        }
+      }
+
       if (!supabaseClient) {
+        // No client available: load defaults and abort fetch. This keeps the UI working offline
+        // while avoiding hard failures. If the SDK attaches later the page can be refreshed.
+        console.warn('Supabase client not available; loading default products.');
         loadDefaultProducts();
         return;
       }
@@ -651,21 +663,50 @@ const defaultConfig = {
 
         if (data && data.length > 0) {
           const newProducts = {
-            face: [], lips: [], eyes: [], foundation: [], setting: [], gifts: [], packages: []
+            face: [], lips: [], eyes: [], foundation: [], setting: [], gifts: [], packages: [], other: []
           };
 
+          // Map a product.category value (English or Arabic variants) to our internal keys
+          function mapCategory(cat) {
+            if (!cat) return 'other';
+            const v = String(cat).trim().toLowerCase();
+
+            const direct = {
+              'face': 'face', 'الوجه': 'face',
+              'lips': 'lips', 'الشفاه': 'lips', 'الشَفاه': 'lips', 'شفاه': 'lips',
+              'eyes': 'eyes', 'العيون': 'eyes',
+              'foundation': 'foundation', 'الأساس': 'foundation', 'اساس': 'foundation',
+              'setting': 'setting', 'مثبتات': 'setting',
+              'gifts': 'gifts', 'هدايا': 'gifts',
+              'packages': 'packages', 'البكجات': 'packages', 'sets': 'packages'
+            };
+
+            if (direct[v]) return direct[v];
+
+            // Fallback heuristics
+            if (v.includes('شف') || v.includes('lip')) return 'lips';
+            if (v.includes('وجه') || v.includes('face')) return 'face';
+            if (v.includes('عين') || v.includes('عيون') || v.includes('eye')) return 'eyes';
+            if (v.includes('أساس') || v.includes('foundat') || v.includes('base')) return 'foundation';
+            if (v.includes('مثبت') || v.includes('setting')) return 'setting';
+            if (v.includes('هدية') || v.includes('gift')) return 'gifts';
+            if (v.includes('بكج') || v.includes('set')) return 'packages';
+
+            return 'other';
+          }
+
           data.forEach(p => {
-            if (newProducts[p.category]) {
-              newProducts[p.category].push({
-                id: p.id,
-                name: p.name,
-                nameEn: p.nameEn,
-                price: p.price,
-                description: p.description,
-                stock: p.stock || 10,
-                shades: p.shades || []
-              });
-            }
+            const key = mapCategory(p.category);
+            const target = newProducts[key] || newProducts.other;
+            target.push({
+              id: p.id,
+              name: p.name,
+              nameEn: p.nameEn,
+              price: p.price,
+              description: p.description,
+              stock: p.stock || 10,
+              shades: p.shades || []
+            });
           });
 
           products = newProducts;
@@ -1504,7 +1545,7 @@ const defaultConfig = {
 
                             <div class="pt-4 border-t border-rose-50">
                                 <label class="block text-stone-700 font-bold mb-2">عنوان بديل (اختياري)</label>
-                                <input type="text" id="cust-address-alt" class="w-full px-5 py-4 rounded-2xl border border-rose-100 focus:border-rose-400 focus:ring-4 focus:ring-rose-400/10 outline-none transition-all" placeholder="عنوان آخر للتوصل ي حال عدم التواجد">
+                                <input type="text" id="cust-address-alt" class="w-full px-5 py-4 rounded-2xl border border-rose-100 focus:border-rose-400 focus:ring-4 focus:ring-rose-400/10 outline-none transition-all" placeholder="عنوان آخر للتوصل في حال عدم التواجد">
                             </div>
 
                             <div>
@@ -1514,7 +1555,7 @@ const defaultConfig = {
 
                             <div>
                                 <label class="block text-stone-700 font-bold mb-2">ملاحظات مع الطلب (اختياري)</label>
-                                <textarea id="cust-notes" rows="3" class="w-full px-5 py-4 rounded-2xl border border-rose-100 focus:border-rose-400 focus:ring-4 focus:ring-rose-400/10 outline-none transition-all resize-none" placeholder="أي ملاحظات إضاية بخصوص الطلب أو التوصيل..."></textarea>
+                                <textarea id="cust-notes" rows="3" class="w-full px-5 py-4 rounded-2xl border border-rose-100 focus:border-rose-400 focus:ring-4 focus:ring-rose-400/10 outline-none transition-all resize-none" placeholder="أي ملاحظات إضافة بخصوص الطلب أو التوصيل..."></textarea>
                             </div>
 
                             <div class="pt-6">
@@ -1792,7 +1833,7 @@ const defaultConfig = {
             
             <div class="glass-card rounded-3xl p-10 md:p-14">
               <p class="text-lg text-stone-600 leading-relaxed mb-12">
-                لطلب منتج غير متور أو طلب خاص، يرجى التواصل معنا عبر حسابنا على الانستغرام
+                لطلب منتج غير متوفر أو طلب خاص، يرجى التواصل معنا عبر حسابنا على الانستغرام
               </p>
               
               <a 
@@ -1826,11 +1867,11 @@ const defaultConfig = {
             <div class="glass-card rounded-3xl p-10 md:p-12">
               <div class="space-y-6">
                 <p class="text-lg text-stone-600 leading-relaxed">
-                  نعمل ي مجال المنتجات منذ أكثر من 6 سنوات، وقد انطلق متجر ليان رسمياً قبل عامين ليكون وجهتك الموثوقة للحصول على منتجات تجميل أصلية 100%.
+                  نعمل في مجال المنتجات منذ أكثر من 6 سنوات، وقد انطلق متجر ليان رسمياً قبل عامين ليكون وجهتك الموثوقة للحصول على منتجات تجميل أصلية 100%.
                 </p>
                 
                 <p class="text-lg text-stone-600 leading-relaxed">
-                  تأسس المتجر على يد شابة طموحة تسعى لتوفير تجربة تسوق مميزة للتيات اللسطينيات، حيث يمكنهن الحصول على منتجات أصلية من مصدر موثوق به.
+                  تأسس المتجر على يد شابة طموحة تسعى لتوفير تجربة تسوق مميزة للتيات الفلسطينيات، حيث يمكنهن الحصول على منتجات أصلية من مصدر موثوق به.
                 </p>
                 
                 <p class="text-lg text-stone-600 leading-relaxed">
@@ -1845,7 +1886,7 @@ const defaultConfig = {
               <h3 class="text-2xl font-bold text-stone-700 mb-6">سياسة الاسترجاع</h3>
               <div class="bg-[#FFF9F9] rounded-2xl p-8 border border-[#F5E6E6]">
                 <p class="text-stone-600 text-lg leading-relaxed font-medium">
-                  لا يوجد استرجاع او تبديل إلا ي حال وجود خلل ي المنتج، ويجب تصوير المنتج خلال أول 24 ساعة من الاستلام.
+                  لا يوجد استرجاع او تبديل إلا في حال وجود خلل في المنتج، ويجب تصوير المنتج خلال أول 24 ساعة من الاستلام.
                 </p>
               </div>
             </div>
