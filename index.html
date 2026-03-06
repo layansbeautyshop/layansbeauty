@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="ar" dir="rtl">
 
 <head>
@@ -511,7 +511,7 @@
                 id="products-dropdown"><button onclick="navigateTo('face'); closeProductsDropdown();"
                   class="dropdown-item w-full text-right px-6 py-3 hover:bg-[#FFF9F9] transition-all text-gray-700 font-medium">الوجه
                   • Face</button> <button onclick="navigateTo('lips'); closeProductsDropdown();"
-                  class="dropdown-item w-full text-right px-6 py-3 hover:bg-[#FFF9F9] transition-all text-gray-700 font-medium">الشفاه
+                  class="dropdown-item w-full text-right px-6 py-3 hover:bg-[#FFF9F9] transition-all text-gray-700 font-medium">الشاه
                   • Lips</button> <button onclick="navigateTo('eyes'); closeProductsDropdown();"
                   class="dropdown-item w-full text-right px-6 py-3 hover:bg-[#FFF9F9] transition-all text-gray-700 font-medium">العيون
                   • Eyes</button> <button onclick="navigateTo('foundation'); closeProductsDropdown();"
@@ -521,8 +521,8 @@
                   • Setting</button> <button onclick="navigateTo('gifts'); closeProductsDropdown();"
                   class="dropdown-item w-full text-right px-6 py-3 hover:bg-[#FFF9F9] transition-all text-gray-700 font-medium">هدايا
                   • Gifts</button> <button onclick="navigateTo('packages'); closeProductsDropdown();"
-                  class="dropdown-item w-full text-right px-6 py-3 hover:bg-[#FFF9F9] transition-all text-gray-700 font-medium">باكدجات
-                  • Packages</button>
+                  class="dropdown-item w-full text-right px-6 py-3 hover:bg-[#FFF9F9] transition-all text-gray-700 font-medium">البكجات
+                  • Sets</button>
               </div>
             </div><button onclick="navigateTo('about')"
               class="nav-link text-gray-700 hover:text-[#E8A5A5] text-sm font-semibold">ABOUT</button>
@@ -551,7 +551,7 @@
           <button onclick="navigateTo('face'); toggleMobileMenu();"
             class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF9F9] transition-colors text-sm font-medium border border-[#F5E6E6]">الوجه</button>
           <button onclick="navigateTo('lips'); toggleMobileMenu();"
-            class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF9F9] transition-colors text-sm font-medium border border-[#F5E6E6]">الشفاه</button>
+            class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF9F9] transition-colors text-sm font-medium border border-[#F5E6E6]">الشاه</button>
           <button onclick="navigateTo('eyes'); toggleMobileMenu();"
             class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF9F9] transition-colors text-sm font-medium border border-[#F5E6E6]">العيون</button>
           <button onclick="navigateTo('foundation'); toggleMobileMenu();"
@@ -561,7 +561,7 @@
           <button onclick="navigateTo('gifts'); toggleMobileMenu();"
             class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF9F9] transition-colors text-sm font-medium border border-[#F5E6E6]">هدايا</button>
           <button onclick="navigateTo('packages'); toggleMobileMenu();"
-            class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF9F9] transition-colors text-sm font-medium border border-[#F5E6E6]">باكدجات</button>
+            class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF9F9] transition-colors text-sm font-medium border border-[#F5E6E6]">البكجات</button>
           <button onclick="navigateTo('about'); toggleMobileMenu();"
             class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF9F9] transition-colors text-sm font-medium border border-[#F5E6E6]">من
             نحن</button> <button onclick="navigateTo('custom'); toggleMobileMenu();"
@@ -588,7 +588,6 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg></button>
         <div id="modal-content" class="h-full overflow-auto p-6 md:p-12">
-          <!-- Modal content dynamically rendered -->
         </div>
       </div>
     </div><!-- Footer -->
@@ -611,7 +610,7 @@
     </footer>
   </div>
   
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <script>
 
@@ -630,9 +629,7 @@ const defaultConfig = {
     };
     const supabaseUrl = 'https://mdfrvmsruwzhhszoqumn.supabase.co';
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1kZnJ2bXNydXd6aGhzem9xdW1uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2NTMyOTksImV4cCI6MjA4ODIyOTI5OX0.rwIAoCZSVecvyvZA6Vhm1tPbzSBhgggpdy_xJ6aKjbM';
-    const supabaseClient = (window.supabase && typeof window.supabase.createClient === 'function')
-      ? window.supabase.createClient(supabaseUrl, supabaseKey)
-      : null;
+    let supabaseClient = null; 
 
 
     let products = {
@@ -653,7 +650,6 @@ const defaultConfig = {
         if (error) throw error;
 
         if (data && data.length > 0) {
-          // Reset categories
           const newProducts = {
             face: [], lips: [], eyes: [], foundation: [], setting: [], gifts: [], packages: []
           };
@@ -674,7 +670,6 @@ const defaultConfig = {
 
           products = newProducts;
         } else {
-          // Keep defaults if no data in DB
           loadDefaultProducts();
         }
       } catch (err) {
@@ -683,271 +678,144 @@ const defaultConfig = {
       }
     }
 
-    function loadDefaultProducts() {
-      products = {
-        face: [
-          {
-            id: 'f1',
-            name: 'بودرة حرير ناعمة',
-            nameEn: 'Silk Powder',
-            price: 85,
-            description: 'بودرة خفيفة تمنح بشرتك إشراقة طبيعية ولمسة حريرية طوال اليوم. تركيبة فريدة تناسب جميع أنواع البشرة.',
-            stock: 15,
-            shades: [
-              { id: 's1', name: 'فاتح', color: '#f5e6d3' },
-              { id: 's2', name: 'متوسط', color: '#e8d4bc' },
-              { id: 's3', name: 'قمحي', color: '#d4b896' },
-              { id: 's4', name: 'داكن', color: '#c4a67a' }
-            ]
-          },
-          {
-            id: 'f2',
-            name: 'كريم مرطب مضيء',
-            nameEn: 'Glow Moisturizer',
-            price: 120,
-            description: 'كريم مرطب غني بالفيتامينات يمنح بشرتك ترطيباً عميقاً وإشراقة صحية.',
-            stock: 8,
-            shades: [
-              { id: 's1', name: 'وردي', color: '#f8d7da' },
-              { id: 's2', name: 'ذهبي', color: '#f5e6c8' },
-              { id: 's3', name: 'برونزي', color: '#e8d0b8' }
-            ]
-          },
-          {
-            id: 'f3',
-            name: 'بلاشر كريمي',
-            nameEn: 'Cream Blush',
-            price: 65,
-            description: 'بلاشر كريمي سهل الدمج يمنح خدودك لمسة طبيعية ومشرقة.',
-            stock: 0,
-            shades: [
-              { id: 's1', name: 'وردي فاتح', color: '#f4c2c2' },
-              { id: 's2', name: 'خوخي', color: '#f8c8b8' },
-              { id: 's3', name: 'كورال', color: '#f0a090' }
-            ]
-          }
-        ],
-        lips: [
-          {
-            id: 'l1',
-            name: 'أحمر شفاه مخملي',
-            nameEn: 'Velvet Lipstick',
-            price: 55,
-            description: 'أحمر شفاه بتركيبة مخملية فاخرة تدوم طويلاً مع ترطيب مثالي.',
-            stock: 25,
-            shades: [
-              { id: 's1', name: 'نود', color: '#c9a89a' },
-              { id: 's2', name: 'وردي', color: '#d4818a' },
-              { id: 's3', name: 'أحمر', color: '#b54b5a' },
-              { id: 's4', name: 'بيري', color: '#8b4557' },
-              { id: 's5', name: 'براون', color: '#8b6557' }
-            ]
-          },
-          {
-            id: 'l2',
-            name: 'ملمع شفاه لامع',
-            nameEn: 'Glossy Lip Shine',
-            price: 45,
-            description: 'ملمع شفاه يمنح شفتيك لمعاناً جذاباً وحجماً إضافياً.',
-            stock: 18,
-            shades: [
-              { id: 's1', name: 'شفاف', color: '#fce4ec' },
-              { id: 's2', name: 'وردي فاتح', color: '#f8bbd9' },
-              { id: 's3', name: 'خوخي', color: '#ffccbc' }
-            ]
-          },
-          {
-            id: 'l3',
-            name: 'قلم تحديد الشفاه',
-            nameEn: 'Lip Liner',
-            price: 35,
-            description: 'قلم تحديد ناعم يرسم شفتيك بدقة ويمنع تسرب أحمر الشفاه.',
-            stock: 30,
-            shades: [
-              { id: 's1', name: 'طبيعي', color: '#c9a89a' },
-              { id: 's2', name: 'وردي', color: '#d4818a' },
-              { id: 's3', name: 'أحمر', color: '#a94442' }
-            ]
-          }
-        ],
-        eyes: [
-          {
-            id: 'e1',
-            name: 'باليت ظلال العيون',
-            nameEn: 'Eye Shadow Palette',
-            price: 150,
-            description: 'باليت فاخر يحتوي على 12 لون متناسق من الألوان المحايدة والجريئة.',
-            stock: 10,
-            shades: [
-              { id: 's1', name: 'نود', color: '#e8d4c8' },
-              { id: 's2', name: 'روز', color: '#d4a5a5' },
-              { id: 's3', name: 'برونز', color: '#b8860b' }
-            ]
-          },
-          {
-            id: 'e2',
-            name: 'ماسكارا تكثيف',
-            nameEn: 'Volume Mascara',
-            price: 75,
-            description: 'ماسكارا تمنح رموشك كثافة وطولاً مذهلاً بتركيبة مقاومة للماء.',
-            stock: 22,
-            shades: [
-              { id: 's1', name: 'أسود', color: '#1a1a1a' },
-              { id: 's2', name: 'بني داكن', color: '#3d2314' }
-            ]
-          },
-          {
-            id: 'e3',
-            name: 'آيلاينر سائل',
-            nameEn: 'Liquid Eyeliner',
-            price: 50,
-            description: 'آيلاينر سائل بفرشاة دقيقة لرسم خطوط حادة ومثالية.',
-            stock: 0,
-            shades: [
-              { id: 's1', name: 'أسود', color: '#000000' },
-              { id: 's2', name: 'بني', color: '#4a2c2a' }
-            ]
-          }
-        ],
-        foundation: [
-          {
-            id: 'fo1',
-            name: 'كريم أساس حريري',
-            nameEn: 'Silk Foundation',
-            price: 140,
-            description: 'كريم أساس خفيف بتغطية متوسطة إلى كاملة ولمسة نهائية طبيعية.',
-            stock: 12,
-            shades: [
-              { id: 's1', name: 'بورسلين', color: '#f5e6d3' },
-              { id: 's2', name: 'آيفوري', color: '#f0dcc8' },
-              { id: 's3', name: 'ساند', color: '#e8d4bc' },
-              { id: 's4', name: 'هوني', color: '#d4b896' },
-              { id: 's5', name: 'كاراميل', color: '#c4a67a' },
-              { id: 's6', name: 'موكا', color: '#a08060' }
-            ]
-          },
-          {
-            id: 'fo2',
-            name: 'كونسيلر مصحح',
-            nameEn: 'Correcting Concealer',
-            price: 65,
-            description: 'كونسيلر عالي التغطية يخفي الهالات السوداء والعيوب.',
-            stock: 20,
-            shades: [
-              { id: 's1', name: 'فاتح', color: '#f8e8d8' },
-              { id: 's2', name: 'متوسط', color: '#e8d4bc' },
-              { id: 's3', name: 'داكن', color: '#d4b896' }
-            ]
-          },
-          {
-            id: 'fo3',
-            name: 'برايمر مرطب',
-            nameEn: 'Hydrating Primer',
-            price: 95,
-            description: 'برايمر يجهز البشرة للمكياج ويطيل ثباته مع ترطيب فائق.',
-            stock: 15,
-            shades: [
-              { id: 's1', name: 'شفاف', color: '#ffffff' },
-              { id: 's2', name: 'وردي', color: '#fce4ec' }
-            ]
-          }
-        ],
-        setting: [
-          {
-            id: 'st1',
-            name: 'بخاخ مثبت المكياج',
-            nameEn: 'Setting Spray',
-            price: 80,
-            description: 'بخاخ يثبت المكياج حتى 16 ساعة ويمنحه مظهراً منعشاً.',
-            stock: 18,
-            shades: [
-              { id: 's1', name: 'مات', color: '#f5f5f5' },
-              { id: 's2', name: 'لامع', color: '#fff8e7' }
-            ]
-          },
-          {
-            id: 'st2',
-            name: 'بودرة تثبيت شفافة',
-            nameEn: 'Translucent Setting Powder',
-            price: 70,
-            description: 'بودرة شفافة تثبت المكياج وتتحكم في اللمعان.',
-            stock: 25,
-            shades: [
-              { id: 's1', name: 'شفاف', color: '#faf8f5' }
-            ]
-          }
-        ],
-        gifts: [
-          {
-            id: 'g1',
-            name: 'صندوق هدية فاخر',
-            nameEn: 'Luxury Gift Box',
-            price: 350,
-            description: 'صندوق هدية يحتوي على مجموعة منتقاة من أفضل منتجاتنا.',
-            stock: 5,
-            shades: [
-              { id: 's1', name: 'وردي', color: '#f8d7da' },
-              { id: 's2', name: 'ذهبي', color: '#f5e6c8' }
-            ]
-          },
-          {
-            id: 'g2',
-            name: 'طقم شفاه كامل',
-            nameEn: 'Complete Lip Set',
-            price: 180,
-            description: 'طقم يحتوي على أحمر شفاه وملمع وقلم تحديد بألوان متناسقة.',
-            stock: 8,
-            shades: [
-              { id: 's1', name: 'نود', color: '#c9a89a' },
-              { id: 's2', name: 'روز', color: '#d4818a' }
-            ]
-          }
-        ],
-        packages: [
-          {
-            id: 'p1',
-            name: 'باكدج العروس الكامل',
-            nameEn: 'Bridal Complete Package',
-            price: 650,
-            description: 'كل ما تحتاجه العروس ليوم زفافها: أساس، بودرة، أحمر شفاه، ماسكارا، والمزيد.',
-            stock: 3,
-            shades: [
-              { id: 's1', name: 'كلاسيك', color: '#f8e8e8' },
-              { id: 's2', name: 'جلام', color: '#f0d4d4' }
-            ]
-          },
-          {
-            id: 'p2',
-            name: 'باكدج المبتدئات',
-            nameEn: 'Starter Package',
-            price: 280,
-            description: 'مجموعة أساسية مثالية للمبتدئات في عالم المكياج.',
-            stock: 10,
-            shades: [
-              { id: 's1', name: 'طبيعي', color: '#f5e6d3' }
-            ]
-          },
-          {
-            id: 'p3',
-            name: 'باكدج العناية اليومية',
-            nameEn: 'Daily Care Package',
-            price: 220,
-            description: 'مجموعة للمكياج اليومي الخفيف والطبيعي.',
-            stock: 12,
-            shades: [
-              { id: 's1', name: 'نود', color: '#e8d4c8' }
-            ]
-          }
-        ]
-      };
-    }
-
     // State
     let currentPage = 'home';
     let cart = [];
     let selectedShades = {};
+    let productSearchQuery = '';
 
-    // Navigation (updates browser history so back/forward works)
+    function escapeHtml(value) {
+      return String(value || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function normalizeForSearch(value) {
+      return String(value || '')
+        .toLowerCase()
+        .normalize('NFKD')
+        .replace(/[\u064B-\u065F\u0670\u06D6-\u06ED]/g, '')
+        .replace(/[\u0623\u0625\u0622\u0671]/g, '\u0627')
+        .replace(/\u0649/g, '\u064A')
+        .replace(/\u0629/g, '\u0647')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    function productMatchesSearch(product, query) {
+      const normalizedQuery = normalizeForSearch(query);
+      if (!normalizedQuery) return true;
+
+      const fields = [product.name, product.nameEn, product.description];
+      return fields.some(field => normalizeForSearch(field).includes(normalizedQuery));
+    }
+
+    function applyProductSearch(inputId = 'product-search-input') {
+      const input = document.getElementById(inputId) || document.getElementById('product-search-input');
+      productSearchQuery = input ? input.value : '';
+
+      const searchablePages = ['home', 'face', 'lips', 'eyes', 'foundation', 'setting', 'gifts', 'packages'];
+      if (!searchablePages.includes(currentPage)) {
+        navigateTo('home');
+      } else {
+        renderPage();
+      }
+      syncSearchInputs();
+    }
+
+    function clearProductSearch() {
+      productSearchQuery = '';
+      renderPage();
+      syncSearchInputs();
+    }
+
+    function syncSearchInputs() {
+      const ids = ['product-search-input'];
+      ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (el && el.value !== productSearchQuery) {
+          el.value = productSearchQuery;
+        }
+      });
+    }
+
+    function getSearchSuggestionTerms() {
+      const terms = [];
+      Object.values(products).forEach(categoryProducts => {
+        (categoryProducts || []).forEach(product => {
+          if (product && product.name) terms.push(String(product.name).trim());
+          if (product && product.nameEn) terms.push(String(product.nameEn).trim());
+        });
+      });
+      return [...new Set(terms.filter(Boolean))];
+    }
+
+    function renderSearchSuggestions() {
+      const normalizedQuery = normalizeForSearch(productSearchQuery);
+      const terms = getSearchSuggestionTerms();
+      const ordered = normalizedQuery
+        ? terms.sort((a, b) => {
+          const aStarts = normalizeForSearch(a).startsWith(normalizedQuery) ? 0 : 1;
+          const bStarts = normalizeForSearch(b).startsWith(normalizedQuery) ? 0 : 1;
+          return aStarts - bStarts;
+        })
+        : terms;
+
+      const options = ordered.slice(0, 20).map(term => `<option value="${escapeHtml(term)}"></option>`).join('');
+      return `<datalist id="product-search-options">${options}</datalist>`;
+    }
+
+    function updateSearchSuggestionList(value = '') {
+      const datalist = document.getElementById('product-search-options');
+      if (!datalist) return;
+
+      const normalizedQuery = normalizeForSearch(value);
+      const terms = getSearchSuggestionTerms();
+      const ordered = normalizedQuery
+        ? terms.sort((a, b) => {
+          const aStarts = normalizeForSearch(a).startsWith(normalizedQuery) ? 0 : 1;
+          const bStarts = normalizeForSearch(b).startsWith(normalizedQuery) ? 0 : 1;
+          return aStarts - bStarts;
+        })
+        : terms;
+
+      datalist.innerHTML = ordered.slice(0, 20).map(term => `<option value="${escapeHtml(term)}"></option>`).join('');
+    }
+
+    function renderProductSearchBar() {
+      return `
+        <div class="max-w-3xl mx-auto mb-12">
+          <div class="glass-card rounded-2xl p-3 md:p-4 flex flex-col md:flex-row gap-3">
+            <input
+              id="product-search-input"
+              type="search"
+              value="${escapeHtml(productSearchQuery)}"
+              list="product-search-options"
+              autocomplete="off"
+              placeholder="ابحثي عن منتج... / Search for products..."
+              oninput="updateSearchSuggestionList(this.value)"
+              onkeydown="if (event.key === 'Enter') applyProductSearch();"
+              class="flex-1 rounded-xl px-4 py-3 bg-white border border-[#F5E6E6] text-stone-700 outline-none focus:ring-2 focus:ring-[#E8A5A5]/40 focus:border-[#E8A5A5]"
+            />
+            ${renderSearchSuggestions()}
+            <div class="flex gap-2">
+              <button onclick="applyProductSearch()" class="btn-primary px-5 py-3 rounded-xl text-sm font-semibold">
+                بحث / Search
+              </button>
+              ${productSearchQuery.trim() ? `
+                <button onclick="clearProductSearch()" class="px-5 py-3 rounded-xl text-sm font-semibold border border-[#F5E6E6] text-stone-600 hover:bg-[#FFF9F9]">
+                  مسح
+                </button>
+              ` : ''}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
     function navigateTo(page, replace = false) {
       if (!page) page = 'home';
       currentPage = page;
@@ -956,7 +824,6 @@ const defaultConfig = {
       const mobileMenu = document.getElementById('mobile-menu');
       if (mobileMenu) mobileMenu.classList.add('hidden');
 
-      // Update history state so browser back/forward navigates between pages
       try {
         const state = { page };
         if (replace) {
@@ -969,7 +836,6 @@ const defaultConfig = {
       }
     }
 
-    // Handle browser back/forward
     window.addEventListener('popstate', (event) => {
       const page = (event.state && event.state.page) ? event.state.page : (location.hash ? location.hash.replace('#', '') : 'home');
       currentPage = page || 'home';
@@ -999,7 +865,6 @@ const defaultConfig = {
       }
     }
 
-    // Close dropdown when clicking outside
     document.addEventListener('click', (event) => {
       const dropdown = document.getElementById('products-dropdown');
       const btn = document.getElementById('products-btn');
@@ -1020,7 +885,6 @@ const defaultConfig = {
       arrow.style.transform = categories.classList.contains('hidden') ? 'rotate(0)' : 'rotate(180deg)';
     }
 
-    // Cart Functions
     function updateCartCount() {
       const countEl = document.getElementById('cart-count');
       const cartBtn = document.getElementById('cart-button');
@@ -1040,10 +904,8 @@ const defaultConfig = {
       let product = products[category].find(p => p.id === productId);
       if (!product) return;
 
-      // If Supabase is available, fetch latest product row to reflect any admin changes
       if (supabaseClient) {
         try {
-          // Try fetching by the existing id (string), but fall back to numeric id if not found.
           let prodRow = null;
           let fetchErr = null;
 
@@ -1071,7 +933,6 @@ const defaultConfig = {
           }
 
           if (!fetchErr && prodRow) {
-            // Update local product entry with latest stock/shades
             const localList = products[category] || [];
             const local = localList.find(p => String(p.id) === String(productId) || String(p.id) === String(prodRow.id));
             if (local) {
@@ -1081,7 +942,6 @@ const defaultConfig = {
               if (prodRow.stock !== undefined && prodRow.stock !== null) {
                 local.stock = prodRow.stock;
               }
-              // rebind product to updated local reference
               product = local;
             }
           } else if (fetchErr) {
@@ -1095,16 +955,13 @@ const defaultConfig = {
       const shade = product.shades.find(s => s.id === shadeId);
       if (!shade) return;
 
-      // Normalize stock value
       const shadeStock = getStock(product, shade); // null means unknown/unlimited
 
-      // Current reserved quantity in cart for this product+shade
       const existingItem = cart.find(item => item.productId === productId && item.shadeId === shadeId);
       const reserved = existingItem ? existingItem.quantity : 0;
 
       console.log('addToCart check', { productId, shadeId, reserved, shadeStock, productLocalStock: product.stock });
 
-      // If we have a numeric stock, ensure we don't exceed it
       if (shadeStock !== null) {
         if (reserved >= shadeStock) {
           showUnavailableFeedback('عذراً، الكمية المتاحة من هذا اللون نفدت');
@@ -1150,9 +1007,7 @@ const defaultConfig = {
       setTimeout(() => feedback.remove(), 2000);
     }
 
-    // Helper: normalize stock values (handles strings/numbers/missing values)
     function getStock(product, shade) {
-      // Prefer explicit shade stock, otherwise product stock, otherwise treat as unlimited (null)
       const raw = (shade && shade.stock !== undefined && shade.stock !== null)
         ? shade.stock
         : (product && product.stock !== undefined && product.stock !== null)
@@ -1205,7 +1060,7 @@ const defaultConfig = {
           <div class="flex items-center justify-center">
             <div class="w-full max-w-md aspect-square rounded-3xl overflow-hidden product-image shadow-lg" style="background: ${currentShade ? currentShade.color + '15' : '#f5e6e615'};">
               ${currentShade && currentShade.image
-          ? `<img src="${currentShade.image}" class="w-full h-full object-cover" alt="${currentShade.name}">`
+              ? `<img loading="lazy" decoding="async" src="${currentShade.image}" class="w-full h-full object-cover" alt="${currentShade.name}">`
           : `<div class="w-full h-full flex items-center justify-center p-8">
                      <div class="w-40 h-40 rounded-full shadow-lg" style="background: ${currentShade ? currentShade.color : '#E8A5A5'};"></div>
                    </div>`
@@ -1283,11 +1138,9 @@ const defaultConfig = {
         ? selectedShadeObj
         : (firstAvailableShade || product.shades[0]);
 
-  // Product-level availability: true if any shade (or product-level stock) is available
   const productAvailable = product.shades.some(s => { const st = getStock(product, s); return (st !== null && st > 0); });
   const isOutOfStock = !productAvailable;
 
-  // Determine reserved quantity for the current shade in the cart
   const reservedForCurrent = cart.reduce((sum, it) => (String(it.productId) === String(product.id) && String(it.shadeId) === String(currentShade.id)) ? sum + it.quantity : sum, 0);
   const currentShadeStock = getStock(product, currentShade);
   const canAddCurrent = (currentShadeStock === null) ? true : (reservedForCurrent < currentShadeStock);
@@ -1300,7 +1153,7 @@ const defaultConfig = {
             style="background: ${currentShade ? currentShade.color + '15' : '#f5e6e615'};"
           >
             ${currentShade && currentShade.image
-          ? `<img src="${currentShade.image}" class="w-full h-full object-cover" alt="${currentShade.name}">`
+          ? `<img loading="lazy" decoding="async" src="${currentShade.image}" class="w-full h-full object-cover" alt="${currentShade.name}">`
           : `<div class="absolute inset-0 flex items-center justify-center">
                    <div class="w-24 h-24 rounded-full shadow-md" style="background: ${currentShade ? currentShade.color : '#E8A5A5'};"></div>
                  </div>`
@@ -1362,6 +1215,7 @@ const defaultConfig = {
 
     function renderCategoryPage(categoryKey, title, titleEn) {
       const categoryProducts = products[categoryKey] || [];
+      const filteredProducts = categoryProducts.filter(product => productMatchesSearch(product, productSearchQuery));
 
       return `
         <div class="fade-in">
@@ -1370,14 +1224,20 @@ const defaultConfig = {
             <p class="cursive-english text-2xl text-[#E8A5A5]">${titleEn}</p>
             <div class="mt-6 w-24 h-[1px] bg-[#F5E6E6] mx-auto"></div>
           </div>
-          
+
+          ${renderProductSearchBar()}
+
           ${categoryProducts.length === 0 ? `
             <div class="text-center py-24">
               <p class="text-stone-500 text-lg">لا توجد منتجات في هذا القسم حالياً</p>
             </div>
+          ` : filteredProducts.length === 0 ? `
+            <div class="text-center py-24">
+              <p class="text-stone-500 text-lg">لا توجد نتائج مطابقة للبحث</p>
+            </div>
           ` : `
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
-              ${categoryProducts.map((product, index) => renderProductCard(product, categoryKey, index)).join('')}
+              ${filteredProducts.map((product, index) => renderProductCard(product, categoryKey, index)).join('')}
             </div>
           `}
         </div>
@@ -1392,8 +1252,13 @@ const defaultConfig = {
         { key: 'foundation', name: 'الأساس', nameEn: 'Foundation' },
         { key: 'setting', name: 'مثبتات', nameEn: 'Setting' },
         { key: 'gifts', name: 'هدايا', nameEn: 'Gifts' },
-        { key: 'packages', name: 'باكدجات', nameEn: 'Packages' }
+        { key: 'packages', name: 'البكجات', nameEn: 'Sets' }
       ];
+      const searchResults = Object.entries(products).flatMap(([categoryKey, categoryProducts]) =>
+        categoryProducts
+          .filter(product => productMatchesSearch(product, productSearchQuery))
+          .map(product => ({ categoryKey, product }))
+      );
 
       return `
         <div class="fade-in">
@@ -1409,6 +1274,27 @@ const defaultConfig = {
               <div class="hero-divider mt-8 w-24 h-[1px] bg-[#E8A5A5] mx-auto rounded-full"></div>
             </div>
           </div>
+
+          ${renderProductSearchBar()}
+
+          ${productSearchQuery.trim() ? `
+            <div class="my-20">
+              <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-stone-700">نتائج البحث</h2>
+                <p class="cursive-english text-rose-400 mt-2">Search Results</p>
+              </div>
+              ${searchResults.length === 0 ? `
+                <div class="text-center py-16">
+                  <p class="text-stone-500 text-lg">لا توجد نتائج مطابقة للبحث</p>
+                </div>
+              ` : `
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
+                  ${searchResults.map((item, index) => renderProductCard(item.product, item.categoryKey, index)).join('')}
+                </div>
+              `}
+            </div>
+            <div class="section-divider"></div>
+          ` : ''}
 
           <div class="section-divider"></div>
 
@@ -1565,7 +1451,7 @@ const defaultConfig = {
                 <!-- Payment Method -->
                 <div class="mb-8 p-4 bg-[#FFF9F9] rounded-2xl border border-[#F5E6E6]">
                   <p class="font-bold text-stone-700 mb-2">طريقة الدفع:</p>
-                  <p class="text-stone-600 text-sm font-medium">الدفع عند الاستلام فقط</p>
+                  <p class="text-stone-600 text-sm font-medium">الدفع عند الاستلام </p>
                   <p class="text-xs text-stone-500 mt-3">للدفع عبر الفيزا يرجى التواصل معنا عبر الانستغرام</p>
                 </div>
                 
@@ -1618,17 +1504,17 @@ const defaultConfig = {
 
                             <div class="pt-4 border-t border-rose-50">
                                 <label class="block text-stone-700 font-bold mb-2">عنوان بديل (اختياري)</label>
-                                <input type="text" id="cust-address-alt" class="w-full px-5 py-4 rounded-2xl border border-rose-100 focus:border-rose-400 focus:ring-4 focus:ring-rose-400/10 outline-none transition-all" placeholder="عنوان آخر للتوصل في حال عدم التواجد">
+                                <input type="text" id="cust-address-alt" class="w-full px-5 py-4 rounded-2xl border border-rose-100 focus:border-rose-400 focus:ring-4 focus:ring-rose-400/10 outline-none transition-all" placeholder="عنوان آخر للتوصل ي حال عدم التواجد">
                             </div>
 
                             <div>
                                 <label class="block text-stone-700 font-bold mb-2">رقم هاتف آخر (اختياري)</label>
-                                <input type="tel" id="cust-phone-alt" class="w-full px-5 py-4 rounded-2xl border border-rose-100 focus:border-rose-400 focus:ring-4 focus:ring-rose-400/10 outline-none transition-all" placeholder="رقم هاتف بديل">
+                                <input type="tel" id="cust-phone-alt" class="w-full px-5 py-4 rounded-2xl border border-rose-100 focus:border-rose-400 focus:ring-4 focus:ring-rose-400/10 outline-none transition-all" placeholder="رقم هات بديل">
                             </div>
 
                             <div>
                                 <label class="block text-stone-700 font-bold mb-2">ملاحظات مع الطلب (اختياري)</label>
-                                <textarea id="cust-notes" rows="3" class="w-full px-5 py-4 rounded-2xl border border-rose-100 focus:border-rose-400 focus:ring-4 focus:ring-rose-400/10 outline-none transition-all resize-none" placeholder="أي ملاحظات إضافية بخصوص الطلب أو التوصيل..."></textarea>
+                                <textarea id="cust-notes" rows="3" class="w-full px-5 py-4 rounded-2xl border border-rose-100 focus:border-rose-400 focus:ring-4 focus:ring-rose-400/10 outline-none transition-all resize-none" placeholder="أي ملاحظات إضاية بخصوص الطلب أو التوصيل..."></textarea>
                             </div>
 
                             <div class="pt-6">
@@ -1637,7 +1523,7 @@ const defaultConfig = {
                                     <span class="text-2xl font-bold text-[#E8A5A5]">₪${total}</span>
                                 </div>
                                 <button type="submit" class="btn-primary w-full text-white py-5 rounded-full text-xl font-bold">
-                                    تأكيد الطلب 🌸
+                                    تأكيد الطلب 
                                 </button>
                                 <button type="button" onclick="navigateTo('cart')" class="w-full text-stone-400 mt-4 text-sm hover:text-stone-600 transition-colors">
                                     العودة للسلة
@@ -1662,9 +1548,9 @@ const defaultConfig = {
       const phone = document.getElementById('cust-phone').value.trim();
 
       if (!customerName || !address || !phone) {
-        alert('الرجاء ملء الحقول المطلوبة: الاسم، العنوان، ورقم الهاتف.');
+        alert('الرجاء ملء الحقول المطلوبة: الاسم، العنوان، ورقم الهاتف');
         btn.disabled = false;
-        btn.textContent = 'تأكيد الطلب 🌸';
+        btn.textContent = 'تأكيد الطلب ';
         return;
       }
 
@@ -1676,7 +1562,7 @@ const defaultConfig = {
       if (!cart || cart.length === 0) {
         alert('سلة التسوق فارغة. يرجى إضافة منتجات قبل المتابعة.');
         btn.disabled = false;
-        btn.textContent = 'تأكيد الطلب 🌸';
+        btn.textContent = 'تأكيد الطلب ';
         return;
       }
 
@@ -1699,7 +1585,6 @@ const defaultConfig = {
         created_at: new Date().toISOString()
       };
 
-      // Capture a snapshot of the cart items with shade IDs for stock updates
       const cartSnapshot = cart.map(item => ({
         productId: item.productId,
         shadeId: item.shade.id,
@@ -1707,11 +1592,9 @@ const defaultConfig = {
         category: item.category
       }));
 
-      // We'll try each external action separately and avoid failing the whole flow if one external service is down.
       let supabaseOk = false;
       let emailOk = false;
 
-      // 1) Save to Supabase (best-effort)
       if (supabaseClient) {
         try {
           const { error } = await supabaseClient
@@ -1727,11 +1610,9 @@ const defaultConfig = {
         console.log('Supabase client not available; skipping DB save.');
       }
 
-      // 1b) Update product / shade stocks in Supabase (best-effort)
       if (supabaseClient && cartSnapshot.length > 0) {
         for (const ci of cartSnapshot) {
           try {
-            // Fetch current product row
             const { data: prodRow, error: fetchErr } = await supabaseClient
               .from('products')
               .select('id, shades, stock')
@@ -1751,7 +1632,6 @@ const defaultConfig = {
             let updatePayload = {};
 
             if (Array.isArray(prodRow.shades) && prodRow.shades.length > 0) {
-              // Try to update matching shade stock
               const newShades = prodRow.shades.map(s => {
                 if (s && (s.id === ci.shadeId || String(s.id) === String(ci.shadeId))) {
                   const current = (s.stock !== undefined) ? Number(s.stock) : (prodRow.stock !== undefined ? Number(prodRow.stock) : null);
@@ -1764,7 +1644,6 @@ const defaultConfig = {
               });
               updatePayload.shades = newShades;
             } else if (prodRow.stock !== undefined) {
-              // No shades array, decrement top-level stock
               updatePayload.stock = Math.max(0, Number(prodRow.stock) - ci.quantity);
               console.log(`Decremented product ${ci.productId} stock to`, updatePayload.stock);
             }
@@ -1888,7 +1767,7 @@ const defaultConfig = {
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
             </svg>
           </div>
-          <h2 class="text-4xl font-bold text-stone-700 mb-4">شكراً لكِ!</h2>
+          <h2 class="text-4xl font-bold text-stone-700 mb-4">شكراً لك!</h2>
           <p class="text-stone-600 text-lg mb-3">تم استلام طلبك بنجاح</p>
           ${emailOk ? `<p class="text-stone-500 mb-6"></p>` : `<p class="text-amber-600 mb-6"></p>`}
           <button onclick="cart = []; updateCartCount(); navigateTo('home');" class="btn-primary text-white px-8 py-4 rounded-full font-medium">
@@ -1913,7 +1792,7 @@ const defaultConfig = {
             
             <div class="glass-card rounded-3xl p-10 md:p-14">
               <p class="text-lg text-stone-600 leading-relaxed mb-12">
-                لطلب منتج غير متوفر أو طلب خاص، يرجى التواصل معنا عبر حسابنا على الانستغرام
+                لطلب منتج غير متور أو طلب خاص، يرجى التواصل معنا عبر حسابنا على الانستغرام
               </p>
               
               <a 
@@ -1947,11 +1826,11 @@ const defaultConfig = {
             <div class="glass-card rounded-3xl p-10 md:p-12">
               <div class="space-y-6">
                 <p class="text-lg text-stone-600 leading-relaxed">
-                  نعمل في مجال الجمال والتجميل منذ أكثر من 6 سنوات، وقد انطلق متجر ليان رسمياً قبل عامين ليكون وجهتك الموثوقة للحصول على منتجات تجميل أصلية 100%.
+                  نعمل ي مجال المنتجات منذ أكثر من 6 سنوات، وقد انطلق متجر ليان رسمياً قبل عامين ليكون وجهتك الموثوقة للحصول على منتجات تجميل أصلية 100%.
                 </p>
                 
                 <p class="text-lg text-stone-600 leading-relaxed">
-                  تأسس المتجر على يد شابة طموحة تسعى لتوفير تجربة تسوق مميزة للفتيات الفلسطينيات، حيث يمكنهن الحصول على منتجات أصلية من مصدر موثوق به.
+                  تأسس المتجر على يد شابة طموحة تسعى لتوفير تجربة تسوق مميزة للتيات اللسطينيات، حيث يمكنهن الحصول على منتجات أصلية من مصدر موثوق به.
                 </p>
                 
                 <p class="text-lg text-stone-600 leading-relaxed">
@@ -1966,7 +1845,7 @@ const defaultConfig = {
               <h3 class="text-2xl font-bold text-stone-700 mb-6">سياسة الاسترجاع</h3>
               <div class="bg-[#FFF9F9] rounded-2xl p-8 border border-[#F5E6E6]">
                 <p class="text-stone-600 text-lg leading-relaxed font-medium">
-                  لا يوجد استرجاع إلا في حال وجود خلل في المنتج، ويجب تصوير المنتج خلال أول 24 ساعة من الاستلام.
+                  لا يوجد استرجاع او تبديل إلا ي حال وجود خلل ي المنتج، ويجب تصوير المنتج خلال أول 24 ساعة من الاستلام.
                 </p>
               </div>
             </div>
@@ -2018,7 +1897,7 @@ const defaultConfig = {
           mainContent.innerHTML = renderCategoryPage('gifts', 'هدايا', 'Gifts');
           break;
         case 'packages':
-          mainContent.innerHTML = renderCategoryPage('packages', 'باكدجات', 'Packages');
+          mainContent.innerHTML = renderCategoryPage('packages', 'البكجات', 'Sets');
           break;
         case 'custom':
           mainContent.innerHTML = renderCustomOrderPage();
@@ -2032,6 +1911,8 @@ const defaultConfig = {
         default:
           mainContent.innerHTML = renderHomePage();
       }
+
+      syncSearchInputs();
     }
 
     // Element SDK Integration
@@ -2075,13 +1956,21 @@ const defaultConfig = {
     // Initialize
     async function init() {
       try {
+        // Initialize Supabase client now that the SDK was loaded (we used defer)
+        try {
+          if (!supabaseClient && window.supabase && typeof window.supabase.createClient === 'function') {
+            supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+          }
+        } catch (e) {
+          console.warn('Supabase SDK not ready yet:', e);
+        }
+
         await fetchProducts();
       } catch (e) {
         console.error('fetchProducts failed, loading defaults:', e);
         loadDefaultProducts();
       }
       try {
-        // If there's a hash in the URL, use it as the initial page; otherwise default to 'home'
         const hashPage = (location.hash && location.hash.length > 1) ? location.hash.replace('#', '') : null;
         const initialPage = (history.state && history.state.page) ? history.state.page : (hashPage || 'home');
         currentPage = initialPage;
@@ -2095,7 +1984,6 @@ const defaultConfig = {
       }
     }
 
-    // Lazy loader for EmailJS
     function loadEmailJS() {
       if (window.emailjs) return Promise.resolve(window.emailjs);
       if (window._emailjsLoader) return window._emailjsLoader;
@@ -2112,7 +2000,6 @@ const defaultConfig = {
       return window._emailjsLoader;
     }
 
-    // Ensure DOM is ready before initializing
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', init);
     } else {
@@ -2122,3 +2009,4 @@ const defaultConfig = {
 </body>
 
 </html>
+
