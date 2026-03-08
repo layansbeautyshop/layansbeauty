@@ -522,7 +522,15 @@
                   class="dropdown-item w-full text-right px-6 py-3 hover:bg-[#FFF9F9] transition-all text-gray-700 font-medium">هدايا
                   • Gifts</button> <button onclick="navigateTo('packages'); closeProductsDropdown();"
                   class="dropdown-item w-full text-right px-6 py-3 hover:bg-[#FFF9F9] transition-all text-gray-700 font-medium">البكجات
-                  • Sets</button>
+                  • Sets</button> <button onclick="navigateTo('nails'); closeProductsDropdown();"
+                  class="dropdown-item w-full text-right px-6 py-3 hover:bg-[#FFF9F9] transition-all text-gray-700 font-medium">أظافر
+                  • Nails</button>
+                <div class="border-t border-[#F5E6E6] mt-1 pt-1">
+                  <button onclick="navigateTo('all'); closeProductsDropdown();"
+                    class="dropdown-item w-full text-right px-6 py-3 hover:bg-[#FFF9F9] transition-all text-[#E8A5A5] font-bold">
+                    كل المنتجات • All Products
+                  </button>
+                </div>
               </div>
             </div><button onclick="navigateTo('about')"
               class="nav-link text-gray-700 hover:text-[#E8A5A5] text-sm font-semibold">ABOUT</button>
@@ -562,6 +570,10 @@
             class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF9F9] transition-colors text-sm font-medium border border-[#F5E6E6]">هدايا</button>
           <button onclick="navigateTo('packages'); toggleMobileMenu();"
             class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF9F9] transition-colors text-sm font-medium border border-[#F5E6E6]">البكجات</button>
+          <button onclick="navigateTo('nails'); toggleMobileMenu();"
+            class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF9F9] transition-colors text-sm font-medium border border-[#F5E6E6]">أظافر</button>
+          <button onclick="navigateTo('all'); toggleMobileMenu();"
+            class="w-full text-right px-4 py-3 rounded-lg bg-white text-[#E8A5A5] hover:bg-[#FFF9F9] transition-colors text-sm font-bold border border-[#E8A5A5]">كل المنتجات</button>
           <button onclick="navigateTo('about'); toggleMobileMenu();"
             class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF9F9] transition-colors text-sm font-medium border border-[#F5E6E6]">من
             نحن</button> <button onclick="navigateTo('custom'); toggleMobileMenu();"
@@ -633,7 +645,7 @@ const defaultConfig = {
 
 
     let products = {
-      face: [], lips: [], eyes: [], foundation: [], setting: [], gifts: [], packages: []
+      face: [], lips: [], eyes: [], foundation: [], setting: [], gifts: [], packages: [], nails: []
     };
 
     async function fetchProducts() {
@@ -663,7 +675,7 @@ const defaultConfig = {
 
         if (data && data.length > 0) {
           const newProducts = {
-            face: [], lips: [], eyes: [], foundation: [], setting: [], gifts: [], packages: [], other: []
+            face: [], lips: [], eyes: [], foundation: [], setting: [], gifts: [], packages: [], nails: [], other: []
           };
 
           // Map a product.category value (English or Arabic variants) to our internal keys
@@ -678,7 +690,8 @@ const defaultConfig = {
               'foundation': 'foundation', 'الأساس': 'foundation', 'اساس': 'foundation',
               'setting': 'setting', 'مثبتات': 'setting',
               'gifts': 'gifts', 'هدايا': 'gifts',
-              'packages': 'packages', 'البكجات': 'packages', 'sets': 'packages'
+              'packages': 'packages', 'البكجات': 'packages', 'sets': 'packages',
+              'nails': 'nails', 'أظافر': 'nails', 'اظافر': 'nails', 'ناخن': 'nails'
             };
 
             if (direct[v]) return direct[v];
@@ -691,6 +704,7 @@ const defaultConfig = {
             if (v.includes('مثبت') || v.includes('setting')) return 'setting';
             if (v.includes('هدية') || v.includes('gift')) return 'gifts';
             if (v.includes('بكج') || v.includes('set')) return 'packages';
+            if (v.includes('أظافر') || v.includes('ظافر') || v.includes('nail')) return 'nails';
 
             return 'other';
           }
@@ -758,7 +772,7 @@ const defaultConfig = {
       const input = document.getElementById(inputId) || document.getElementById('product-search-input');
       productSearchQuery = input ? input.value : '';
 
-      const searchablePages = ['home', 'face', 'lips', 'eyes', 'foundation', 'setting', 'gifts', 'packages'];
+      const searchablePages = ['home', 'face', 'lips', 'eyes', 'foundation', 'setting', 'gifts', 'packages', 'nails', 'all'];
       if (!searchablePages.includes(currentPage)) {
         navigateTo('home');
       } else {
@@ -1912,6 +1926,37 @@ const defaultConfig = {
       `;
     }
 
+    function renderAllProductsPage() {
+      const categoryKeys = ['face', 'lips', 'eyes', 'foundation', 'setting', 'gifts', 'packages', 'nails'];
+      const allProducts = categoryKeys.flatMap(key =>
+        (products[key] || []).map(p => ({ ...p, _category: key }))
+      );
+
+      const filtered = productSearchQuery
+        ? allProducts.filter(p => productMatchesSearch(p, productSearchQuery))
+        : allProducts;
+
+      return `
+        <div class="fade-in">
+          <div class="text-center mb-16">
+            <h1 class="text-5xl font-bold text-stone-700 mb-3">كل المنتجات</h1>
+            <p class="cursive-english text-2xl text-rose-400">All Products</p>
+            <div class="mt-6 w-24 h-1 bg-gradient-to-r from-transparent via-rose-300 to-transparent mx-auto"></div>
+          </div>
+          ${renderProductSearchBar()}
+          ${filtered.length === 0
+            ? `<div class="text-center py-20">
+                <p class="text-stone-400 text-lg">لا توجد منتجات</p>
+                <p class="text-stone-300 text-sm mt-2">No products found</p>
+               </div>`
+            : `<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                ${filtered.map(p => renderProductCard(p, p._category)).join('')}
+               </div>`
+          }
+        </div>
+      `;
+    }
+
     function renderPage() {
       const mainContent = document.getElementById('main-content');
 
@@ -1948,6 +1993,12 @@ const defaultConfig = {
           break;
         case 'cart':
           mainContent.innerHTML = renderCartPage();
+          break;
+        case 'nails':
+          mainContent.innerHTML = renderCategoryPage('nails', 'أظافر', 'Nails');
+          break;
+        case 'all':
+          mainContent.innerHTML = renderAllProductsPage();
           break;
         default:
           mainContent.innerHTML = renderHomePage();
@@ -2050,4 +2101,3 @@ const defaultConfig = {
 </body>
 
 </html>
-
