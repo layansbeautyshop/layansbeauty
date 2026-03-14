@@ -525,6 +525,10 @@
                   • Sets</button> <button onclick="navigateTo('nails'); closeProductsDropdown();"
                   class="dropdown-item w-full text-right px-6 py-3 hover:bg-[#FFF9F9] transition-all text-gray-700 font-medium">أظافر
                   • Nails</button>
+                <button onclick="navigateTo('accessories'); closeProductsDropdown();"
+                  class="dropdown-item w-full text-right px-6 py-3 hover:bg-[#FFF9F9] transition-all text-gray-700 font-medium">اكسسوارات • Accessories</button>
+                <button onclick="navigateTo('sale'); closeProductsDropdown();"
+                  class="dropdown-item w-full text-right px-6 py-3 hover:bg-[#FFF9F9] transition-all text-gray-700 font-medium">مخفض • Sale</button>
                 <div class="border-t border-[#F5E6E6] mt-1 pt-1">
                   <button onclick="navigateTo('all'); closeProductsDropdown();"
                     class="dropdown-item w-full text-right px-6 py-3 hover:bg-[#FFF9F9] transition-all text-[#E8A5A5] font-bold">
@@ -572,6 +576,10 @@
             class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF9F9] transition-colors text-sm font-medium border border-[#F5E6E6]">البكجات</button>
           <button onclick="navigateTo('nails'); toggleMobileMenu();"
             class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF9F9] transition-colors text-sm font-medium border border-[#F5E6E6]">أظافر</button>
+          <button onclick="navigateTo('accessories'); toggleMobileMenu();"
+            class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF9F9] transition-colors text-sm font-medium border border-[#F5E6E6]">اكسسوارات</button>
+          <button onclick="navigateTo('sale'); toggleMobileMenu();"
+            class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF9F9] transition-colors text-sm font-medium border border-[#F5E6E6]">مخفض</button>
           <button onclick="navigateTo('all'); toggleMobileMenu();"
             class="w-full text-right px-4 py-3 rounded-lg bg-white text-[#E8A5A5] hover:bg-[#FFF9F9] transition-colors text-sm font-bold border border-[#E8A5A5]">كل المنتجات</button>
           <button onclick="navigateTo('about'); toggleMobileMenu();"
@@ -645,7 +653,7 @@ const defaultConfig = {
 
 
     let products = {
-      face: [], lips: [], eyes: [], foundation: [], setting: [], gifts: [], packages: [], nails: []
+      face: [], lips: [], eyes: [], foundation: [], setting: [], gifts: [], packages: [], nails: [], accessories: [], sale: []
     };
 
     async function fetchProducts() {
@@ -675,7 +683,7 @@ const defaultConfig = {
 
         if (data && data.length > 0) {
           const newProducts = {
-            face: [], lips: [], eyes: [], foundation: [], setting: [], gifts: [], packages: [], nails: [], other: []
+            face: [], lips: [], eyes: [], foundation: [], setting: [], gifts: [], packages: [], nails: [], accessories: [], sale: [], other: []
           };
 
           // Map a product.category value (English or Arabic variants) to our internal keys
@@ -691,7 +699,9 @@ const defaultConfig = {
               'setting': 'setting', 'مثبتات': 'setting',
               'gifts': 'gifts', 'هدايا': 'gifts',
               'packages': 'packages', 'البكجات': 'packages', 'sets': 'packages',
-              'nails': 'nails', 'أظافر': 'nails', 'اظافر': 'nails', 'ناخن': 'nails'
+              'nails': 'nails', 'أظافر': 'nails', 'اظافر': 'nails', 'ناخن': 'nails',
+              'accessories': 'accessories', 'اكسسوارات': 'accessories', 'اكسسوار': 'accessories',
+              'sale': 'sale', 'مخفض': 'sale', 'تخفيض': 'sale'
             };
 
             if (direct[v]) return direct[v];
@@ -717,7 +727,11 @@ const defaultConfig = {
               name: p.name,
               nameEn: p.nameEn,
               price: p.price,
+              original_price: p.original_price || null,
+              discount_pct: p.discount_pct || null,
+              on_sale: p.on_sale || false,
               description: p.description,
+              images: p.images || [],
               stock: p.stock || 10,
               shades: p.shades || []
             });
@@ -772,7 +786,7 @@ const defaultConfig = {
       const input = document.getElementById(inputId) || document.getElementById('product-search-input');
       productSearchQuery = input ? input.value : '';
 
-      const searchablePages = ['home', 'face', 'lips', 'eyes', 'foundation', 'setting', 'gifts', 'packages', 'nails', 'all'];
+      const searchablePages = ['home', 'face', 'lips', 'eyes', 'foundation', 'setting', 'gifts', 'packages', 'nails', 'accessories', 'sale', 'all'];
       if (!searchablePages.includes(currentPage)) {
         navigateTo('home');
       } else {
@@ -1222,7 +1236,7 @@ const defaultConfig = {
           <div class="p-5 md:p-6">
             <h3 class="font-bold text-stone-700 mb-1 text-sm md:text-base">${product.name}</h3>
             <p class="cursive-english text-sm text-rose-400 mb-4">${product.nameEn}</p>
-            <p class="text-lg font-bold text-rose-500 mb-5">₪${product.price}</p>
+            <p class="text-lg font-bold text-rose-500 mb-5">₪${product.price}${product.on_sale && product.original_price ? ` <span class="text-sm text-stone-400 line-through font-normal">₪${product.original_price}</span>${product.discount_pct ? ` <span class="text-xs bg-rose-100 text-rose-500 px-2 py-0.5 rounded-full font-bold">-${product.discount_pct}%</span>` : ''}` : ''}</p>
             
             <div class="mb-5">
               <p class="text-xs text-stone-500 mb-3 font-medium">اختاري اللون:</p>
@@ -1307,7 +1321,10 @@ const defaultConfig = {
         { key: 'foundation', name: 'الأساس', nameEn: 'Foundation' },
         { key: 'setting', name: 'مثبتات', nameEn: 'Setting' },
         { key: 'gifts', name: 'هدايا', nameEn: 'Gifts' },
-        { key: 'packages', name: 'البكجات', nameEn: 'Sets' }
+        { key: 'packages', name: 'البكجات', nameEn: 'Sets' },
+        { key: 'nails', name: 'أظافر', nameEn: 'Nails' },
+        { key: 'accessories', name: 'اكسسوارات', nameEn: 'Accessories' },
+        { key: 'sale', name: 'مخفض', nameEn: 'Sale' }
       ];
       const searchResults = Object.entries(products).flatMap(([categoryKey, categoryProducts]) =>
         categoryProducts
@@ -1376,11 +1393,19 @@ const defaultConfig = {
               <p class="cursive-english text-rose-400 mt-2">Our Collections</p>
             </div>
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+              <button 
+                onclick="navigateTo('all')"
+                class="category-card p-6 md:p-8 rounded-3xl text-center slide-up"
+                style="animation-delay: 0s; background: white; border: 1px solid #E8A5A5;"
+              >
+                <h3 class="font-bold text-[#E8A5A5] text-lg">كل المنتجات</h3>
+                <p class="cursive-english text-sm text-stone-500">View All</p>
+              </button>
               ${categories.map((cat, index) => `
                 <button 
                   onclick="navigateTo('${cat.key}')"
                   class="category-card p-6 md:p-8 rounded-3xl text-center slide-up"
-                  style="animation-delay: ${index * 0.08}s; background: white; border: 1px solid #F5E6E6;"
+                  style="animation-delay: ${(index + 1) * 0.08}s; background: white; border: 1px solid #F5E6E6;"
                 >
                   <!-- words only: no icon/badge -->
                   <h3 class="font-bold text-stone-700 text-lg">${cat.name}</h3>
@@ -1927,7 +1952,7 @@ const defaultConfig = {
     }
 
     function renderAllProductsPage() {
-      const categoryKeys = ['face', 'lips', 'eyes', 'foundation', 'setting', 'gifts', 'packages', 'nails'];
+      const categoryKeys = ['face', 'lips', 'eyes', 'foundation', 'setting', 'gifts', 'packages', 'nails', 'accessories', 'sale'];
       const allProducts = categoryKeys.flatMap(key =>
         (products[key] || []).map(p => ({ ...p, _category: key }))
       );
@@ -1951,6 +1976,39 @@ const defaultConfig = {
                </div>`
             : `<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 ${filtered.map(p => renderProductCard(p, p._category)).join('')}
+               </div>`
+          }
+        </div>
+      `;
+    }
+
+    function renderSalePage() {
+      const categoryKeys = ['face', 'lips', 'eyes', 'foundation', 'setting', 'gifts', 'packages', 'nails', 'accessories', 'sale'];
+      const saleProducts = categoryKeys.flatMap(key =>
+        (products[key] || [])
+          .filter(p => p.on_sale || key === 'sale')
+          .map(p => ({ ...p, _category: key }))
+      );
+
+      const filtered = productSearchQuery
+        ? saleProducts.filter(p => productMatchesSearch(p, productSearchQuery))
+        : saleProducts;
+
+      return `
+        <div class="fade-in">
+          <div class="text-center mb-16">
+            <h1 class="text-5xl font-bold text-stone-700 mb-3">مخفض</h1>
+            <p class="cursive-english text-2xl text-rose-400">Sale</p>
+            <div class="mt-6 w-24 h-1 bg-gradient-to-r from-transparent via-rose-300 to-transparent mx-auto"></div>
+          </div>
+          ${renderProductSearchBar()}
+          ${filtered.length === 0
+            ? `<div class="text-center py-20">
+                <p class="text-stone-400 text-lg">لا توجد منتجات مخفضة حالياً</p>
+                <p class="text-stone-300 text-sm mt-2">No sale products found</p>
+               </div>`
+            : `<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                ${filtered.map((p, i) => renderProductCard(p, p._category, i)).join('')}
                </div>`
           }
         </div>
@@ -1996,6 +2054,12 @@ const defaultConfig = {
           break;
         case 'nails':
           mainContent.innerHTML = renderCategoryPage('nails', 'أظافر', 'Nails');
+          break;
+        case 'accessories':
+          mainContent.innerHTML = renderCategoryPage('accessories', 'اكسسوارات', 'Accessories');
+          break;
+        case 'sale':
+          mainContent.innerHTML = renderSalePage();
           break;
         case 'all':
           mainContent.innerHTML = renderAllProductsPage();
