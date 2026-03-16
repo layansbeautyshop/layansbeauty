@@ -1859,7 +1859,7 @@ const defaultConfig = {
         }
             ${isOutOfStock ? `
               <div class="absolute inset-0 bg-white/40 backdrop-blur-sm flex items-center justify-center">
-                <span class="bg-white px-4 py-2 rounded-full text-stone-500 text-sm font-medium">غير متوفر</span>
+                <span class="bg-white px-4 py-2 rounded-full text-stone-500 text-sm font-medium">نفد من المخزون</span>
               </div>
             ` : ''}
           </div>
@@ -1889,11 +1889,11 @@ const defaultConfig = {
             </div>
             
             <button 
-              onclick="event.stopPropagation(); ${isOutOfStock ? `showUnavailableFeedback('عذراً، هذا المنتج غير متوفر حالياً')` : (!canAddCurrent ? `showUnavailableFeedback('عذراً، الكمية المتاحة من هذا اللون نفدت')` : `addToCart('${product.id}', '${category}', '${currentShade ? currentShade.id : ''}')`)}"
+              onclick="event.stopPropagation(); ${isOutOfStock ? `showUnavailableFeedback('عذراً، هذا المنتج نفد من المخزون')` : (!canAddCurrent ? `showUnavailableFeedback('عذراً، الكمية المتاحة من هذا اللون نفدت')` : `addToCart('${product.id}', '${category}', '${currentShade ? currentShade.id : ''}')`)}"
               class="btn-primary w-full text-white py-3 rounded-full text-sm font-medium ${isOutOfStock || !canAddCurrent ? 'opacity-50' : ''}"
               ${isOutOfStock || !canAddCurrent ? 'disabled' : ''}
             >
-              ${isOutOfStock ? 'غير متوفر' : (!canAddCurrent ? 'الكمية نفدت' : 'أضيفي للسلة')}
+              ${isOutOfStock ? 'نفد من المخزون' : (!canAddCurrent ? 'الكمية نفدت' : 'أضيفي للسلة')}
             </button>
           </div>
         </div>
