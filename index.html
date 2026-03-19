@@ -1025,33 +1025,33 @@
           </div>
         </div><!-- Mobile Navigation -->
         <div id="mobile-menu" class="hidden lg:hidden mt-6 pb-4 border-t border-[#F5E6E6] pt-4 space-y-3">
-          <button onclick="navigateTo('home'); toggleMobileMenu();"
+          <button onclick="navigateTo('home')"
             class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF9F9] transition-colors text-sm font-medium border border-[#F5E6E6]">الرئيسية</button>
-          <button onclick="navigateTo('face'); toggleMobileMenu();"
+          <button onclick="navigateTo('face')"
             class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF9F9] transition-colors text-sm font-medium border border-[#F5E6E6]">الوجه</button>
-          <button onclick="navigateTo('lips'); toggleMobileMenu();"
+          <button onclick="navigateTo('lips')"
             class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF9F9] transition-colors text-sm font-medium border border-[#F5E6E6]">الشفاه</button>
-          <button onclick="navigateTo('eyes'); toggleMobileMenu();"
+          <button onclick="navigateTo('eyes')"
             class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF9F9] transition-colors text-sm font-medium border border-[#F5E6E6]">العيون</button>
-          <button onclick="navigateTo('foundation'); toggleMobileMenu();"
+          <button onclick="navigateTo('foundation')"
             class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF9F9] transition-colors text-sm font-medium border border-[#F5E6E6]">الأساس</button>
-          <button onclick="navigateTo('setting'); toggleMobileMenu();"
+          <button onclick="navigateTo('setting')"
             class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF9F9] transition-colors text-sm font-medium border border-[#F5E6E6]">مثبتات</button>
-          <button onclick="navigateTo('gifts'); toggleMobileMenu();"
+          <button onclick="navigateTo('gifts')"
             class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF9F9] transition-colors text-sm font-medium border border-[#F5E6E6]">هدايا</button>
-          <button onclick="navigateTo('packages'); toggleMobileMenu();"
+          <button onclick="navigateTo('packages')"
             class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF9F9] transition-colors text-sm font-medium border border-[#F5E6E6]">البكجات</button>
-          <button onclick="navigateTo('nails'); toggleMobileMenu();"
+          <button onclick="navigateTo('nails')"
             class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF9F9] transition-colors text-sm font-medium border border-[#F5E6E6]">أظافر</button>
-          <button onclick="navigateTo('accessories'); toggleMobileMenu();"
+          <button onclick="navigateTo('accessories')"
             class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF9F9] transition-colors text-sm font-medium border border-[#F5E6E6]">اكسسوارات</button>
-          <button onclick="navigateTo('sale'); toggleMobileMenu();"
+          <button onclick="navigateTo('sale')"
             class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF9F9] transition-colors text-sm font-medium border border-[#F5E6E6]">مخفض</button>
-          <button onclick="navigateTo('all'); toggleMobileMenu();"
+          <button onclick="navigateTo('all')"
             class="w-full text-right px-4 py-3 rounded-lg bg-white text-[#E8A5A5] hover:bg-[#FFF9F9] transition-colors text-sm font-bold border border-[#E8A5A5]">كل المنتجات</button>
-          <button onclick="navigateTo('about'); toggleMobileMenu();"
+          <button onclick="navigateTo('about')"
             class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF9F9] transition-colors text-sm font-medium border border-[#F5E6E6]">من
-            نحن</button> <button onclick="navigateTo('custom'); toggleMobileMenu();"
+            نحن</button> <button onclick="navigateTo('custom')"
             class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF9F9] transition-colors text-sm font-medium border border-[#F5E6E6]">طلب
             مخصص</button>
         </div>
@@ -1512,10 +1512,10 @@ const defaultConfig = {
       // Show Eid banner only on home page
       const banner = document.getElementById('eid-banner');
       if (banner) banner.style.display = (page === 'home') ? '' : 'none';
-      renderPage();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
       const mobileMenu = document.getElementById('mobile-menu');
       if (mobileMenu) mobileMenu.classList.add('hidden');
+      window.scrollTo({ top: 0, behavior: 'instant' });
+      renderPage();
 
       try {
         const state = { page };
