@@ -1275,33 +1275,38 @@ const defaultConfig = {
       }, 50);
     }
 
-    // Lazy loading / pagination for product grids
+    
     const PRODUCTS_PER_PAGE = 12;
     let currentProductsPage = 1;
     function resetProductPagination() {
       currentProductsPage = 1;
     }
 
-    function getPaginatedProducts(products) {
-      const start = (currentProductsPage - 1) * PRODUCTS_PER_PAGE;
-      const end = start + PRODUCTS_PER_PAGE;
-      return products.slice(start, end);
-    }
-
+   function getPaginatedProducts(products) {
+  const end = currentProductsPage * PRODUCTS_PER_PAGE;
+  return products.slice(0, end);
+}
     function hasMoreProducts(products) {
       return (currentProductsPage * PRODUCTS_PER_PAGE) < products.length;
     }
 
-    function renderLoadMoreButton(products) {
-      if (!hasMoreProducts(products)) return '';
-      return `
-        <div class="flex justify-center mt-12">
-          <button onclick="currentProductsPage++; renderPage();" class="btn-primary text-white px-8 py-3 rounded-full font-medium">
-            تحميل المزيد
-          </button>
-        </div>
-      `;
-    }
+function loadMoreProducts() {
+  const scrollY = window.scrollY;
+  currentProductsPage++;
+  renderPage();
+  window.scrollTo({ top: scrollY, behavior: 'instant' }); 
+}
+
+function renderLoadMoreButton(products) {
+  if (!hasMoreProducts(products)) return '';
+  return `
+    <div class="flex justify-center mt-12">
+      <button onclick="loadMoreProducts()" class="btn-primary text-white px-8 py-3 rounded-full font-medium">
+        تحميل المزيد
+      </button>
+    </div>
+  `;
+}
 
     // State
     let currentPage = 'home';
