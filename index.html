@@ -918,9 +918,190 @@
       html[dir="rtl"] .hero-caption { left:20px; right:20px; }
     }
   </style>
+  <style>
+    /* ══════════════════════════════════════
+       DISCOUNT POPUP
+    ══════════════════════════════════════ */
+    #discount-popup-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      backdrop-filter: blur(4px);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.4s ease;
+    }
+    #discount-popup {
+      background: white;
+      border-radius: 2rem;
+      max-width: 480px;
+      width: 92%;
+      padding: 0;
+      overflow: hidden;
+      box-shadow: 0 30px 80px rgba(123,16,64,0.3);
+      animation: slideUp 0.5s cubic-bezier(0.34,1.56,0.64,1);
+      position: relative;
+    }
+    .dp-header {
+      background: linear-gradient(135deg, #7B1040 0%, #a81550 100%);
+      padding: 36px 32px 28px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .dp-header::before {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 160px; height: 160px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.07);
+    }
+    .dp-header::after {
+      content: '';
+      position: absolute;
+      bottom: -30px; left: -30px;
+      width: 120px; height: 120px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.05);
+    }
+    .dp-badge {
+      display: inline-block;
+      background: #D4AF37;
+      color: white;
+      font-size: 0.65rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      border-radius: 100px;
+      margin-bottom: 14px;
+    }
+    .dp-pct {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 5.5rem;
+      font-weight: 700;
+      color: white;
+      line-height: 1;
+      display: block;
+      text-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+    .dp-off {
+      font-family: 'Tajawal', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: rgba(255,255,255,0.9);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      display: block;
+      margin-top: 2px;
+    }
+    .dp-body {
+      padding: 28px 32px 32px;
+      text-align: center;
+    }
+    .dp-title-ar {
+      font-family: 'Tajawal', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #44403c;
+      margin-bottom: 6px;
+    }
+    .dp-title-en {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.1rem;
+      color: #7B1040;
+      margin-bottom: 18px;
+    }
+    .dp-dates {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #FFF0F4;
+      border: 1px solid #F9D0DC;
+      border-radius: 100px;
+      padding: 8px 20px;
+      font-family: 'Tajawal', sans-serif;
+      font-size: 0.85rem;
+      color: #7B1040;
+      font-weight: 700;
+      margin-bottom: 24px;
+    }
+    .dp-desc {
+      font-family: 'Tajawal', sans-serif;
+      font-size: 0.9rem;
+      color: #78716c;
+      margin-bottom: 28px;
+      line-height: 1.7;
+    }
+    .dp-btn {
+      background: linear-gradient(135deg, #7B1040, #a81550);
+      color: white;
+      font-family: 'Tajawal', sans-serif;
+      font-size: 1rem;
+      font-weight: 800;
+      padding: 14px 0;
+      border-radius: 100px;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 8px 25px rgba(123,16,64,0.35);
+      letter-spacing: 1px;
+    }
+    .dp-btn:hover {
+      transform: scale(1.02);
+      box-shadow: 0 12px 35px rgba(123,16,64,0.45);
+    }
+    .dp-close {
+      position: absolute;
+      top: 14px; left: 14px;
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.3);
+      color: white;
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s;
+      z-index: 2;
+    }
+    .dp-close:hover { background: rgba(255,255,255,0.35); }
+  </style>
 </head>
 
 <body>
+  <!-- ══ DISCOUNT POPUP ══ -->
+  <div id="discount-popup-overlay" role="dialog" aria-modal="true" aria-label="عرض خاص">
+    <div id="discount-popup">
+      <div class="dp-header">
+        <button class="dp-close" onclick="closeDiscountPopup()" aria-label="إغلاق">✕</button>
+        <div class="dp-badge"> عرض محدود </div>
+        <span class="dp-pct">10%</span>
+        <span class="dp-off">خصم على كل الطلبات</span>
+      </div>
+      <div class="dp-body">
+        <div class="dp-title-ar">عرض خاص من متجر ليان!</div>
+        <div class="dp-title-en">Special Offer – Layan's Beauty Shop</div>
+        <div class="dp-dates">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          26 مايو 2026 – 30 مايو 2026
+        </div>
+        <p class="dp-desc">
+          استمتعي بخصم <strong>10%</strong> على جميع طلباتك خلال هذه الفترة المحدودة.<br>
+          الخصم يُطبَّق تلقائياً عند إتمام الطلب.
+        </p>
+        <button class="dp-btn" onclick="closeDiscountPopup()">
+           ابدأي التسوق الآن
+        </button>
+      </div>
+    </div>
+  </div>
+
   <div class="app-wrapper">
     <!-- Floating background elements -->
     <div class="bg-float bg-float-1"></div>
@@ -1150,6 +1331,34 @@ const defaultConfig = {
     };
 
     let config = { ...defaultConfig };
+
+    // ══ DISCOUNT LOGIC ══
+    const DISCOUNT_START = new Date('2026-05-26T00:00:00');
+    const DISCOUNT_END   = new Date('2026-05-30T23:59:59');
+    const DISCOUNT_PCT   = 10;
+
+    function isDiscountActive() {
+      const now = new Date();
+      return now >= DISCOUNT_START && now <= DISCOUNT_END;
+    }
+
+    function applyDiscount(amount) {
+      if (!isDiscountActive()) return amount;
+      return Math.round(amount * (1 - DISCOUNT_PCT / 100) * 100) / 100;
+    }
+
+    function discountedSubtotal() {
+      const raw = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+      return applyDiscount(raw);
+    }
+
+    function closeDiscountPopup() {
+      const overlay = document.getElementById('discount-popup-overlay');
+      if (overlay) {
+        overlay.style.animation = 'fadeIn 0.25s ease reverse forwards';
+        setTimeout(() => overlay.remove(), 260);
+      }
+    }
 
     const EMAIL_CONFIG = {
       serviceId: 'service_mv74rko',
@@ -2024,7 +2233,10 @@ function renderLoadMoreButton(products) {
         { id: 'd4', name: 'توصيل إلى الداخل المحتل', price: 70 }
       ];
 
-      const subtotal = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+      const rawSubtotal = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+      const discountActive = isDiscountActive();
+      const discountAmount = discountActive ? Math.round(rawSubtotal * DISCOUNT_PCT) / 100 : 0;
+      const subtotal = discountActive ? Math.round((rawSubtotal - discountAmount) * 100) / 100 : rawSubtotal;
 
       if (cart.length === 0) {
         return `
@@ -2087,15 +2299,28 @@ function renderLoadMoreButton(products) {
                 <div class="space-y-4 mb-8 pb-8 border-b border-rose-100/50">
                   <div class="flex justify-between text-stone-600">
                     <span class="font-medium">المجموع الفرعي</span>
-                    <span class="font-bold">₪${subtotal}</span>
+                    <span class="font-bold ${discountActive ? 'line-through text-stone-400' : ''}">₪${rawSubtotal}</span>
                   </div>
+                  ${discountActive ? `
+                  <div class="flex justify-between text-green-600">
+                    <span class="font-medium flex items-center gap-1">
+                      <span class="text-xs bg-green-100 text-green-600 px-2 py-0.5 rounded-full font-bold">-${DISCOUNT_PCT}%</span>
+                      خصم خاص
+                    </span>
+                    <span class="font-bold">- ₪${discountAmount.toFixed(2)}</span>
+                  </div>
+                  <div class="flex justify-between text-stone-600">
+                    <span class="font-medium">بعد الخصم</span>
+                    <span class="font-bold text-green-600">₪${subtotal.toFixed(2)}</span>
+                  </div>
+                  ` : ''}
                   <div class="flex justify-between text-stone-600">
                     <span class="font-medium">التوصيل</span>
                     <span id="delivery-cost" class="font-bold">₪0</span>
                   </div>
                   <div class="flex justify-between text-lg">
                     <span class="font-bold text-stone-700">الإجمالي</span>
-                    <span id="total-cost" class="font-bold text-[#7B1040]">₪${subtotal}</span>
+                    <span id="total-cost" class="font-bold text-[#7B1040]">₪${subtotal.toFixed(2)}</span>
                   </div>
                 </div>
                 
@@ -2145,15 +2370,19 @@ function renderLoadMoreButton(products) {
     }
 
     function updateDelivery(price) {
-      const subtotal = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+      const rawSub = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+      const sub = isDiscountActive() ? Math.round(rawSub * (1 - DISCOUNT_PCT/100) * 100) / 100 : rawSub;
       document.getElementById('delivery-cost').textContent = `₪${price}`;
-      document.getElementById('total-cost').textContent = `₪${subtotal + price}`;
+      document.getElementById('total-cost').textContent = `₪${(sub + price).toFixed(2)}`;
     }
 
     function showCheckoutForm() {
-      const subtotal = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+      const rawSubtotal = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+      const discountActive = isDiscountActive();
+      const discountAmount = discountActive ? Math.round(rawSubtotal * DISCOUNT_PCT) / 100 : 0;
+      const subtotal = discountActive ? Math.round((rawSubtotal - discountAmount) * 100) / 100 : rawSubtotal;
       const deliveryPrice = parseInt(document.querySelector('input[name="delivery"]:checked').value);
-      const total = subtotal + deliveryPrice;
+      const total = Math.round((subtotal + deliveryPrice) * 100) / 100;
 
       const mainContent = document.getElementById('main-content');
       mainContent.innerHTML = `
@@ -2196,9 +2425,21 @@ function renderLoadMoreButton(products) {
                             </div>
 
                             <div class="pt-6">
-                                <div class="bg-rose-50 rounded-2xl p-5 mb-8 flex justify-between items-center">
-                                    <span class="text-stone-700 font-bold">الإجمالي النهائي:</span>
-                                    <span class="text-2xl font-bold text-[#7B1040]">₪${total}</span>
+                                <div class="bg-rose-50 rounded-2xl p-5 mb-8">
+                                    ${discountActive ? `
+                                    <div class="flex justify-between text-sm text-stone-500 mb-2">
+                                      <span>المجموع قبل الخصم</span>
+                                      <span class="line-through">₪${rawSubtotal}</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm text-green-600 mb-2">
+                                      <span>خصم ${DISCOUNT_PCT}% (عرض محدود)</span>
+                                      <span>- ₪${discountAmount.toFixed(2)}</span>
+                                    </div>
+                                    ` : ''}
+                                    <div class="flex justify-between items-center ${discountActive ? 'border-t border-rose-100 pt-2' : ''}">
+                                      <span class="text-stone-700 font-bold">الإجمالي النهائي:</span>
+                                      <span class="text-2xl font-bold text-[#7B1040]">₪${total.toFixed(2)}</span>
+                                    </div>
                                 </div>
                                 <button type="submit" class="btn-primary w-full text-white py-5 rounded-full text-xl font-bold">
                                     تأكيد الطلب 
@@ -2234,8 +2475,9 @@ function renderLoadMoreButton(products) {
 
       const deliveryEl = document.querySelector('input[name="delivery"]:checked');
       const deliveryPrice = deliveryEl ? parseInt(deliveryEl.value || '0') : 0;
-      const subtotal = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
-      const total = subtotal + deliveryPrice;
+      const rawSubtotal = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+      const discountedSub = isDiscountActive() ? Math.round(rawSubtotal * (1 - DISCOUNT_PCT/100) * 100) / 100 : rawSubtotal;
+      const total = Math.round((discountedSub + deliveryPrice) * 100) / 100;
 
       if (!cart || cart.length === 0) {
         alert('سلة التسوق فارغة. يرجى إضافة منتجات قبل المتابعة.');
