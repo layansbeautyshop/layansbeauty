@@ -1354,10 +1354,13 @@ const defaultConfig = {
 
     function closeDiscountPopup() {
       const overlay = document.getElementById('discount-popup-overlay');
-      if (overlay) {
-        overlay.style.animation = 'fadeIn 0.25s ease reverse forwards';
-        setTimeout(() => overlay.remove(), 260);
-      }
+      if (!overlay || overlay.dataset.closing) return;
+      overlay.dataset.closing = '1';
+      overlay.style.animation = 'fadeIn 0.25s ease reverse forwards';
+      setTimeout(() => {
+        overlay.style.display = 'none';
+        overlay.removeAttribute('data-closing');
+      }, 260);
     }
 
     const EMAIL_CONFIG = {
