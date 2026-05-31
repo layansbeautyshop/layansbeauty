@@ -1,4 +1,4 @@
-﻿<!doctype html>
+﻿﻿<!doctype html>
 <html lang="ar" dir="rtl">
 
 <head>
@@ -33,7 +33,6 @@
       overflow-x: hidden;
     }
 
-    /* Disable animations on page load for performance, but keep loader flipping */
     body.disable-animations * {
       animation-duration: 0s !important;
       transition-duration: 0.1s !important;
@@ -64,7 +63,6 @@
       overflow: hidden;
     }
 
-    /* Animated background elements */
     .bg-float {
       position: fixed;
       border-radius: 50%;
@@ -101,7 +99,6 @@
       animation: float 30s ease-in-out infinite;
     }
 
-    /* Main content positioning */
     main,
     nav,
     footer {
@@ -110,97 +107,44 @@
     }
 
     @keyframes float {
-
-      0%,
-      100% {
-        transform: translateY(0) translateX(0);
-      }
-
-      50% {
-        transform: translateY(-30px) translateX(20px);
-      }
+      0%, 100% { transform: translateY(0) translateX(0); }
+      50% { transform: translateY(-30px) translateX(20px); }
     }
 
     @keyframes fadeIn {
-      from {
-        opacity: 0;
-      }
-
-      to {
-        opacity: 1;
-      }
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
     @keyframes slideUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     @keyframes slideDown {
-      from {
-        opacity: 0;
-        transform: translateY(-20px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     @keyframes glow-pulse {
-
-      0%,
-      100% {
-        box-shadow: 0 0 0 0 rgba(123, 16, 64, 0.4);
-      }
-
-      50% {
-        box-shadow: 0 0 0 10px rgba(123, 16, 64, 0);
-      }
+      0%, 100% { box-shadow: 0 0 0 0 rgba(123, 16, 64, 0.4); }
+      50% { box-shadow: 0 0 0 10px rgba(123, 16, 64, 0); }
     }
 
     @keyframes bounce-cart {
-
-      0%,
-      100% {
-        transform: scale(1);
-      }
-
-      50% {
-        transform: scale(1.2);
-      }
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.2); }
     }
 
     @keyframes shimmer {
-      0% {
-        background-position: -1000px 0;
-      }
-
-      100% {
-        background-position: 1000px 0;
-      }
+      0% { background-position: -1000px 0; }
+      100% { background-position: 1000px 0; }
     }
 
     @keyframes flip-horizontal {
-      0% {
-        transform: rotateY(0deg);
-      }
-
-      50% {
-        transform: rotateY(180deg);
-      }
-
-      100% {
-        transform: rotateY(360deg);
-      }
+      0% { transform: rotateY(0deg); }
+      50% { transform: rotateY(180deg); }
+      100% { transform: rotateY(360deg); }
     }
 
     .flip-animation {
@@ -209,19 +153,10 @@
       perspective: 1000px;
     }
 
-    .fade-in {
-      animation: fadeIn 0.7s ease-out forwards;
-    }
+    .fade-in { animation: fadeIn 0.7s ease-out forwards; }
+    .slide-up { animation: slideUp 0.6s ease-out forwards; }
+    .slide-down { animation: slideDown 0.4s ease-out forwards; }
 
-    .slide-up {
-      animation: slideUp 0.6s ease-out forwards;
-    }
-
-    .slide-down {
-      animation: slideDown 0.4s ease-out forwards;
-    }
-
-    /* Glass Morphism */
     .glass-card {
       background: rgba(255, 255, 255, 0.9);
       backdrop-filter: blur(20px);
@@ -229,7 +164,6 @@
       box-shadow: 0 8px 32px rgba(123, 16, 64, 0.15);
     }
 
-    /* Product Card */
     .product-card {
       transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
       background: white;
@@ -256,20 +190,14 @@
     .product-image::before {
       content: '';
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
+      top: 0; left: 0; right: 0; bottom: 0;
       background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.4), transparent 50%);
       opacity: 0;
       transition: opacity 0.4s ease;
     }
 
-    .product-card:hover .product-image::before {
-      opacity: 1;
-    }
+    .product-card:hover .product-image::before { opacity: 1; }
 
-    /* Buttons */
     .btn-primary {
       background: #7B1040;
       color: white;
@@ -291,7 +219,6 @@
       opacity: 0.5;
     }
 
-    /* Shade Selector */
     .shade-btn {
       transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
       border: 3px solid transparent;
@@ -309,7 +236,6 @@
       box-shadow: 0 0 0 4px rgba(123, 16, 64, 0.3), 0 8px 30px rgba(123, 16, 64, 0.35);
     }
 
-    /* Navigation */
     .nav-wrapper {
       background: white;
       border-bottom: 1px solid #F9D0DC;
@@ -338,15 +264,10 @@
     }
 
     .nav-link:hover::after,
-    .nav-link.active::after {
-      width: 100%;
-    }
+    .nav-link.active::after { width: 100%; }
 
-    .nav-link:hover {
-      color: #7B1040;
-    }
+    .nav-link:hover { color: #7B1040; }
 
-    /* Dropdown Menu */
     .dropdown-menu {
       animation: slideDown 0.3s ease-out forwards;
       background: white;
@@ -366,7 +287,6 @@
       color: #7B1040;
     }
 
-    /* Dropdown Toggle Icon */
     .dropdown-icon {
       display: inline-flex;
       align-items: center;
@@ -374,9 +294,7 @@
       transition: transform 0.3s ease;
     }
 
-    .dropdown-toggle.active .dropdown-icon {
-      transform: rotate(180deg);
-    }
+    .dropdown-toggle.active .dropdown-icon { transform: rotate(180deg); }
 
     .dropdown-content {
       opacity: 0;
@@ -393,45 +311,21 @@
       pointer-events: auto;
     }
 
-    /* Modal */
-    .modal-overlay {
-      animation: fadeIn 0.3s ease;
-    }
+    .modal-overlay { animation: fadeIn 0.3s ease; }
+    .modal-content { animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
 
-    .modal-content {
-      animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
+    .cart-bounce { animation: bounce-cart 0.6s ease-in-out; }
 
-    /* Cart Animations */
-    .cart-bounce {
-      animation: bounce-cart 0.6s ease-in-out;
-    }
-
-    /* Hero Section */
-    .hero-section {
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero-content {
-      animation: slideUp 0.8s ease-out 0.2s backwards;
-    }
-
-    .hero-title {
-      animation: fadeIn 1s ease-out 0.3s backwards;
-    }
-
-    .hero-subtitle {
-      animation: fadeIn 1s ease-out 0.6s backwards;
-    }
-
+    .hero-section { position: relative; overflow: hidden; }
+    .hero-content { animation: slideUp 0.8s ease-out 0.2s backwards; }
+    .hero-title { animation: fadeIn 1s ease-out 0.3s backwards; }
+    .hero-subtitle { animation: fadeIn 1s ease-out 0.6s backwards; }
     .hero-divider {
       animation: slideUp 1s ease-out 0.8s backwards;
       background: #7B1040;
       opacity: 0.4;
     }
 
-    /* Category Card */
     .category-card {
       transition: all 0.4s ease;
       background: white;
@@ -445,15 +339,9 @@
       border-color: #7B1040;
     }
 
-    .category-icon {
-      transition: all 0.4s ease;
-    }
+    .category-icon { transition: all 0.4s ease; }
+    .category-card:hover .category-icon { transform: scale(1.15) rotate(-5deg); }
 
-    .category-card:hover .category-icon {
-      transform: scale(1.15) rotate(-5deg);
-    }
-
-    /* Creative category badge (replaces icon) */
     .category-badge {
       width: 72px;
       height: 72px;
@@ -476,7 +364,6 @@
       box-shadow: 0 18px 40px rgba(123, 16, 64,0.12);
     }
 
-    /* Quantity Controls */
     .quantity-btn {
       transition: all 0.2s ease;
       border: 1px solid rgba(123, 16, 64, 0.3);
@@ -489,40 +376,28 @@
       transform: scale(1.1);
     }
 
-    /* Section Divider */
     .section-divider {
       height: 1px;
       background: #F9D0DC;
       margin: 60px 0;
     }
 
-    /* ══════════════════════════════════════
-       COMING SOON — matches shop theme
-    ══════════════════════════════════════ */
-
-    /* Scroll shimmer reuse */
     @keyframes cs-shimmer {
       0%   { background-position: -800px 0; }
       100% { background-position:  800px 0; }
     }
-    /* Fade-in for section reveal */
     @keyframes cs-reveal {
       from { opacity: 0; transform: translateY(18px); }
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    /* Section wrapper — same background as page */
     .cs-section { position: relative; }
 
-    /* Section heading — identical pattern to "منتجات مميزة" */
-    .cs-heading {
-      text-align: center;
-      margin-bottom: 48px;
-    }
+    .cs-heading { text-align: center; margin-bottom: 48px; }
     .cs-heading h2 {
-      font-size: 1.875rem; /* text-3xl */
+      font-size: 1.875rem;
       font-weight: 700;
-      color: #44403c;      /* stone-700 */
+      color: #44403c;
       margin-bottom: 6px;
     }
     .cs-heading .cs-sub {
@@ -534,18 +409,13 @@
       display: block;
       margin-top: 4px;
     }
-    /* Thin rose line — same as category page */
     .cs-heading .cs-rule {
       width: 96px; height: 1px;
       background: #F9D0DC;
       margin: 20px auto 0;
     }
 
-    /* Horizontal scroll track */
-    .cs-track-wrap {
-      position: relative;
-    }
-    /* Fade edges using the page background colour */
+    .cs-track-wrap { position: relative; }
     .cs-track-wrap::before,
     .cs-track-wrap::after {
       content: '';
@@ -569,7 +439,6 @@
     }
     .cs-track::-webkit-scrollbar { display: none; }
 
-    /* Card — same size & feel as product cards */
     .cs-card {
       flex: 0 0 280px;
       scroll-snap-align: start;
@@ -587,7 +456,6 @@
       border-color: #7B1040;
     }
 
-    /* Image area */
     .cs-card-img {
       aspect-ratio: 1 / 1;
       position: relative;
@@ -600,7 +468,6 @@
       transition: transform 0.5s ease;
     }
     .cs-card:hover .cs-card-img img { transform: scale(1.06); }
-    /* Soft shine on hover — same as .product-image::before */
     .cs-card-img::after {
       content: '';
       position: absolute;
@@ -611,7 +478,6 @@
     }
     .cs-card:hover .cs-card-img::after { opacity: 1; }
 
-    /* "Coming Soon" pill overlay — appears on hover */
     .cs-hover-reveal {
       position: absolute;
       inset: 0;
@@ -637,7 +503,6 @@
       box-shadow: 0 4px 16px rgba(123, 16, 64,0.15);
     }
 
-    /* Label badge — top-left, same rose tone */
     .cs-badge {
       position: absolute;
       top: 10px;
@@ -655,7 +520,6 @@
       z-index: 2;
     }
 
-    /* Lock icon — top-right */
     .cs-lock {
       position: absolute;
       top: 10px; right: 10px;
@@ -668,7 +532,6 @@
     }
     .cs-lock svg { width:13px; height:13px; stroke:#7B1040; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
 
-    /* Countdown strip — bottom of image */
     .cs-countdown {
       position: absolute;
       bottom: 0; left: 0; right: 0;
@@ -678,10 +541,7 @@
       padding: 8px 10px;
       background: linear-gradient(to top, rgba(255,255,255,0.95), transparent);
     }
-    .cs-cd-unit {
-      text-align: center;
-      min-width: 36px;
-    }
+    .cs-cd-unit { text-align: center; min-width: 36px; }
     .cs-cd-num {
       font-family: 'Cormorant Garamond', serif;
       font-size: 1.05rem;
@@ -699,7 +559,6 @@
       margin-top: 1px;
     }
 
-    /* Card body */
     .cs-card-body { padding: 16px 18px 18px; }
     .cs-card-name {
       font-weight: 700;
@@ -716,7 +575,6 @@
       margin-bottom: 14px;
       display: block;
     }
-    /* Blurred price row */
     .cs-price-row {
       display: flex;
       align-items: center;
@@ -732,7 +590,6 @@
       opacity: 0.8;
     }
 
-    /* Locked CTA — mirrors .btn-primary but muted */
     .cs-cta {
       width: 100%;
       padding: 10px;
@@ -757,7 +614,6 @@
       background: white;
     }
 
-    /* Shimmer placeholders while loading */
     .cs-shimmer {
       flex: 0 0 280px;
       border-radius: 1.5rem;
@@ -779,7 +635,6 @@
       margin-bottom: 10px;
     }
 
-    /* Scroll navigation arrows */
     .cs-nav {
       display: flex;
       justify-content: center;
@@ -810,27 +665,13 @@
       .cs-card { flex: 0 0 230px; }
     }
 
+    html { scroll-behavior: smooth; }
 
-    html {
-      scroll-behavior: smooth;
-    }
-
-    /* Utility */
-    .scrollbar-hide::-webkit-scrollbar {
-      display: none;
-    }
-
-    .scrollbar-hide {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-    }
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
   <style>
     body { box-sizing: border-box; }
-
-    /* ═══════════════════════════════════════
-       HERO SLIDESHOW
-    ═══════════════════════════════════════ */
 
     #hero-slideshow {
       position: relative;
@@ -918,206 +759,25 @@
       html[dir="rtl"] .hero-caption { left:20px; right:20px; }
     }
   </style>
-  <style>
-    /* ══════════════════════════════════════
-       DISCOUNT POPUP
-    ══════════════════════════════════════ */
-    #discount-popup-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.55);
-      backdrop-filter: blur(4px);
-      z-index: 9999;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      animation: fadeIn 0.4s ease;
-    }
-    #discount-popup {
-      background: white;
-      border-radius: 2rem;
-      max-width: 480px;
-      width: 92%;
-      padding: 0;
-      overflow: hidden;
-      box-shadow: 0 30px 80px rgba(123,16,64,0.3);
-      animation: slideUp 0.5s cubic-bezier(0.34,1.56,0.64,1);
-      position: relative;
-    }
-    .dp-header {
-      background: linear-gradient(135deg, #7B1040 0%, #a81550 100%);
-      padding: 36px 32px 28px;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-    .dp-header::before {
-      content: '';
-      position: absolute;
-      top: -40px; right: -40px;
-      width: 160px; height: 160px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.07);
-    }
-    .dp-header::after {
-      content: '';
-      position: absolute;
-      bottom: -30px; left: -30px;
-      width: 120px; height: 120px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.05);
-    }
-    .dp-badge {
-      display: inline-block;
-      background: #D4AF37;
-      color: white;
-      font-size: 0.65rem;
-      font-weight: 800;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      padding: 4px 14px;
-      border-radius: 100px;
-      margin-bottom: 14px;
-    }
-    .dp-pct {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 5.5rem;
-      font-weight: 700;
-      color: white;
-      line-height: 1;
-      display: block;
-      text-shadow: 0 4px 20px rgba(0,0,0,0.2);
-    }
-    .dp-off {
-      font-family: 'Tajawal', sans-serif;
-      font-size: 1.2rem;
-      font-weight: 700;
-      color: rgba(255,255,255,0.9);
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      display: block;
-      margin-top: 2px;
-    }
-    .dp-body {
-      padding: 28px 32px 32px;
-      text-align: center;
-    }
-    .dp-title-ar {
-      font-family: 'Tajawal', sans-serif;
-      font-size: 1.5rem;
-      font-weight: 800;
-      color: #44403c;
-      margin-bottom: 6px;
-    }
-    .dp-title-en {
-      font-family: 'Cormorant Garamond', serif;
-      font-style: italic;
-      font-size: 1.1rem;
-      color: #7B1040;
-      margin-bottom: 18px;
-    }
-    .dp-dates {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: #FFF0F4;
-      border: 1px solid #F9D0DC;
-      border-radius: 100px;
-      padding: 8px 20px;
-      font-family: 'Tajawal', sans-serif;
-      font-size: 0.85rem;
-      color: #7B1040;
-      font-weight: 700;
-      margin-bottom: 24px;
-    }
-    .dp-desc {
-      font-family: 'Tajawal', sans-serif;
-      font-size: 0.9rem;
-      color: #78716c;
-      margin-bottom: 28px;
-      line-height: 1.7;
-    }
-    .dp-btn {
-      background: linear-gradient(135deg, #7B1040, #a81550);
-      color: white;
-      font-family: 'Tajawal', sans-serif;
-      font-size: 1rem;
-      font-weight: 800;
-      padding: 14px 0;
-      border-radius: 100px;
-      border: none;
-      cursor: pointer;
-      width: 100%;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      box-shadow: 0 8px 25px rgba(123,16,64,0.35);
-      letter-spacing: 1px;
-    }
-    .dp-btn:hover {
-      transform: scale(1.02);
-      box-shadow: 0 12px 35px rgba(123,16,64,0.45);
-    }
-    .dp-close {
-      position: absolute;
-      top: 14px; left: 14px;
-      width: 32px; height: 32px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.2);
-      border: 1px solid rgba(255,255,255,0.3);
-      color: white;
-      font-size: 1.1rem;
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      transition: background 0.2s;
-      z-index: 2;
-    }
-    .dp-close:hover { background: rgba(255,255,255,0.35); }
-  </style>
 </head>
 
 <body>
-  <!-- ══ DISCOUNT POPUP ══ -->
-  <div id="discount-popup-overlay" role="dialog" aria-modal="true" aria-label="عرض خاص">
-    <div id="discount-popup">
-      <div class="dp-header">
-        <button class="dp-close" onclick="closeDiscountPopup()" aria-label="إغلاق">✕</button>
-        <div class="dp-badge"> عرض محدود </div>
-        <span class="dp-pct">10%</span>
-        <span class="dp-off">خصم على كل الطلبات</span>
-      </div>
-      <div class="dp-body">
-        <div class="dp-title-ar">عرض خاص من متجر ليان!</div>
-        <div class="dp-title-en">Special Offer – Layan's Beauty Shop</div>
-        <div class="dp-dates">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-          26 مايو 2026 – 30 مايو 2026
-        </div>
-        <p class="dp-desc">
-          استمتعي بخصم <strong>10%</strong> على جميع طلباتك خلال هذه الفترة المحدودة.<br>
-          الخصم يُطبَّق تلقائياً عند إتمام الطلب.
-        </p>
-        <button class="dp-btn" onclick="closeDiscountPopup()">
-           ابدأي التسوق الآن
-        </button>
-      </div>
-    </div>
-  </div>
-
   <div class="app-wrapper">
-    <!-- Floating background elements -->
     <div class="bg-float bg-float-1"></div>
     <div class="bg-float bg-float-2"></div>
-    <div class="bg-float bg-float-3"></div><!-- Navigation -->
+    <div class="bg-float bg-float-3"></div>
+
     <nav class="nav-wrapper sticky top-0 z-40 shadow-sm">
       <div class="max-w-7xl mx-auto px-4 py-4">
         <div class="flex items-center justify-between">
-          <!-- Logo --> <button onclick="navigateTo('home')"
+          <button onclick="navigateTo('home')"
             class="text-2xl font-bold text-[#7B1040] hover:opacity-80 transition-opacity">
-            <span id="nav-store-name" class="calligraphic-arabic">متجر ليان</span> </button>
-          <!-- Desktop Navigation -->
-          <div class="hidden lg:flex items-center gap-8 flex-1 justify-center"><button onclick="navigateTo('home')"
-              class="nav-link text-gray-700 hover:text-[#7B1040] text-sm font-semibold">HOME</button>
-            <div class="relative group"><button
-                class="nav-link text-gray-700 hover:text-[#7B1040] text-sm font-semibold dropdown-toggle flex items-center"
+            <span id="nav-store-name" class="calligraphic-arabic">متجر ليان</span>
+          </button>
+          <div class="hidden lg:flex items-center gap-8 flex-1 justify-center">
+            <button onclick="navigateTo('home')" class="nav-link text-gray-700 hover:text-[#7B1040] text-sm font-semibold">HOME</button>
+            <div class="relative group">
+              <button class="nav-link text-gray-700 hover:text-[#7B1040] text-sm font-semibold dropdown-toggle flex items-center"
                 id="products-btn" onclick="toggleProductsDropdown(event)">
                 <span>PRODUCTS</span>
                 <span class="dropdown-icon">
@@ -1126,95 +786,62 @@
                   </svg>
                 </span>
               </button>
-              <div
-                class="dropdown-content absolute top-full right-1/2 mt-3 w-64 rounded-2xl bg-white border border-[#F9D0DC] z-50 py-3 shadow-[0_15px_40px_rgba(123, 16, 64,0.12)]"
-                id="products-dropdown"><button onclick="navigateTo('face'); closeProductsDropdown();"
-                  class="dropdown-item w-full text-right px-6 py-3 hover:bg-[#FFF0F4] transition-all text-gray-700 font-medium">الوجه
-                  • Face</button> <button onclick="navigateTo('lips'); closeProductsDropdown();"
-                  class="dropdown-item w-full text-right px-6 py-3 hover:bg-[#FFF0F4] transition-all text-gray-700 font-medium">الشفاه
-                  • Lips</button> <button onclick="navigateTo('eyes'); closeProductsDropdown();"
-                  class="dropdown-item w-full text-right px-6 py-3 hover:bg-[#FFF0F4] transition-all text-gray-700 font-medium">العيون
-                  • Eyes</button> <button onclick="navigateTo('foundation'); closeProductsDropdown();"
-                  class="dropdown-item w-full text-right px-6 py-3 hover:bg-[#FFF0F4] transition-all text-gray-700 font-medium">الأساس
-                  • Foundation</button> <button onclick="navigateTo('setting'); closeProductsDropdown();"
-                  class="dropdown-item w-full text-right px-6 py-3 hover:bg-[#FFF0F4] transition-all text-gray-700 font-medium">مثبتات
-                  • Setting</button> <button onclick="navigateTo('gifts'); closeProductsDropdown();"
-                  class="dropdown-item w-full text-right px-6 py-3 hover:bg-[#FFF0F4] transition-all text-gray-700 font-medium">هدايا
-                  • Gifts</button> <button onclick="navigateTo('packages'); closeProductsDropdown();"
-                  class="dropdown-item w-full text-right px-6 py-3 hover:bg-[#FFF0F4] transition-all text-gray-700 font-medium">البكجات
-                  • Sets</button> <button onclick="navigateTo('nails'); closeProductsDropdown();"
-                  class="dropdown-item w-full text-right px-6 py-3 hover:bg-[#FFF0F4] transition-all text-gray-700 font-medium">أظافر
-                  • Nails</button>
-                <button onclick="navigateTo('accessories'); closeProductsDropdown();"
-                  class="dropdown-item w-full text-right px-6 py-3 hover:bg-[#FFF0F4] transition-all text-gray-700 font-medium">اكسسوارات • Accessories</button>
-                <button onclick="navigateTo('sale'); closeProductsDropdown();"
-                  class="dropdown-item w-full text-right px-6 py-3 hover:bg-[#FFF0F4] transition-all text-gray-700 font-medium">مخفض • Sale</button>
+              <div class="dropdown-content absolute top-full right-1/2 mt-3 w-64 rounded-2xl bg-white border border-[#F9D0DC] z-50 py-3 shadow-[0_15px_40px_rgba(123,16,64,0.12)]"
+                id="products-dropdown">
+                <button onclick="navigateTo('face'); closeProductsDropdown();" class="dropdown-item w-full text-right px-6 py-3 hover:bg-[#FFF0F4] transition-all text-gray-700 font-medium">الوجه • Face</button>
+                <button onclick="navigateTo('lips'); closeProductsDropdown();" class="dropdown-item w-full text-right px-6 py-3 hover:bg-[#FFF0F4] transition-all text-gray-700 font-medium">الشفاه • Lips</button>
+                <button onclick="navigateTo('eyes'); closeProductsDropdown();" class="dropdown-item w-full text-right px-6 py-3 hover:bg-[#FFF0F4] transition-all text-gray-700 font-medium">العيون • Eyes</button>
+                <button onclick="navigateTo('foundation'); closeProductsDropdown();" class="dropdown-item w-full text-right px-6 py-3 hover:bg-[#FFF0F4] transition-all text-gray-700 font-medium">الأساس • Foundation</button>
+                <button onclick="navigateTo('setting'); closeProductsDropdown();" class="dropdown-item w-full text-right px-6 py-3 hover:bg-[#FFF0F4] transition-all text-gray-700 font-medium">مثبتات • Setting</button>
+                <button onclick="navigateTo('gifts'); closeProductsDropdown();" class="dropdown-item w-full text-right px-6 py-3 hover:bg-[#FFF0F4] transition-all text-gray-700 font-medium">هدايا • Gifts</button>
+                <button onclick="navigateTo('packages'); closeProductsDropdown();" class="dropdown-item w-full text-right px-6 py-3 hover:bg-[#FFF0F4] transition-all text-gray-700 font-medium">البكجات • Sets</button>
+                <button onclick="navigateTo('nails'); closeProductsDropdown();" class="dropdown-item w-full text-right px-6 py-3 hover:bg-[#FFF0F4] transition-all text-gray-700 font-medium">أظافر • Nails</button>
+                <button onclick="navigateTo('accessories'); closeProductsDropdown();" class="dropdown-item w-full text-right px-6 py-3 hover:bg-[#FFF0F4] transition-all text-gray-700 font-medium">اكسسوارات • Accessories</button>
+                <button onclick="navigateTo('sale'); closeProductsDropdown();" class="dropdown-item w-full text-right px-6 py-3 hover:bg-[#FFF0F4] transition-all text-gray-700 font-medium">مخفض • Sale</button>
                 <div class="border-t border-[#F9D0DC] mt-1 pt-1">
-                  <button onclick="navigateTo('all'); closeProductsDropdown();"
-                    class="dropdown-item w-full text-right px-6 py-3 hover:bg-[#FFF0F4] transition-all text-[#7B1040] font-bold">
+                  <button onclick="navigateTo('all'); closeProductsDropdown();" class="dropdown-item w-full text-right px-6 py-3 hover:bg-[#FFF0F4] transition-all text-[#7B1040] font-bold">
                     كل المنتجات • All Products
                   </button>
                 </div>
               </div>
-            </div><button onclick="navigateTo('about')"
-              class="nav-link text-gray-700 hover:text-[#7B1040] text-sm font-semibold">ABOUT</button>
-            <button onclick="navigateTo('custom')"
-              class="nav-link text-gray-700 hover:text-[#7B1040] text-sm font-semibold">CUSTOM
-              ORDER</button>
-          </div><!-- Right Side: Cart + Mobile Menu -->
-          <div class="flex items-center gap-4">
-            <!-- Cart Button --> <button onclick="navigateTo('cart')" id="cart-button"
-              class="relative p-2 rounded-full hover:bg-[#F9D0DC] transition-all">
-              <svg class="w-6 h-6 text-[#7B1040]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-              </svg><span id="cart-count"
-                class="absolute -top-1 -left-1 w-5 h-5 bg-[#7B1040] text-white text-xs rounded-full flex items-center justify-center hidden font-bold">0</span>
-            </button> <!-- Mobile Menu Button --> <button id="mobile-menu-btn" onclick="toggleMobileMenu()"
-              class="lg:hidden p-2 rounded-full hover:bg-[#F9D0DC]">
-              <svg class="w-6 h-6 text-[#7B1040]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-              </svg></button>
+            </div>
+            <button onclick="navigateTo('about')" class="nav-link text-gray-700 hover:text-[#7B1040] text-sm font-semibold">ABOUT</button>
+            <button onclick="navigateTo('custom')" class="nav-link text-gray-700 hover:text-[#7B1040] text-sm font-semibold">CUSTOM ORDER</button>
           </div>
-        </div><!-- Mobile Navigation -->
+          <div class="flex items-center gap-4">
+            <button onclick="navigateTo('cart')" id="cart-button" class="relative p-2 rounded-full hover:bg-[#F9D0DC] transition-all">
+              <svg class="w-6 h-6 text-[#7B1040]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+              </svg>
+              <span id="cart-count" class="absolute -top-1 -left-1 w-5 h-5 bg-[#7B1040] text-white text-xs rounded-full flex items-center justify-center hidden font-bold">0</span>
+            </button>
+            <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="lg:hidden p-2 rounded-full hover:bg-[#F9D0DC]">
+              <svg class="w-6 h-6 text-[#7B1040]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+          </div>
+        </div>
         <div id="mobile-menu" class="hidden lg:hidden mt-6 pb-4 border-t border-[#F9D0DC] pt-4 space-y-3">
-          <button onclick="navigateTo('home')"
-            class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF0F4] transition-colors text-sm font-medium border border-[#F9D0DC]">الرئيسية</button>
-          <button onclick="navigateTo('face')"
-            class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF0F4] transition-colors text-sm font-medium border border-[#F9D0DC]">الوجه</button>
-          <button onclick="navigateTo('lips')"
-            class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF0F4] transition-colors text-sm font-medium border border-[#F9D0DC]">الشفاه</button>
-          <button onclick="navigateTo('eyes')"
-            class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF0F4] transition-colors text-sm font-medium border border-[#F9D0DC]">العيون</button>
-          <button onclick="navigateTo('foundation')"
-            class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF0F4] transition-colors text-sm font-medium border border-[#F9D0DC]">الأساس</button>
-          <button onclick="navigateTo('setting')"
-            class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF0F4] transition-colors text-sm font-medium border border-[#F9D0DC]">مثبتات</button>
-          <button onclick="navigateTo('gifts')"
-            class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF0F4] transition-colors text-sm font-medium border border-[#F9D0DC]">هدايا</button>
-          <button onclick="navigateTo('packages')"
-            class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF0F4] transition-colors text-sm font-medium border border-[#F9D0DC]">البكجات</button>
-          <button onclick="navigateTo('nails')"
-            class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF0F4] transition-colors text-sm font-medium border border-[#F9D0DC]">أظافر</button>
-          <button onclick="navigateTo('accessories')"
-            class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF0F4] transition-colors text-sm font-medium border border-[#F9D0DC]">اكسسوارات</button>
-          <button onclick="navigateTo('sale')"
-            class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF0F4] transition-colors text-sm font-medium border border-[#F9D0DC]">مخفض</button>
-          <button onclick="navigateTo('all')"
-            class="w-full text-right px-4 py-3 rounded-lg bg-white text-[#7B1040] hover:bg-[#FFF0F4] transition-colors text-sm font-bold border border-[#7B1040]">كل المنتجات</button>
-          <button onclick="navigateTo('about')"
-            class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF0F4] transition-colors text-sm font-medium border border-[#F9D0DC]">من
-            نحن</button> <button onclick="navigateTo('custom')"
-            class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF0F4] transition-colors text-sm font-medium border border-[#F9D0DC]">طلب
-            مخصص</button>
+          <button onclick="navigateTo('home')" class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF0F4] transition-colors text-sm font-medium border border-[#F9D0DC]">الرئيسية</button>
+          <button onclick="navigateTo('face')" class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF0F4] transition-colors text-sm font-medium border border-[#F9D0DC]">الوجه</button>
+          <button onclick="navigateTo('lips')" class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF0F4] transition-colors text-sm font-medium border border-[#F9D0DC]">الشفاه</button>
+          <button onclick="navigateTo('eyes')" class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF0F4] transition-colors text-sm font-medium border border-[#F9D0DC]">العيون</button>
+          <button onclick="navigateTo('foundation')" class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF0F4] transition-colors text-sm font-medium border border-[#F9D0DC]">الأساس</button>
+          <button onclick="navigateTo('setting')" class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF0F4] transition-colors text-sm font-medium border border-[#F9D0DC]">مثبتات</button>
+          <button onclick="navigateTo('gifts')" class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF0F4] transition-colors text-sm font-medium border border-[#F9D0DC]">هدايا</button>
+          <button onclick="navigateTo('packages')" class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF0F4] transition-colors text-sm font-medium border border-[#F9D0DC]">البكجات</button>
+          <button onclick="navigateTo('nails')" class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF0F4] transition-colors text-sm font-medium border border-[#F9D0DC]">أظافر</button>
+          <button onclick="navigateTo('accessories')" class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF0F4] transition-colors text-sm font-medium border border-[#F9D0DC]">اكسسوارات</button>
+          <button onclick="navigateTo('sale')" class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF0F4] transition-colors text-sm font-medium border border-[#F9D0DC]">مخفض</button>
+          <button onclick="navigateTo('all')" class="w-full text-right px-4 py-3 rounded-lg bg-white text-[#7B1040] hover:bg-[#FFF0F4] transition-colors text-sm font-bold border border-[#7B1040]">كل المنتجات</button>
+          <button onclick="navigateTo('about')" class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF0F4] transition-colors text-sm font-medium border border-[#F9D0DC]">من نحن</button>
+          <button onclick="navigateTo('custom')" class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF0F4] transition-colors text-sm font-medium border border-[#F9D0DC]">طلب مخصص</button>
         </div>
       </div>
     </nav>
 
-    <!-- ═══ HERO SLIDESHOW ═══ -->
-    <!-- Only show on home page — JS controls visibility -->
     <div id="hero-slideshow">
-
       <div class="hero-slide active" id="hero-slide-0">
         <img src="CT.png" alt="Layan Beauty">
         <div class="hero-slide-overlay"></div>
@@ -1224,8 +851,6 @@
           <button class="hero-caption-btn" onclick="navigateTo('all')">تسوقي الآن</button>
         </div>
       </div>
-
- 
       <div class="hero-slide" id="hero-slide-1">
         <img src="BNFT.png" alt="Lip Products">
         <div class="hero-slide-overlay"></div>
@@ -1235,8 +860,6 @@
           <button class="hero-caption-btn" onclick="navigateTo('lips')">اكتشفي المجموعة</button>
         </div>
       </div>
-
-     
       <div class="hero-slide" id="hero-slide-2">
         <img src="Multi.png" alt="Eye Makeup">
         <div class="hero-slide-overlay"></div>
@@ -1246,8 +869,6 @@
           <button class="hero-caption-btn" onclick="navigateTo('eyes')">تسوقي الآن</button>
         </div>
       </div>
-
-  
       <div class="hero-slide" id="hero-slide-3">
         <img src="red.png" alt="Packages">
         <div class="hero-slide-overlay"></div>
@@ -1257,111 +878,67 @@
           <button class="hero-caption-btn" onclick="navigateTo('packages')">اكتشفي البكجات</button>
         </div>
       </div>
-
-    
       <button class="hero-arrow prev" onclick="heroMove(-1)" aria-label="السابق">
         <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
       <button class="hero-arrow next" onclick="heroMove(1)" aria-label="التالي">
         <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
-
-      <!-- Dot indicators -->
       <div class="hero-dots" id="hero-dots"></div>
-
-      <!-- Pause/Play -->
       <button class="hero-pause" id="hero-pause-btn" onclick="heroTogglePause()" aria-label="إيقاف مؤقت">
         <svg id="hero-pause-icon" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
       </button>
-
     </div>
-    <!-- ═══ END HERO SLIDESHOW ═══ -->
 
-    <!-- Main Content -->
     <main id="main-content" class="max-w-7xl mx-auto px-4 py-12">
-      <!-- Loading spinner — replaced by renderPage() on init -->
       <div id="initial-loader" class="flex flex-col items-center justify-center py-40">
         <div class="flip-animation mb-8">
           <img src="Newlogo.png" alt="متجر ليان" class="w-32 h-32 object-contain">
         </div>
         <p class="text-[#7B1040] text-sm font-medium tracking-widest">متجر ليان ✦</p>
       </div>
-    </main><!-- Product Modal -->
+    </main>
+
     <div id="product-modal" class="fixed inset-0 z-50 hidden">
-      <div class="modal-overlay absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeProductModal()">
-      </div>
-      <div
-        class="modal-content absolute inset-4 md:inset-10 lg:inset-20 bg-white rounded-3xl overflow-hidden shadow-2xl">
-        <button onclick="closeProductModal()"
-          class="absolute top-6 left-6 z-10 w-12 h-12 rounded-full bg-white/90 hover:bg-rose-50 flex items-center justify-center transition-all shadow-lg">
-          <svg class="w-6 h-6 text-stone-600" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+      <div class="modal-overlay absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeProductModal()"></div>
+      <div class="modal-content absolute inset-4 md:inset-10 lg:inset-20 bg-white rounded-3xl overflow-hidden shadow-2xl">
+        <button onclick="closeProductModal()" class="absolute top-6 left-6 z-10 w-12 h-12 rounded-full bg-white/90 hover:bg-rose-50 flex items-center justify-center transition-all shadow-lg">
+          <svg class="w-6 h-6 text-stone-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-          </svg></button>
-        <div id="modal-content" class="h-full overflow-auto p-6 md:p-12">
-        </div>
+          </svg>
+        </button>
+        <div id="modal-content" class="h-full overflow-auto p-6 md:p-12"></div>
       </div>
-    </div><!-- Footer -->
+    </div>
+
     <footer class="border-t border-rose-100/50 mt-20 py-12">
       <div class="max-w-7xl mx-auto px-4">
         <div class="text-center">
-          <h3 id="footer-store-name" class="text-3xl font-bold text-[#7B1040] mb-2">
-            متجر ليان</h3>
-          <p id="footer-store-name-english" class="cursive-english text-xl text-[#7B1040] mb-6">Layan's Beauty
-            Shop</p><a id="footer-instagram" href="https://www.instagram.com/layansbeautyshop/" target="_blank"
-            rel="noopener noreferrer"
+          <h3 id="footer-store-name" class="text-3xl font-bold text-[#7B1040] mb-2">متجر ليان</h3>
+          <p id="footer-store-name-english" class="cursive-english text-xl text-[#7B1040] mb-6">Layan's Beauty Shop</p>
+          <a id="footer-instagram" href="https://www.instagram.com/layansbeautyshop/" target="_blank" rel="noopener noreferrer"
             class="inline-flex items-center gap-2 text-gray-600 hover:text-pink-500 transition-all hover:scale-110">
-            <svg class="w-5 h-5" fill="currentColor" viewbox="0 0 24 24">
-              <path
-                d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
-            </svg><span>تابعونا على انستغرام</span> </a>
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+            </svg>
+            <span>تابعونا على انستغرام</span>
+          </a>
           <p class="mt-8 text-xs text-gray-400">جميع الحقوق محفوظة © 2026 متجر ليان</p>
         </div>
       </div>
     </footer>
   </div>
-  
+
   <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <script>
-
-const defaultConfig = {
+    const defaultConfig = {
       store_name: 'متجر ليان',
       store_name_english: "Layan's Beauty Shop",
       instagram_url: 'https://www.instagram.com/layansbeautyshop/',
     };
 
     let config = { ...defaultConfig };
-
-    // ══ DISCOUNT LOGIC ══
-    const DISCOUNT_START = new Date('2026-05-26T00:00:00');
-    const DISCOUNT_END   = new Date('2026-05-30T23:59:59');
-    const DISCOUNT_PCT   = 10;
-
-    function isDiscountActive() {
-      const now = new Date();
-      return now >= DISCOUNT_START && now <= DISCOUNT_END;
-    }
-
-    function applyDiscount(amount) {
-      if (!isDiscountActive()) return amount;
-      return Math.round(amount * (1 - DISCOUNT_PCT / 100) * 100) / 100;
-    }
-
-    function discountedSubtotal() {
-      const raw = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
-      return applyDiscount(raw);
-    }
-
-    function closeDiscountPopup() {
-      const overlay = document.getElementById('discount-popup-overlay');
-      if (!overlay || overlay.dataset.closing) return;
-      overlay.dataset.closing = '1';
-      overlay.style.animation = 'fadeIn 0.25s ease reverse forwards';
-      setTimeout(() => {
-        overlay.style.display = 'none';
-        overlay.removeAttribute('data-closing');
-      }, 260);
-    }
 
     const EMAIL_CONFIG = {
       serviceId: 'service_mv74rko',
@@ -1370,15 +947,13 @@ const defaultConfig = {
     };
     const supabaseUrl = 'https://mdfrvmsruwzhhszoqumn.supabase.co';
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1kZnJ2bXNydXd6aGhzem9xdW1uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2NTMyOTksImV4cCI6MjA4ODIyOTI5OX0.rwIAoCZSVecvyvZA6Vhm1tPbzSBhgggpdy_xJ6aKjbM';
-    let supabaseClient = null; 
-
+    let supabaseClient = null;
 
     let products = {
       face: [], lips: [], eyes: [], foundation: [], setting: [], gifts: [], packages: [], nails: [], accessories: [], sale: []
     };
 
     async function fetchProducts() {
-      // Ensure supabaseClient is initialized (try to re-create if the SDK attached late)
       if (!supabaseClient && window.supabase && typeof window.supabase.createClient === 'function') {
         try {
           supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
@@ -1388,18 +963,13 @@ const defaultConfig = {
       }
 
       if (!supabaseClient) {
-        // No client available: load defaults and abort fetch. This keeps the UI working offline
-        // while avoiding hard failures. If the SDK attaches later the page can be refreshed.
         console.warn('Supabase client not available; loading default products.');
         loadDefaultProducts();
         return;
       }
 
       try {
-        const { data, error } = await supabaseClient
-          .from('products')
-          .select('*');
-
+        const { data, error } = await supabaseClient.from('products').select('*');
         if (error) throw error;
 
         if (data && data.length > 0) {
@@ -1407,11 +977,9 @@ const defaultConfig = {
             face: [], lips: [], eyes: [], foundation: [], setting: [], gifts: [], packages: [], nails: [], accessories: [], sale: [], other: []
           };
 
-          // Map a product.category value (English or Arabic variants) to our internal keys
           function mapCategory(cat) {
             if (!cat) return 'other';
             const v = String(cat).trim().toLowerCase();
-
             const direct = {
               'face': 'face', 'الوجه': 'face',
               'lips': 'lips', 'الشفاه': 'lips', 'الشَفاه': 'lips', 'شفاه': 'lips',
@@ -1424,10 +992,7 @@ const defaultConfig = {
               'accessories': 'accessories', 'اكسسوارات': 'accessories', 'اكسسوار': 'accessories',
               'sale': 'sale', 'مخفض': 'sale', 'تخفيض': 'sale'
             };
-
             if (direct[v]) return direct[v];
-
-            // Fallback heuristics
             if (v.includes('شف') || v.includes('lip')) return 'lips';
             if (v.includes('وجه') || v.includes('face')) return 'face';
             if (v.includes('عين') || v.includes('عيون') || v.includes('eye')) return 'eyes';
@@ -1436,7 +1001,6 @@ const defaultConfig = {
             if (v.includes('هدية') || v.includes('gift')) return 'gifts';
             if (v.includes('بكج') || v.includes('set')) return 'packages';
             if (v.includes('أظافر') || v.includes('ظافر') || v.includes('nail')) return 'nails';
-
             return 'other';
           }
 
@@ -1468,7 +1032,6 @@ const defaultConfig = {
       }
     }
 
-    // Render debounce/throttle to prevent excessive re-renders
     let renderTimeout = null;
     let isRendering = false;
     let renderRAF = null;
@@ -1477,7 +1040,6 @@ const defaultConfig = {
       renderTimeout = setTimeout(() => {
         if (!isRendering) {
           isRendering = true;
-          // Use requestAnimationFrame for smoother rendering
           if (renderRAF) cancelAnimationFrame(renderRAF);
           renderRAF = requestAnimationFrame(() => {
             renderPage();
@@ -1487,40 +1049,36 @@ const defaultConfig = {
       }, 50);
     }
 
-    
     const PRODUCTS_PER_PAGE = 12;
     let currentProductsPage = 1;
-    function resetProductPagination() {
-      currentProductsPage = 1;
-    }
+    function resetProductPagination() { currentProductsPage = 1; }
 
-   function getPaginatedProducts(products) {
-  const end = currentProductsPage * PRODUCTS_PER_PAGE;
-  return products.slice(0, end);
-}
+    function getPaginatedProducts(products) {
+      const end = currentProductsPage * PRODUCTS_PER_PAGE;
+      return products.slice(0, end);
+    }
     function hasMoreProducts(products) {
       return (currentProductsPage * PRODUCTS_PER_PAGE) < products.length;
     }
 
-function loadMoreProducts() {
-  const scrollY = window.scrollY;
-  currentProductsPage++;
-  renderPage();
-  window.scrollTo({ top: scrollY, behavior: 'instant' }); 
-}
+    function loadMoreProducts() {
+      const scrollY = window.scrollY;
+      currentProductsPage++;
+      renderPage();
+      window.scrollTo({ top: scrollY, behavior: 'instant' });
+    }
 
-function renderLoadMoreButton(products) {
-  if (!hasMoreProducts(products)) return '';
-  return `
-    <div class="flex justify-center mt-12">
-      <button onclick="loadMoreProducts()" class="btn-primary text-white px-8 py-3 rounded-full font-medium">
-        تحميل المزيد
-      </button>
-    </div>
-  `;
-}
+    function renderLoadMoreButton(products) {
+      if (!hasMoreProducts(products)) return '';
+      return `
+        <div class="flex justify-center mt-12">
+          <button onclick="loadMoreProducts()" class="btn-primary text-white px-8 py-3 rounded-full font-medium">
+            تحميل المزيد
+          </button>
+        </div>
+      `;
+    }
 
-    // State
     let currentPage = 'home';
     let cart = [];
     let selectedShades = {};
@@ -1528,11 +1086,8 @@ function renderLoadMoreButton(products) {
 
     function escapeHtml(value) {
       return String(value || '')
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
     function normalizeForSearch(value) {
@@ -1543,14 +1098,12 @@ function renderLoadMoreButton(products) {
         .replace(/[\u0623\u0625\u0622\u0671]/g, '\u0627')
         .replace(/\u0649/g, '\u064A')
         .replace(/\u0629/g, '\u0647')
-        .replace(/\s+/g, ' ')
-        .trim();
+        .replace(/\s+/g, ' ').trim();
     }
 
     function productMatchesSearch(product, query) {
       const normalizedQuery = normalizeForSearch(query);
       if (!normalizedQuery) return true;
-
       const fields = [product.name, product.nameEn, product.description];
       return fields.some(field => normalizeForSearch(field).includes(normalizedQuery));
     }
@@ -1558,7 +1111,6 @@ function renderLoadMoreButton(products) {
     function applyProductSearch(inputId = 'product-search-input') {
       const input = document.getElementById(inputId) || document.getElementById('product-search-input');
       productSearchQuery = input ? input.value : '';
-
       const searchablePages = ['home', 'face', 'lips', 'eyes', 'foundation', 'setting', 'gifts', 'packages', 'nails', 'accessories', 'sale', 'all'];
       if (!searchablePages.includes(currentPage)) {
         navigateTo('home');
@@ -1575,13 +1127,8 @@ function renderLoadMoreButton(products) {
     }
 
     function syncSearchInputs() {
-      const ids = ['product-search-input'];
-      ids.forEach(id => {
-        const el = document.getElementById(id);
-        if (el && el.value !== productSearchQuery) {
-          el.value = productSearchQuery;
-        }
-      });
+      const el = document.getElementById('product-search-input');
+      if (el && el.value !== productSearchQuery) el.value = productSearchQuery;
     }
 
     function getSearchSuggestionTerms() {
@@ -1600,12 +1147,11 @@ function renderLoadMoreButton(products) {
       const terms = getSearchSuggestionTerms();
       const ordered = normalizedQuery
         ? terms.sort((a, b) => {
-          const aStarts = normalizeForSearch(a).startsWith(normalizedQuery) ? 0 : 1;
-          const bStarts = normalizeForSearch(b).startsWith(normalizedQuery) ? 0 : 1;
-          return aStarts - bStarts;
-        })
+            const aStarts = normalizeForSearch(a).startsWith(normalizedQuery) ? 0 : 1;
+            const bStarts = normalizeForSearch(b).startsWith(normalizedQuery) ? 0 : 1;
+            return aStarts - bStarts;
+          })
         : terms;
-
       const options = ordered.slice(0, 20).map(term => `<option value="${escapeHtml(term)}"></option>`).join('');
       return `<datalist id="product-search-options">${options}</datalist>`;
     }
@@ -1613,17 +1159,15 @@ function renderLoadMoreButton(products) {
     function updateSearchSuggestionList(value = '') {
       const datalist = document.getElementById('product-search-options');
       if (!datalist) return;
-
       const normalizedQuery = normalizeForSearch(value);
       const terms = getSearchSuggestionTerms();
       const ordered = normalizedQuery
         ? terms.sort((a, b) => {
-          const aStarts = normalizeForSearch(a).startsWith(normalizedQuery) ? 0 : 1;
-          const bStarts = normalizeForSearch(b).startsWith(normalizedQuery) ? 0 : 1;
-          return aStarts - bStarts;
-        })
+            const aStarts = normalizeForSearch(a).startsWith(normalizedQuery) ? 0 : 1;
+            const bStarts = normalizeForSearch(b).startsWith(normalizedQuery) ? 0 : 1;
+            return aStarts - bStarts;
+          })
         : terms;
-
       datalist.innerHTML = ordered.slice(0, 20).map(term => `<option value="${escapeHtml(term)}"></option>`).join('');
     }
 
@@ -1662,24 +1206,17 @@ function renderLoadMoreButton(products) {
       if (!page) page = 'home';
       currentPage = page;
       resetProductPagination();
-      // Show hero slideshow only on home page
       const hero = document.getElementById('hero-slideshow');
       if (hero) hero.style.display = (page === 'home') ? '' : 'none';
       const mobileMenu = document.getElementById('mobile-menu');
       if (mobileMenu) mobileMenu.classList.add('hidden');
       window.scrollTo({ top: 0, behavior: 'instant' });
       renderPage();
-
       try {
         const state = { page };
-        if (replace) {
-          history.replaceState(state, '', '#' + page);
-        } else {
-          history.pushState(state, '', '#' + page);
-        }
-      } catch (e) {
-        console.warn('history API not available', e);
-      }
+        if (replace) history.replaceState(state, '', '#' + page);
+        else history.pushState(state, '', '#' + page);
+      } catch (e) { console.warn('history API not available', e); }
     }
 
     window.addEventListener('popstate', (event) => {
@@ -1692,16 +1229,13 @@ function renderLoadMoreButton(products) {
     });
 
     function toggleMobileMenu() {
-      const menu = document.getElementById('mobile-menu');
-      menu.classList.toggle('hidden');
+      document.getElementById('mobile-menu').classList.toggle('hidden');
     }
 
     function toggleProductsDropdown(event) {
       event.stopPropagation();
-      const btn = document.getElementById('products-btn');
-      const dropdown = document.getElementById('products-dropdown');
-      btn.classList.toggle('active');
-      dropdown.classList.toggle('active');
+      document.getElementById('products-btn').classList.toggle('active');
+      document.getElementById('products-dropdown').classList.toggle('active');
     }
 
     function closeProductsDropdown() {
@@ -1721,23 +1255,10 @@ function renderLoadMoreButton(products) {
       }
     });
 
-    function toggleMobileProductsDropdown() {
-      const dropdown = document.getElementById('mobile-products-dropdown');
-      dropdown.classList.toggle('hidden');
-    }
-
-    function toggleMobileCategories() {
-      const categories = document.getElementById('mobile-categories');
-      const arrow = document.getElementById('mobile-cat-arrow');
-      categories.classList.toggle('hidden');
-      arrow.style.transform = categories.classList.contains('hidden') ? 'rotate(0)' : 'rotate(180deg)';
-    }
-
     function updateCartCount() {
       const countEl = document.getElementById('cart-count');
       const cartBtn = document.getElementById('cart-button');
       const total = cart.reduce((sum, item) => sum + item.quantity, 0);
-
       if (total > 0) {
         countEl.textContent = total;
         countEl.classList.remove('hidden');
@@ -1754,46 +1275,22 @@ function renderLoadMoreButton(products) {
 
       if (supabaseClient) {
         try {
-          let prodRow = null;
-          let fetchErr = null;
-
-          ({ data: prodRow, error: fetchErr } = await supabaseClient
-            .from('products')
-            .select('id, shades, stock')
-            .eq('id', productId)
-            .maybeSingle());
-
+          let prodRow = null, fetchErr = null;
+          ({ data: prodRow, error: fetchErr } = await supabaseClient.from('products').select('id, shades, stock').eq('id', productId).maybeSingle());
           if (!fetchErr && !prodRow) {
             const numericId = Number(productId);
             if (Number.isFinite(numericId)) {
-              try {
-                const res = await supabaseClient
-                  .from('products')
-                  .select('id, shades, stock')
-                  .eq('id', numericId)
-                  .maybeSingle();
-                prodRow = res.data;
-                fetchErr = res.error;
-              } catch (e) {
-                fetchErr = e;
-              }
+              const res = await supabaseClient.from('products').select('id, shades, stock').eq('id', numericId).maybeSingle();
+              prodRow = res.data; fetchErr = res.error;
             }
           }
-
           if (!fetchErr && prodRow) {
-            const localList = products[category] || [];
-            const local = localList.find(p => String(p.id) === String(productId) || String(p.id) === String(prodRow.id));
+            const local = (products[category] || []).find(p => String(p.id) === String(productId) || String(p.id) === String(prodRow.id));
             if (local) {
-              if (Array.isArray(prodRow.shades)) {
-                local.shades = prodRow.shades;
-              }
-              if (prodRow.stock !== undefined && prodRow.stock !== null) {
-                local.stock = prodRow.stock;
-              }
+              if (Array.isArray(prodRow.shades)) local.shades = prodRow.shades;
+              if (prodRow.stock !== undefined && prodRow.stock !== null) local.stock = prodRow.stock;
               product = local;
             }
-          } else if (fetchErr) {
-            console.error('Failed to refresh product before addToCart:', fetchErr);
           }
         } catch (err) {
           console.error('Failed to refresh product before addToCart:', err);
@@ -1803,12 +1300,9 @@ function renderLoadMoreButton(products) {
       const shade = product.shades.find(s => s.id === shadeId);
       if (!shade) return;
 
-      const shadeStock = getStock(product, shade); // null means unknown/unlimited
-
+      const shadeStock = getStock(product, shade);
       const existingItem = cart.find(item => item.productId === productId && item.shadeId === shadeId);
       const reserved = existingItem ? existingItem.quantity : 0;
-
-      console.log('addToCart check', { productId, shadeId, reserved, shadeStock, productLocalStock: product.stock });
 
       if (shadeStock !== null) {
         if (reserved >= shadeStock) {
@@ -1816,23 +1310,14 @@ function renderLoadMoreButton(products) {
           return;
         }
       } else {
-        // If stock is unknown (no numeric info), block adding to avoid unlimited adds
         showUnavailableFeedback('الكمية غير معروفة حالياً — يرجى تحديث الصفحة');
-        console.warn('addToCart aborted: unknown stock for', productId, shadeId);
         return;
       }
 
       if (existingItem) {
         existingItem.quantity++;
       } else {
-        cart.push({
-          productId,
-          category,
-          shadeId,
-          quantity: 1,
-          product,
-          shade
-        });
+        cart.push({ productId, category, shadeId, quantity: 1, product, shade });
       }
 
       updateCartCount();
@@ -1861,8 +1346,7 @@ function renderLoadMoreButton(products) {
         : (product && product.stock !== undefined && product.stock !== null)
           ? product.stock
           : null;
-
-      if (raw === null) return null; // unknown/unlimited
+      if (raw === null) return null;
       const n = Number(raw);
       return Number.isFinite(n) ? n : null;
     }
@@ -1876,8 +1360,7 @@ function renderLoadMoreButton(products) {
     function updateQuantity(index, change) {
       const item = cart[index];
       const newQty = item.quantity + change;
-      const shadeStock = getStock(item.product, item.shade); // null = unlimited
-
+      const shadeStock = getStock(item.product, item.shade);
       if (newQty <= 0) {
         removeFromCart(index);
       } else if (shadeStock === null || newQty <= shadeStock) {
@@ -1888,18 +1371,14 @@ function renderLoadMoreButton(products) {
       }
     }
 
-    // Product Modal
     function openProductModal(productId, category) {
       const product = products[category].find(p => p.id === productId);
       if (!product) return;
-
       const modal = document.getElementById('product-modal');
       const content = document.getElementById('modal-content');
-
       const firstAvailableShade = product.shades.find(s => ((s.stock !== undefined) ? s.stock > 0 : product.stock > 0));
       const currentShade = (selectedShades[productId] && ((selectedShades[productId].stock !== undefined)
-        ? selectedShades[productId].stock > 0
-        : product.stock > 0))
+        ? selectedShades[productId].stock > 0 : product.stock > 0))
         ? selectedShades[productId]
         : (firstAvailableShade || product.shades[0]);
 
@@ -1908,11 +1387,10 @@ function renderLoadMoreButton(products) {
           <div class="flex items-center justify-center">
             <div class="w-full max-w-md aspect-square rounded-3xl overflow-hidden product-image shadow-lg" style="background: ${currentShade ? currentShade.color + '15' : '#f5e6e615'};">
               ${currentShade && currentShade.image
-              ? `<img loading="lazy" decoding="async" src="${currentShade.image}" class="w-full h-full object-cover" alt="${currentShade.name}">`
-          : `<div class="w-full h-full flex items-center justify-center p-8">
+                ? `<img loading="lazy" decoding="async" src="${currentShade.image}" class="w-full h-full object-cover" alt="${currentShade.name}">`
+                : `<div class="w-full h-full flex items-center justify-center p-8">
                      <div class="w-40 h-40 rounded-full shadow-lg" style="background: ${currentShade ? currentShade.color : '#7B1040'};"></div>
-                   </div>`
-        }
+                   </div>`}
             </div>
           </div>
           <div class="flex flex-col justify-center">
@@ -1924,32 +1402,24 @@ function renderLoadMoreButton(products) {
               ${product.on_sale && product.original_price ? `<p class="text-xl text-stone-400 line-through">₪${product.original_price}</p>` : ''}
               ${product.on_sale && product.discount_pct ? `<span class="text-sm bg-rose-100 text-rose-500 px-3 py-1 rounded-full font-bold">-${product.discount_pct}%</span>` : ''}
             </div>
-            
             <div class="mb-8">
               <p class="text-stone-700 font-medium mb-4">اختاري اللون:</p>
               <div class="flex flex-wrap gap-4">
                 ${product.shades.map(shade => {
-          const sStock = getStock(product, shade);
-          const sOutOfStock = (sStock !== null && sStock <= 0);
-          return `
-                  <button 
-                    onclick="event.stopPropagation(); ${sOutOfStock ? `showUnavailableFeedback('عذراً، هذا اللون غير متوفر')` : `selectModalShade('${productId}', '${category}', '${shade.id}')`}"
+                  const sStock = getStock(product, shade);
+                  const sOutOfStock = (sStock !== null && sStock <= 0);
+                  return `<button onclick="event.stopPropagation(); ${sOutOfStock ? `showUnavailableFeedback('عذراً، هذا اللون غير متوفر')` : `selectModalShade('${productId}', '${category}', '${shade.id}')`}"
                     class="shade-btn w-12 h-12 rounded-full border-3 border-white shadow-md transition-all ${currentShade.id === shade.id ? 'selected' : ''} ${sOutOfStock ? 'opacity-40' : ''}"
                     style="background: ${shade.color}; position:relative; ${sOutOfStock ? 'cursor:not-allowed;' : ''}"
-                    title="${shade.name}${sOutOfStock ? ' - غير متوفر' : ''}"
-                  >
-                    ${sOutOfStock ? `<span style=\"position:absolute;inset:0;display:flex;align-items:center;justify-content:center;\"><svg xmlns='http://www.w3.org/2000/svg' class='w-5 h-5 text-white' viewBox='0 0 24 24' fill='none' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 18L18 6M6 6l12 12'/></svg></span>` : ''}
-                  </button>
-                `}).join('')}
+                    title="${shade.name}${sOutOfStock ? ' - غير متوفر' : ''}">
+                    ${sOutOfStock ? `<span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;"><svg xmlns='http://www.w3.org/2000/svg' class='w-5 h-5 text-white' viewBox='0 0 24 24' fill='none' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 18L18 6M6 6l12 12'/></svg></span>` : ''}
+                  </button>`;
+                }).join('')}
               </div>
               <p class="text-sm text-stone-500 mt-4">اللون المختار: <span class="font-medium text-stone-700">${currentShade.name}</span></p>
             </div>
-            
             ${product.shades.some(s => { const st = getStock(product, s); return st === null ? true : st > 0; }) ? `
-              <button 
-                onclick="addToCart('${productId}', '${category}', '${currentShade.id}'); closeProductModal();"
-                class="btn-primary text-white py-4 px-8 rounded-full text-lg font-medium"
-              >
+              <button onclick="addToCart('${productId}', '${category}', '${currentShade.id}'); closeProductModal();" class="btn-primary text-white py-4 px-8 rounded-full text-lg font-medium">
                 أضيفي إلى السلة
               </button>
             ` : `
@@ -1960,7 +1430,6 @@ function renderLoadMoreButton(products) {
           </div>
         </div>
       `;
-
       modal.classList.remove('hidden');
     }
 
@@ -1968,10 +1437,7 @@ function renderLoadMoreButton(products) {
       const product = products[category].find(p => p.id === productId);
       const shade = product.shades.find(s => s.id === shadeId);
       const sStock = getStock(product, shade);
-      if (sStock !== null && sStock <= 0) {
-        showUnavailableFeedback('عذراً، هذا اللون غير متوفر');
-        return;
-      }
+      if (sStock !== null && sStock <= 0) { showUnavailableFeedback('عذراً، هذا اللون غير متوفر'); return; }
       selectedShades[productId] = shade;
       openProductModal(productId, category);
     }
@@ -1980,88 +1446,75 @@ function renderLoadMoreButton(products) {
       document.getElementById('product-modal').classList.add('hidden');
     }
 
-    // Render Functions
     function renderProductCard(product, category, index) {
-      // Cache and optimize shade calculations
       const productId = String(product.id);
       const shades = product.shades || [];
       const selectedShadeObj = selectedShades[productId];
-      
-      // Pre-calculate stock for all shades
       const shadeStockMap = {};
       let firstAvailableShade = null;
       let productAvailable = false;
-      
+
       for (let i = 0; i < shades.length; i++) {
         const s = shades[i];
         const st = getStock(product, s);
         shadeStockMap[s.id] = st;
-        if (st === null || st > 0) {
-          productAvailable = true;
-          if (!firstAvailableShade) firstAvailableShade = s;
-        }
+        if (st === null || st > 0) { productAvailable = true; if (!firstAvailableShade) firstAvailableShade = s; }
       }
-      
+
       const isOutOfStock = !productAvailable;
       const selectedShadeStock = selectedShadeObj ? shadeStockMap[selectedShadeObj.id] : null;
       const currentShade = (selectedShadeObj && (selectedShadeStock === null || selectedShadeStock > 0))
-        ? selectedShadeObj
-        : (firstAvailableShade || shades[0]);
-      
-      // Calculate reserved quantity for current shade
+        ? selectedShadeObj : (firstAvailableShade || shades[0]);
+
       let reservedForCurrent = 0;
       const currentShadeId = String(currentShade?.id || '');
       for (let i = 0; i < cart.length; i++) {
         const item = cart[i];
-        if (String(item.productId) === productId && String(item.shadeId) === currentShadeId) {
-          reservedForCurrent += item.quantity;
-        }
+        if (String(item.productId) === productId && String(item.shadeId) === currentShadeId) reservedForCurrent += item.quantity;
       }
-      
+
       const currentShadeStock = shadeStockMap[currentShade?.id] || null;
       const canAddCurrent = (currentShadeStock === null) ? true : (reservedForCurrent < currentShadeStock);
 
       return `
         <div class="product-card rounded-3xl overflow-hidden slide-up" style="animation-delay: ${index * 0.03}s;">
-          <div 
-            class="aspect-square cursor-pointer relative overflow-hidden product-image transition-transform"
+          <div class="aspect-square cursor-pointer relative overflow-hidden product-image transition-transform"
             onclick="openProductModal('${product.id}', '${category}')"
-            style="background: ${currentShade ? currentShade.color + '15' : '#f5e6e615'};"
-          >
+            style="background: ${currentShade ? currentShade.color + '15' : '#f5e6e615'};">
             ${currentShade && currentShade.image
-          ? `<img loading="lazy" decoding="async" src="${currentShade.image}" class="w-full h-full object-cover" alt="${currentShade.name}">`
-          : `<div class="absolute inset-0 flex items-center justify-center">
+              ? `<img loading="lazy" decoding="async" src="${currentShade.image}" class="w-full h-full object-cover" alt="${currentShade.name}">`
+              : `<div class="absolute inset-0 flex items-center justify-center">
                    <div class="w-24 h-24 rounded-full shadow-md" style="background: ${currentShade ? currentShade.color : '#7B1040'};"></div>
-                 </div>`
-        }
+                 </div>`}
             ${isOutOfStock ? `
               <div class="absolute inset-0 bg-white/40 backdrop-blur-sm flex items-center justify-center">
                 <span class="bg-white px-4 py-2 rounded-full text-stone-500 text-sm font-medium">نفد من المخزون</span>
-              </div>
-            ` : ''}
+              </div>` : ''}
           </div>
           <div class="p-5 md:p-6">
             <h3 class="font-bold text-stone-700 mb-1 text-sm md:text-base">${product.name}</h3>
             <p class="cursive-english text-sm text-rose-400 mb-4">${product.nameEn}</p>
             <p class="text-lg font-bold text-rose-500 mb-5">₪${product.price}${product.on_sale && product.original_price ? ` <span class="text-sm text-stone-400 line-through font-normal">₪${product.original_price}</span>${product.discount_pct ? ` <span class="text-xs bg-rose-100 text-rose-500 px-2 py-0.5 rounded-full font-bold">-${product.discount_pct}%</span>` : ''}` : ''}</p>
-            
             <div class="mb-5">
               <p class="text-xs text-stone-500 mb-3 font-medium">اختاري اللون:</p>
               <div class="flex flex-wrap gap-2">
                 ${shades.map(shade => {
-          const sStock = shadeStockMap[shade.id];
-          const sOutOfStock = (sStock !== null && sStock <= 0);
-          const isSelected = currentShade && currentShade.id === shade.id;
-          return `<button onclick="event.stopPropagation(); ${sOutOfStock ? `showUnavailableFeedback('عذراً، هذا اللون غير متوفر')` : `selectShade('${product.id}', '${shade.id}', '${category}')`}" class="shade-btn w-8 h-8 rounded-full border-2 border-white shadow-md transition-all ${isSelected ? 'selected' : ''} ${sOutOfStock ? 'opacity-30' : ''}" style="background: ${shade.color}; ${sOutOfStock ? 'cursor:not-allowed; position:relative;' : ''}" title="${shade.name}${sOutOfStock ? ' - غير متوفر' : ''}">${sOutOfStock ? `<span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;"><svg xmlns='http://www.w3.org/2000/svg' class='w-4 h-4 text-white' viewBox='0 0 24 24' fill='none' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 18L18 6M6 6l12 12'/></svg></span>` : ''}</button>`;
-        }).join('')}
+                  const sStock = shadeStockMap[shade.id];
+                  const sOutOfStock = (sStock !== null && sStock <= 0);
+                  const isSelected = currentShade && currentShade.id === shade.id;
+                  return `<button onclick="event.stopPropagation(); ${sOutOfStock ? `showUnavailableFeedback('عذراً، هذا اللون غير متوفر')` : `selectShade('${product.id}', '${shade.id}', '${category}')`}"
+                    class="shade-btn w-8 h-8 rounded-full border-2 border-white shadow-md transition-all ${isSelected ? 'selected' : ''} ${sOutOfStock ? 'opacity-30' : ''}"
+                    style="background: ${shade.color}; ${sOutOfStock ? 'cursor:not-allowed; position:relative;' : ''}"
+                    title="${shade.name}${sOutOfStock ? ' - غير متوفر' : ''}">
+                    ${sOutOfStock ? `<span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;"><svg xmlns='http://www.w3.org/2000/svg' class='w-4 h-4 text-white' viewBox='0 0 24 24' fill='none' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 18L18 6M6 6l12 12'/></svg></span>` : ''}
+                  </button>`;
+                }).join('')}
               </div>
             </div>
-            
-            <button 
+            <button
               onclick="event.stopPropagation(); ${isOutOfStock ? `showUnavailableFeedback('عذراً، هذا المنتج نفد من المخزون')` : (!canAddCurrent ? `showUnavailableFeedback('عذراً، الكمية المتاحة من هذا اللون نفدت')` : `addToCart('${product.id}', '${category}', '${currentShade ? currentShade.id : ''}')`)}"
               class="btn-primary w-full text-white py-3 rounded-full text-sm font-medium ${isOutOfStock || !canAddCurrent ? 'opacity-50' : ''}"
-              ${isOutOfStock || !canAddCurrent ? 'disabled' : ''}
-            >
+              ${isOutOfStock || !canAddCurrent ? 'disabled' : ''}>
               ${isOutOfStock ? 'نفد من المخزون' : (!canAddCurrent ? 'الكمية نفدت' : 'أضيفي للسلة')}
             </button>
           </div>
@@ -2073,26 +1526,17 @@ function renderLoadMoreButton(products) {
       const product = products[category].find(p => p.id === productId);
       const shade = product.shades.find(s => s.id === shadeId);
       const sStock = getStock(product, shade);
-      if (sStock !== null && sStock <= 0) {
-        showUnavailableFeedback('عذراً، هذا اللون غير متوفر');
-        return;
-      }
+      if (sStock !== null && sStock <= 0) { showUnavailableFeedback('عذراً، هذا اللون غير متوفر'); return; }
       selectedShades[productId] = shade;
       debouncedRenderPage();
     }
 
     function renderCategoryPage(categoryKey, title, titleEn) {
       const categoryProducts = products[categoryKey] || [];
-      // Cache the filtered products to avoid re-filtering on every render
-      const filteredProducts = productSearchQuery.trim() 
+      const filteredProducts = productSearchQuery.trim()
         ? categoryProducts.filter(product => productMatchesSearch(product, productSearchQuery))
         : categoryProducts;
-
-      // Reset pagination when switching pages or searching
-      if (currentProductsPage === 1) {
-        resetProductPagination();
-      }
-      
+      if (currentProductsPage === 1) resetProductPagination();
       const paginatedProducts = getPaginatedProducts(filteredProducts);
 
       return `
@@ -2102,9 +1546,7 @@ function renderLoadMoreButton(products) {
             <p class="cursive-english text-2xl text-[#7B1040]">${titleEn}</p>
             <div class="mt-6 w-24 h-[1px] bg-[#F9D0DC] mx-auto"></div>
           </div>
-
           ${renderProductSearchBar()}
-
           ${categoryProducts.length === 0 ? `
             <div class="text-center py-24">
               <p class="text-stone-500 text-lg">لا توجد منتجات في هذا القسم حالياً</p>
@@ -2136,8 +1578,7 @@ function renderLoadMoreButton(products) {
         { key: 'accessories', name: 'اكسسوارات', nameEn: 'Accessories' },
         { key: 'sale', name: 'مخفض', nameEn: 'Sale' }
       ];
-      
-      // Only compute search results if there's an active search query
+
       let searchResults = [];
       if (productSearchQuery.trim()) {
         searchResults = Object.entries(products).flatMap(([categoryKey, categoryProducts]) =>
@@ -2149,10 +1590,7 @@ function renderLoadMoreButton(products) {
 
       return `
         <div class="fade-in">
-          <!-- Hero is now the static Eid banner above main -->
-
           ${renderProductSearchBar()}
-
           ${productSearchQuery.trim() ? `
             <div class="my-20">
               <div class="text-center mb-12">
@@ -2174,13 +1612,9 @@ function renderLoadMoreButton(products) {
           ` : ''}
 
           <div class="section-divider"></div>
-
-          <!-- Coming Soon -->
           ${renderComingSoonSection()}
-
           <div class="section-divider"></div>
 
-          <!-- Featured Products (now shown before collections) -->
           <div class="my-20">
             <div class="text-center mb-12">
               <h2 class="text-3xl font-bold text-stone-700">منتجات مميزة</h2>
@@ -2196,28 +1630,18 @@ function renderLoadMoreButton(products) {
 
           <div class="section-divider"></div>
 
-          <!-- Categories Grid -->
           <div class="my-20">
             <div class="text-center mb-12">
               <h2 class="text-3xl font-bold text-stone-700">استكشفي مجموعاتنا</h2>
               <p class="cursive-english text-rose-400 mt-2">Our Collections</p>
             </div>
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-              <button 
-                onclick="navigateTo('all')"
-                class="category-card p-6 md:p-8 rounded-3xl text-center slide-up"
-                style="animation-delay: 0s; background: white; border: 1px solid #7B1040;"
-              >
+              <button onclick="navigateTo('all')" class="category-card p-6 md:p-8 rounded-3xl text-center slide-up" style="animation-delay: 0s; background: white; border: 1px solid #7B1040;">
                 <h3 class="font-bold text-[#7B1040] text-lg">كل المنتجات</h3>
                 <p class="cursive-english text-sm text-stone-500">View All</p>
               </button>
               ${categories.map((cat, index) => `
-                <button 
-                  onclick="navigateTo('${cat.key}')"
-                  class="category-card p-6 md:p-8 rounded-3xl text-center slide-up"
-                  style="animation-delay: ${(index + 1) * 0.08}s; background: white; border: 1px solid #F9D0DC;"
-                >
-                  <!-- words only: no icon/badge -->
+                <button onclick="navigateTo('${cat.key}')" class="category-card p-6 md:p-8 rounded-3xl text-center slide-up" style="animation-delay: ${(index + 1) * 0.08}s; background: white; border: 1px solid #F9D0DC;">
                   <h3 class="font-bold text-stone-700 text-lg">${cat.name}</h3>
                   <p class="cursive-english text-sm text-stone-500">${cat.nameEn}</p>
                 </button>
@@ -2236,10 +1660,7 @@ function renderLoadMoreButton(products) {
         { id: 'd4', name: 'توصيل إلى الداخل المحتل', price: 70 }
       ];
 
-      const rawSubtotal = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
-      const discountActive = isDiscountActive();
-      const discountAmount = discountActive ? Math.round(rawSubtotal * DISCOUNT_PCT) / 100 : 0;
-      const subtotal = discountActive ? Math.round((rawSubtotal - discountAmount) * 100) / 100 : rawSubtotal;
+      const subtotal = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
 
       if (cart.length === 0) {
         return `
@@ -2251,9 +1672,7 @@ function renderLoadMoreButton(products) {
             </div>
             <h2 class="text-3xl font-bold text-stone-700 mb-3">السلة فارغة</h2>
             <p class="text-stone-500 mb-8 text-lg">لم تضيفي أي منتجات بعد</p>
-            <button onclick="navigateTo('home')" class="btn-primary text-white px-8 py-4 rounded-full font-medium">
-              ابدأي التسوق
-            </button>
+            <button onclick="navigateTo('home')" class="btn-primary text-white px-8 py-4 rounded-full font-medium">ابدأي التسوق</button>
           </div>
         `;
       }
@@ -2264,9 +1683,7 @@ function renderLoadMoreButton(products) {
             <h1 class="text-4xl font-bold text-stone-700 mb-2">السلة</h1>
             <p class="cursive-english text-2xl text-rose-400">Shopping Cart</p>
           </div>
-          
           <div class="grid lg:grid-cols-3 gap-8">
-            <!-- Cart Items -->
             <div class="lg:col-span-2 space-y-5">
               ${cart.map((item, index) => `
                 <div class="glass-card rounded-2xl p-5 md:p-6 flex gap-5 slide-up" style="animation-delay: ${index * 0.03}s;">
@@ -2293,59 +1710,30 @@ function renderLoadMoreButton(products) {
                 </div>
               `).join('')}
             </div>
-            
-            <!-- Order Summary -->
             <div class="lg:col-span-1">
               <div class="glass-card rounded-3xl p-8 sticky top-28">
                 <h3 class="text-2xl font-bold text-stone-700 mb-8">ملخص الطلب</h3>
-                
                 <div class="space-y-4 mb-8 pb-8 border-b border-rose-100/50">
                   <div class="flex justify-between text-stone-600">
                     <span class="font-medium">المجموع الفرعي</span>
-                    <span class="font-bold ${discountActive ? 'line-through text-stone-400' : ''}">₪${rawSubtotal}</span>
+                    <span class="font-bold">₪${subtotal}</span>
                   </div>
-                  ${discountActive ? `
-                  <div class="flex justify-between text-green-600">
-                    <span class="font-medium flex items-center gap-1">
-                      <span class="text-xs bg-green-100 text-green-600 px-2 py-0.5 rounded-full font-bold">-${DISCOUNT_PCT}%</span>
-                      خصم خاص
-                    </span>
-                    <span class="font-bold">- ₪${discountAmount.toFixed(2)}</span>
-                  </div>
-                  <div class="flex justify-between text-stone-600">
-                    <span class="font-medium">بعد الخصم</span>
-                    <span class="font-bold text-green-600">₪${subtotal.toFixed(2)}</span>
-                  </div>
-                  ` : ''}
                   <div class="flex justify-between text-stone-600">
                     <span class="font-medium">التوصيل</span>
                     <span id="delivery-cost" class="font-bold">₪0</span>
                   </div>
                   <div class="flex justify-between text-lg">
                     <span class="font-bold text-stone-700">الإجمالي</span>
-                    <span id="total-cost" class="font-bold text-[#7B1040]">₪${subtotal.toFixed(2)}</span>
+                    <span id="total-cost" class="font-bold text-[#7B1040]">₪${subtotal}</span>
                   </div>
                 </div>
-                
-                <!-- Delivery Options -->
                 <div class="mb-8">
                   <p class="font-bold text-stone-700 mb-4">خيارات التوصيل:</p>
                   <div class="space-y-3">
                     ${deliveryOptions.map((option, index) => `
                       <div>
-                        <input 
-                          type="radio" 
-                          id="delivery-${option.id}" 
-                          name="delivery" 
-                          value="${option.price}"
-                          class="hidden"
-                          onchange="updateDelivery(${option.price})"
-                          ${index === 0 ? 'checked' : ''}
-                        >
-                        <label 
-                          for="delivery-${option.id}" 
-                          class="block p-3 border-2 border-rose-100 rounded-xl cursor-pointer hover:border-rose-300 transition-all text-sm"
-                        >
+                        <input type="radio" id="delivery-${option.id}" name="delivery" value="${option.price}" class="hidden" onchange="updateDelivery(${option.price})" ${index === 0 ? 'checked' : ''}>
+                        <label for="delivery-${option.id}" class="block p-3 border-2 border-rose-100 rounded-xl cursor-pointer hover:border-rose-300 transition-all text-sm">
                           <span class="block text-stone-700 font-medium">${option.name}</span>
                           <span class="text-rose-500 font-bold text-sm mt-1">${option.price === 0 ? 'مجاني' : `₪${option.price}`}</span>
                         </label>
@@ -2353,18 +1741,12 @@ function renderLoadMoreButton(products) {
                     `).join('')}
                   </div>
                 </div>
-                
-                <!-- Payment Method -->
                 <div class="mb-8 p-4 bg-[#FFF0F4] rounded-2xl border border-[#F9D0DC]">
                   <p class="font-bold text-stone-700 mb-2">طريقة الدفع:</p>
-                  <p class="text-stone-600 text-sm font-medium">الدفع عند الاستلام </p>
+                  <p class="text-stone-600 text-sm font-medium">الدفع عند الاستلام</p>
                   <p class="text-xs text-stone-500 mt-3">للدفع عبر الفيزا يرجى التواصل معنا عبر الانستغرام</p>
                 </div>
-                
-                <!-- Checkout Button -->
-                <button onclick="showCheckoutForm()" class="btn-primary w-full text-white py-4 rounded-full text-lg font-bold">
-                  إتمام الطلب
-                </button>
+                <button onclick="showCheckoutForm()" class="btn-primary w-full text-white py-4 rounded-full text-lg font-bold">إتمام الطلب</button>
               </div>
             </div>
           </div>
@@ -2373,98 +1755,71 @@ function renderLoadMoreButton(products) {
     }
 
     function updateDelivery(price) {
-      const rawSub = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
-      const sub = isDiscountActive() ? Math.round(rawSub * (1 - DISCOUNT_PCT/100) * 100) / 100 : rawSub;
+      const subtotal = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
       document.getElementById('delivery-cost').textContent = `₪${price}`;
-      document.getElementById('total-cost').textContent = `₪${(sub + price).toFixed(2)}`;
+      document.getElementById('total-cost').textContent = `₪${(subtotal + price).toFixed(2)}`;
     }
 
     function showCheckoutForm() {
-      const rawSubtotal = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
-      const discountActive = isDiscountActive();
-      const discountAmount = discountActive ? Math.round(rawSubtotal * DISCOUNT_PCT) / 100 : 0;
-      const subtotal = discountActive ? Math.round((rawSubtotal - discountAmount) * 100) / 100 : rawSubtotal;
+      const subtotal = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
       const deliveryPrice = parseInt(document.querySelector('input[name="delivery"]:checked').value);
       const total = Math.round((subtotal + deliveryPrice) * 100) / 100;
 
       const mainContent = document.getElementById('main-content');
       mainContent.innerHTML = `
-                <div class="fade-in max-w-2xl mx-auto">
-                    <div class="text-center mb-12">
-                        <h1 class="text-4xl font-bold text-stone-700 mb-2">تفاصيل الشحن</h1>
-                        <p class="cursive-english text-2xl text-rose-400">Shipping Details</p>
-                    </div>
-
-                    <div class="glass-card rounded-3xl p-8 md:p-12">
-                        <form id="checkout-form" onsubmit="handleCheckout(event)" class="space-y-6">
-                            <div>
-                                <label class="block text-stone-700 font-bold mb-2">الاسم الكامل <span class="text-rose-500">*</span></label>
-                                <input type="text" id="cust-name" required class="w-full px-5 py-4 rounded-2xl border border-rose-100 focus:border-rose-400 focus:ring-4 focus:ring-rose-400/10 outline-none transition-all" placeholder="أدخلي اسمك الكامل">
-                            </div>
-
-                            <div>
-                                <label class="block text-stone-700 font-bold mb-2">العنوان الأساسي <span class="text-rose-500">*</span></label>
-                                <input type="text" id="cust-address" required class="w-full px-5 py-4 rounded-2xl border border-rose-100 focus:border-rose-400 focus:ring-4 focus:ring-rose-400/10 outline-none transition-all" placeholder="المدينة، الشارع، المعالم القريبة">
-                            </div>
-
-                            <div>
-                                <label class="block text-stone-700 font-bold mb-2">رقم الهاتف <span class="text-rose-500">*</span></label>
-                                <input type="tel" id="cust-phone" required class="w-full px-5 py-4 rounded-2xl border border-rose-100 focus:border-rose-400 focus:ring-4 focus:ring-rose-400/10 outline-none transition-all" placeholder="05x-xxxxxxx">
-                            </div>
-
-                            <div class="pt-4 border-t border-rose-50">
-                                <label class="block text-stone-700 font-bold mb-2">عنوان بديل (اختياري)</label>
-                                <input type="text" id="cust-address-alt" class="w-full px-5 py-4 rounded-2xl border border-rose-100 focus:border-rose-400 focus:ring-4 focus:ring-rose-400/10 outline-none transition-all" placeholder="عنوان آخر للتوصل في حال عدم التواجد">
-                            </div>
-
-                            <div>
-                                <label class="block text-stone-700 font-bold mb-2">رقم هاتف آخر (اختياري)</label>
-                                <input type="tel" id="cust-phone-alt" class="w-full px-5 py-4 rounded-2xl border border-rose-100 focus:border-rose-400 focus:ring-4 focus:ring-rose-400/10 outline-none transition-all" placeholder="رقم هات بديل">
-                            </div>
-
-                            <div>
-                                <label class="block text-stone-700 font-bold mb-2">ملاحظات مع الطلب (اختياري)</label>
-                                <textarea id="cust-notes" rows="3" class="w-full px-5 py-4 rounded-2xl border border-rose-100 focus:border-rose-400 focus:ring-4 focus:ring-rose-400/10 outline-none transition-all resize-none" placeholder="أي ملاحظات إضافة بخصوص الطلب أو التوصيل..."></textarea>
-                            </div>
-
-                            <div class="pt-6">
-                                <div class="bg-rose-50 rounded-2xl p-5 mb-8">
-                                    ${discountActive ? `
-                                    <div class="flex justify-between text-sm text-stone-500 mb-2">
-                                      <span>المجموع قبل الخصم</span>
-                                      <span class="line-through">₪${rawSubtotal}</span>
-                                    </div>
-                                    <div class="flex justify-between text-sm text-green-600 mb-2">
-                                      <span>خصم ${DISCOUNT_PCT}% (عرض محدود)</span>
-                                      <span>- ₪${discountAmount.toFixed(2)}</span>
-                                    </div>
-                                    ` : ''}
-                                    <div class="flex justify-between items-center ${discountActive ? 'border-t border-rose-100 pt-2' : ''}">
-                                      <span class="text-stone-700 font-bold">الإجمالي النهائي:</span>
-                                      <span class="text-2xl font-bold text-[#7B1040]">₪${total.toFixed(2)}</span>
-                                    </div>
-                                </div>
-                                <button type="submit" class="btn-primary w-full text-white py-5 rounded-full text-xl font-bold">
-                                    تأكيد الطلب 
-                                </button>
-                                <button type="button" onclick="navigateTo('cart')" class="w-full text-stone-400 mt-4 text-sm hover:text-stone-600 transition-colors">
-                                    العودة للسلة
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+        <div class="fade-in max-w-2xl mx-auto">
+          <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-stone-700 mb-2">تفاصيل الشحن</h1>
+            <p class="cursive-english text-2xl text-rose-400">Shipping Details</p>
+          </div>
+          <div class="glass-card rounded-3xl p-8 md:p-12">
+            <form id="checkout-form" onsubmit="handleCheckout(event)" class="space-y-6">
+              <div>
+                <label class="block text-stone-700 font-bold mb-2">الاسم الكامل <span class="text-rose-500">*</span></label>
+                <input type="text" id="cust-name" required class="w-full px-5 py-4 rounded-2xl border border-rose-100 focus:border-rose-400 focus:ring-4 focus:ring-rose-400/10 outline-none transition-all" placeholder="أدخلي اسمك الكامل">
+              </div>
+              <div>
+                <label class="block text-stone-700 font-bold mb-2">العنوان الأساسي <span class="text-rose-500">*</span></label>
+                <input type="text" id="cust-address" required class="w-full px-5 py-4 rounded-2xl border border-rose-100 focus:border-rose-400 focus:ring-4 focus:ring-rose-400/10 outline-none transition-all" placeholder="المدينة، الشارع، المعالم القريبة">
+              </div>
+              <div>
+                <label class="block text-stone-700 font-bold mb-2">رقم الهاتف <span class="text-rose-500">*</span></label>
+                <input type="tel" id="cust-phone" required class="w-full px-5 py-4 rounded-2xl border border-rose-100 focus:border-rose-400 focus:ring-4 focus:ring-rose-400/10 outline-none transition-all" placeholder="05x-xxxxxxx">
+              </div>
+              <div class="pt-4 border-t border-rose-50">
+                <label class="block text-stone-700 font-bold mb-2">عنوان بديل (اختياري)</label>
+                <input type="text" id="cust-address-alt" class="w-full px-5 py-4 rounded-2xl border border-rose-100 focus:border-rose-400 focus:ring-4 focus:ring-rose-400/10 outline-none transition-all" placeholder="عنوان آخر للتوصل في حال عدم التواجد">
+              </div>
+              <div>
+                <label class="block text-stone-700 font-bold mb-2">رقم هاتف آخر (اختياري)</label>
+                <input type="tel" id="cust-phone-alt" class="w-full px-5 py-4 rounded-2xl border border-rose-100 focus:border-rose-400 focus:ring-4 focus:ring-rose-400/10 outline-none transition-all" placeholder="رقم هاتف بديل">
+              </div>
+              <div>
+                <label class="block text-stone-700 font-bold mb-2">ملاحظات مع الطلب (اختياري)</label>
+                <textarea id="cust-notes" rows="3" class="w-full px-5 py-4 rounded-2xl border border-rose-100 focus:border-rose-400 focus:ring-4 focus:ring-rose-400/10 outline-none transition-all resize-none" placeholder="أي ملاحظات إضافية بخصوص الطلب أو التوصيل..."></textarea>
+              </div>
+              <div class="pt-6">
+                <div class="bg-rose-50 rounded-2xl p-5 mb-8">
+                  <div class="flex justify-between items-center">
+                    <span class="text-stone-700 font-bold">الإجمالي النهائي:</span>
+                    <span class="text-2xl font-bold text-[#7B1040]">₪${total.toFixed(2)}</span>
+                  </div>
                 </div>
-            `;
+                <button type="submit" class="btn-primary w-full text-white py-5 rounded-full text-xl font-bold">تأكيد الطلب</button>
+                <button type="button" onclick="navigateTo('cart')" class="w-full text-stone-400 mt-4 text-sm hover:text-stone-600 transition-colors">العودة للسلة</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      `;
     }
 
     async function handleCheckout(event) {
       event.preventDefault();
-
       const btn = event.target.querySelector('button[type="submit"]');
       btn.disabled = true;
       btn.textContent = 'جاري إرسال الطلب...';
 
-      // Basic validation
       const customerName = document.getElementById('cust-name').value.trim();
       const address = document.getElementById('cust-address').value.trim();
       const phone = document.getElementById('cust-phone').value.trim();
@@ -2472,20 +1827,19 @@ function renderLoadMoreButton(products) {
       if (!customerName || !address || !phone) {
         alert('الرجاء ملء الحقول المطلوبة: الاسم، العنوان، ورقم الهاتف');
         btn.disabled = false;
-        btn.textContent = 'تأكيد الطلب ';
+        btn.textContent = 'تأكيد الطلب';
         return;
       }
 
       const deliveryEl = document.querySelector('input[name="delivery"]:checked');
       const deliveryPrice = deliveryEl ? parseInt(deliveryEl.value || '0') : 0;
-      const rawSubtotal = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
-      const discountedSub = isDiscountActive() ? Math.round(rawSubtotal * (1 - DISCOUNT_PCT/100) * 100) / 100 : rawSubtotal;
-      const total = Math.round((discountedSub + deliveryPrice) * 100) / 100;
+      const subtotal = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+      const total = Math.round((subtotal + deliveryPrice) * 100) / 100;
 
       if (!cart || cart.length === 0) {
         alert('سلة التسوق فارغة. يرجى إضافة منتجات قبل المتابعة.');
         btn.disabled = false;
-        btn.textContent = 'تأكيد الطلب ';
+        btn.textContent = 'تأكيد الطلب';
         return;
       }
 
@@ -2520,68 +1874,34 @@ function renderLoadMoreButton(products) {
 
       if (supabaseClient) {
         try {
-          const { error } = await supabaseClient
-            .from('orders')
-            .insert([orderData]);
+          const { error } = await supabaseClient.from('orders').insert([orderData]);
           if (error) throw error;
           supabaseOk = true;
-          console.log('Order saved to Supabase');
         } catch (err) {
           console.error('Supabase save failed:', err);
         }
-      } else {
-        console.log('Supabase client not available; skipping DB save.');
       }
 
       if (supabaseClient && cartSnapshot.length > 0) {
         for (const ci of cartSnapshot) {
           try {
-            const { data: prodRow, error: fetchErr } = await supabaseClient
-              .from('products')
-              .select('id, shades, stock')
-              .eq('id', ci.productId)
-              .maybeSingle();
-
-            if (fetchErr) {
-              console.error('Failed to fetch product for stock update:', ci.productId, fetchErr);
-              continue;
-            }
-
-            if (!prodRow) {
-              console.warn('No product row found for', ci.productId);
-              continue;
-            }
-
+            const { data: prodRow, error: fetchErr } = await supabaseClient.from('products').select('id, shades, stock').eq('id', ci.productId).maybeSingle();
+            if (fetchErr || !prodRow) continue;
             let updatePayload = {};
-
             if (Array.isArray(prodRow.shades) && prodRow.shades.length > 0) {
               const newShades = prodRow.shades.map(s => {
                 if (s && (s.id === ci.shadeId || String(s.id) === String(ci.shadeId))) {
                   const current = (s.stock !== undefined) ? Number(s.stock) : (prodRow.stock !== undefined ? Number(prodRow.stock) : null);
-                  if (current !== null) {
-                    s = { ...s, stock: Math.max(0, current - ci.quantity) };
-                    console.log(`Decremented shade ${ci.shadeId} of product ${ci.productId} to`, s.stock);
-                  }
+                  if (current !== null) return { ...s, stock: Math.max(0, current - ci.quantity) };
                 }
                 return s;
               });
               updatePayload.shades = newShades;
             } else if (prodRow.stock !== undefined) {
               updatePayload.stock = Math.max(0, Number(prodRow.stock) - ci.quantity);
-              console.log(`Decremented product ${ci.productId} stock to`, updatePayload.stock);
             }
-
-            // Send update if there's something to update
             if (Object.keys(updatePayload).length > 0) {
-              const { error: updErr } = await supabaseClient
-                .from('products')
-                .update(updatePayload)
-                .eq('id', ci.productId);
-              if (updErr) {
-                console.error('Failed to update product stock for', ci.productId, updErr);
-              } else {
-                console.log('Product stock updated for', ci.productId);
-              }
+              await supabaseClient.from('products').update(updatePayload).eq('id', ci.productId);
             }
           } catch (err) {
             console.error('Error updating stock for', ci.productId, err);
@@ -2589,7 +1909,6 @@ function renderLoadMoreButton(products) {
         }
       }
 
-      // 2) Send email notification via EmailJS (best-effort)
       try {
         const emailConfigReady =
           EMAIL_CONFIG.serviceId !== 'YOUR_SERVICE_ID' &&
@@ -2597,18 +1916,9 @@ function renderLoadMoreButton(products) {
           EMAIL_CONFIG.publicKey !== 'YOUR_PUBLIC_KEY';
 
         if (emailConfigReady) {
-          // Lazy-load EmailJS only when sending an email to reduce initial load time
-          try {
-            await loadEmailJS();
-          } catch (e) {
-            console.error('Failed to load EmailJS library:', e);
-          }
-
+          try { await loadEmailJS(); } catch (e) { console.error('Failed to load EmailJS:', e); }
           if (window.emailjs) {
-            const itemsList = orderData.items
-              .map(i => `${i.name} (${i.shade}) × ${i.quantity} — ₪${i.price * i.quantity}`)
-              .join('\n');
-
+            const itemsList = orderData.items.map(i => `${i.name} (${i.shade}) × ${i.quantity} — ₪${i.price * i.quantity}`).join('\n');
             try {
               window.emailjs.init(EMAIL_CONFIG.publicKey);
               await window.emailjs.send(EMAIL_CONFIG.serviceId, EMAIL_CONFIG.templateId, {
@@ -2624,66 +1934,45 @@ function renderLoadMoreButton(products) {
                 order_date: new Date().toLocaleString('ar-SA')
               });
               emailOk = true;
-              console.log('Order email sent via EmailJS');
-            } catch (err) {
-              console.error('EmailJS send failed:', err);
-            }
-          } else {
-            console.log('EmailJS not available after dynamic load; skipping email.');
+            } catch (err) { console.error('EmailJS send failed:', err); }
           }
-        } else {
-          console.log('EmailJS not configured; skipping email.');
         }
-      } catch (err) {
-        console.error('EmailJS send failed:', err);
-      }
+      } catch (err) { console.error('EmailJS send failed:', err); }
 
-      // Finalize: if both external actions failed, notify the user and don't clear their cart so they can try again.
       if (!supabaseOk && !emailOk) {
-        console.error('Both Supabase and EmailJS failed; aborting checkout.');
         alert('عذراً، حدث خطأ أثناء إتمام الطلب. يرجى المحاولة مرة أخرى أو التواصل معنا عبر الانستغرام.');
         btn.disabled = false;
-        btn.textContent = 'تأكيد الطلب 🌸';
+        btn.textContent = 'تأكيد الطلب';
         return;
       }
 
-      // Consider the order placed (at least one backend received it). Update local state, clear cart and show confirmation.
-      // Update in-memory product stocks to immediately reflect changes in the UI
       try {
-        if (cartSnapshot.length > 0) {
-          for (const ci of cartSnapshot) {
-            const prodList = products[ci.category] || [];
-            const localProd = prodList.find(p => String(p.id) === String(ci.productId));
-            if (!localProd) continue;
-
-            if (Array.isArray(localProd.shades) && localProd.shades.length > 0) {
-              localProd.shades = localProd.shades.map(s => {
-                if (s && (s.id === ci.shadeId || String(s.id) === String(ci.shadeId))) {
-                  const current = (s.stock !== undefined) ? Number(s.stock) : (localProd.stock !== undefined ? Number(localProd.stock) : null);
-                  if (current !== null) {
-                    return { ...s, stock: Math.max(0, current - ci.quantity) };
-                  }
-                }
-                return s;
-              });
-            } else if (localProd.stock !== undefined) {
-              localProd.stock = Math.max(0, Number(localProd.stock) - ci.quantity);
-            }
+        for (const ci of cartSnapshot) {
+          const prodList = products[ci.category] || [];
+          const localProd = prodList.find(p => String(p.id) === String(ci.productId));
+          if (!localProd) continue;
+          if (Array.isArray(localProd.shades) && localProd.shades.length > 0) {
+            localProd.shades = localProd.shades.map(s => {
+              if (s && (s.id === ci.shadeId || String(s.id) === String(ci.shadeId))) {
+                const current = (s.stock !== undefined) ? Number(s.stock) : (localProd.stock !== undefined ? Number(localProd.stock) : null);
+                if (current !== null) return { ...s, stock: Math.max(0, current - ci.quantity) };
+              }
+              return s;
+            });
+          } else if (localProd.stock !== undefined) {
+            localProd.stock = Math.max(0, Number(localProd.stock) - ci.quantity);
           }
         }
-      } catch (err) {
-        console.error('Error updating local product stocks:', err);
-      }
+      } catch (err) { console.error('Error updating local product stocks:', err); }
 
       cart = [];
       updateCartCount();
-      // Pass the email status so the confirmation page can show whether an email was sent
       showOrderConfirmation(emailOk);
     }
 
-  function showOrderConfirmation(emailOk = true) {
-    const mainContent = document.getElementById('main-content');
-    mainContent.innerHTML = `
+    function showOrderConfirmation(emailOk = true) {
+      const mainContent = document.getElementById('main-content');
+      mainContent.innerHTML = `
         <div class="fade-in text-center py-32">
           <div class="w-28 h-28 mx-auto mb-8 rounded-full bg-gradient-to-br from-green-100 to-emerald-100 flex items-center justify-center">
             <svg class="w-14 h-14 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -2692,13 +1981,12 @@ function renderLoadMoreButton(products) {
           </div>
           <h2 class="text-4xl font-bold text-stone-700 mb-4">شكراً لك!</h2>
           <p class="text-stone-600 text-lg mb-3">تم استلام طلبك بنجاح</p>
-          ${emailOk ? `<p class="text-stone-500 mb-6"></p>` : `<p class="text-amber-600 mb-6"></p>`}
           <button onclick="cart = []; updateCartCount(); navigateTo('home');" class="btn-primary text-white px-8 py-4 rounded-full font-medium">
             العودة للتسوق
           </button>
         </div>
       `;
-  }
+    }
 
     function renderCustomOrderPage() {
       return `
@@ -2709,22 +1997,12 @@ function renderLoadMoreButton(products) {
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
               </svg>
             </div>
-            
             <h1 class="text-4xl font-bold text-stone-700 mb-3">طلب مخصص</h1>
             <p class="cursive-english text-2xl text-rose-400 mb-12">Custom Order</p>
-            
             <div class="glass-card rounded-3xl p-10 md:p-14">
-              <p class="text-lg text-stone-600 leading-relaxed mb-12">
-                لطلب منتج غير متوفر أو طلب خاص، يرجى التواصل معنا عبر حسابنا على الانستغرام
-              </p>
-              
-              <a 
-                id="custom-instagram-link"
-                href="${config.instagram_url || defaultConfig.instagram_url}" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                class="inline-flex items-center gap-3 btn-primary text-white px-10 py-5 rounded-full text-lg font-bold hover:scale-105 transition-transform"
-              >
+              <p class="text-lg text-stone-600 leading-relaxed mb-12">لطلب منتج غير متوفر أو طلب خاص، يرجى التواصل معنا عبر حسابنا على الانستغرام</p>
+              <a id="custom-instagram-link" href="${config.instagram_url || defaultConfig.instagram_url}" target="_blank" rel="noopener noreferrer"
+                class="inline-flex items-center gap-3 btn-primary text-white px-10 py-5 rounded-full text-lg font-bold hover:scale-105 transition-transform">
                 <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
                 </svg>
@@ -2744,60 +2022,33 @@ function renderLoadMoreButton(products) {
             <p class="cursive-english text-2xl text-rose-400">About Us</p>
             <div class="mt-6 w-24 h-1 bg-gradient-to-r from-transparent via-rose-300 to-transparent mx-auto"></div>
           </div>
-          
-         <div class="max-w-3xl mx-auto space-y-8">
-  <div class="glass-card rounded-3xl p-10 md:p-12">
-    <div class="space-y-6">
-      <p class="text-lg text-stone-600 leading-relaxed">
-        نعمل في مجال منتجات التجميل والعناية منذ أكثر من 6 سنوات، وقد انطلق متجر ليان رسمياً قبل عامين ليكون وجهتك الموثوقة للحصول على منتجات أصلية 100% بعناية وجودة تليق بثقتك.
-      </p>
-
-      <p class="text-lg text-stone-600 leading-relaxed">
-        تأسس المتجر على يد شابة طموحة تسعى لتوفير تجربة تسوق مختلفة للفتيات الفلسطينيات، بحيث يمكنهن الوصول إلى منتجات عالمية أصلية من مصدر موثوق دون قلق أو تردد.
-      </p>
-
-      <p class="text-lg text-stone-600 leading-relaxed">
-        جميع منتجاتنا يتم شراؤها مباشرة من المواقع الرسمية المعتمدة للعلامات التجارية الأصلية، ونحرص دائماً على اختيار المصادر الموثوقة لضمان أن كل منتج يصل إليك هو منتج أصلي بالكامل دون أي شك.
-      </p>
-
-      <p class="text-lg text-stone-600 leading-relaxed">
-        نحن على استعداد دائم لإثبات أصالة أي منتج نقدمه، ويمكن لأي عميلة طلب ما تحتاجه من إثباتات مثل الباركود، تفاصيل الشراء، أو أي معلومات تساعدها على التأكد من المنتج قبل الشراء.
-      </p>
-
-      <p class="text-lg text-stone-600 leading-relaxed">
-        الثقة هي أغلى ما نملكه، ولهذا نعتبر كل طلب مسؤولية، وكل عميلة شراكة طويلة الأمد نبنيها بالشفافية والمصداقية والخدمة التي تستحقينها.
-      </p>
-    </div>
-  </div>
-</div>
-            
-            <div class="section-divider"></div>
-            
+          <div class="max-w-3xl mx-auto space-y-8">
             <div class="glass-card rounded-3xl p-10 md:p-12">
-              <h3 class="text-2xl font-bold text-stone-700 mb-6">سياسة الاسترجاع</h3>
-              <div class="bg-[#FFF0F4] rounded-2xl p-8 border border-[#F9D0DC]">
-                <p class="text-stone-600 text-lg leading-relaxed font-medium">
-                  لا يوجد استرجاع او تبديل إلا في حال وجود خلل في المنتج، ويجب تصوير المنتج خلال أول 24 ساعة من الاستلام.
-                </p>
+              <div class="space-y-6">
+                <p class="text-lg text-stone-600 leading-relaxed">نعمل في مجال منتجات التجميل والعناية منذ أكثر من 6 سنوات، وقد انطلق متجر ليان رسمياً قبل عامين ليكون وجهتك الموثوقة للحصول على منتجات أصلية 100% بعناية وجودة تليق بثقتك.</p>
+                <p class="text-lg text-stone-600 leading-relaxed">تأسس المتجر على يد شابة طموحة تسعى لتوفير تجربة تسوق مختلفة للفتيات الفلسطينيات، بحيث يمكنهن الوصول إلى منتجات عالمية أصلية من مصدر موثوق دون قلق أو تردد.</p>
+                <p class="text-lg text-stone-600 leading-relaxed">جميع منتجاتنا يتم شراؤها مباشرة من المواقع الرسمية المعتمدة للعلامات التجارية الأصلية، ونحرص دائماً على اختيار المصادر الموثوقة لضمان أن كل منتج يصل إليك هو منتج أصلي بالكامل دون أي شك.</p>
+                <p class="text-lg text-stone-600 leading-relaxed">نحن على استعداد دائم لإثبات أصالة أي منتج نقدمه، ويمكن لأي عميلة طلب ما تحتاجه من إثباتات مثل الباركود، تفاصيل الشراء، أو أي معلومات تساعدها على التأكد من المنتج قبل الشراء.</p>
+                <p class="text-lg text-stone-600 leading-relaxed">الثقة هي أغلى ما نملكه، ولهذا نعتبر كل طلب مسؤولية، وكل عميلة شراكة طويلة الأمد نبنيها بالشفافية والمصداقية والخدمة التي تستحقينها.</p>
               </div>
             </div>
-            
-            <!-- Contact Card -->
-            <div class="glass-card rounded-3xl p-10 text-center border border-rose-100/50">
-              <h3 class="text-2xl font-bold text-stone-700 mb-6">تواصلي معنا</h3>
-              <a 
-                id="about-instagram-link"
-                href="${config.instagram_url || defaultConfig.instagram_url}" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                class="inline-flex items-center gap-3 text-rose-500 hover:text-rose-600 transition-all hover:scale-110 text-lg font-medium"
-              >
-                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-                </svg>
-                <span>@layansbeautyshop</span>
-              </a>
+          </div>
+          <div class="section-divider"></div>
+          <div class="glass-card rounded-3xl p-10 md:p-12">
+            <h3 class="text-2xl font-bold text-stone-700 mb-6">سياسة الاسترجاع</h3>
+            <div class="bg-[#FFF0F4] rounded-2xl p-8 border border-[#F9D0DC]">
+              <p class="text-stone-600 text-lg leading-relaxed font-medium">لا يوجد استرجاع او تبديل إلا في حال وجود خلل في المنتج، ويجب تصوير المنتج خلال أول 24 ساعة من الاستلام.</p>
             </div>
+          </div>
+          <div class="glass-card rounded-3xl p-10 text-center border border-rose-100/50 mt-8">
+            <h3 class="text-2xl font-bold text-stone-700 mb-6">تواصلي معنا</h3>
+            <a id="about-instagram-link" href="${config.instagram_url || defaultConfig.instagram_url}" target="_blank" rel="noopener noreferrer"
+              class="inline-flex items-center gap-3 text-rose-500 hover:text-rose-600 transition-all hover:scale-110 text-lg font-medium">
+              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+              </svg>
+              <span>@layansbeautyshop</span>
+            </a>
           </div>
         </div>
       `;
@@ -2805,13 +2056,8 @@ function renderLoadMoreButton(products) {
 
     function renderAllProductsPage() {
       const categoryKeys = ['face', 'lips', 'eyes', 'foundation', 'setting', 'gifts', 'packages', 'nails', 'accessories', 'sale'];
-      const allProducts = categoryKeys.flatMap(key =>
-        (products[key] || []).map(p => ({ ...p, _category: key }))
-      );
-
-      const filtered = productSearchQuery
-        ? allProducts.filter(p => productMatchesSearch(p, productSearchQuery))
-        : allProducts;
+      const allProducts = categoryKeys.flatMap(key => (products[key] || []).map(p => ({ ...p, _category: key })));
+      const filtered = productSearchQuery ? allProducts.filter(p => productMatchesSearch(p, productSearchQuery)) : allProducts;
 
       return `
         <div class="fade-in">
@@ -2822,14 +2068,10 @@ function renderLoadMoreButton(products) {
           </div>
           ${renderProductSearchBar()}
           ${filtered.length === 0
-            ? `<div class="text-center py-20">
-                <p class="text-stone-400 text-lg">لا توجد منتجات</p>
-                <p class="text-stone-300 text-sm mt-2">No products found</p>
-               </div>`
+            ? `<div class="text-center py-20"><p class="text-stone-400 text-lg">لا توجد منتجات</p></div>`
             : `<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 ${filtered.map(p => renderProductCard(p, p._category)).join('')}
-               </div>`
-          }
+               </div>`}
         </div>
       `;
     }
@@ -2837,14 +2079,9 @@ function renderLoadMoreButton(products) {
     function renderSalePage() {
       const categoryKeys = ['face', 'lips', 'eyes', 'foundation', 'setting', 'gifts', 'packages', 'nails', 'accessories', 'sale'];
       const saleProducts = categoryKeys.flatMap(key =>
-        (products[key] || [])
-          .filter(p => p.on_sale || key === 'sale')
-          .map(p => ({ ...p, _category: key }))
+        (products[key] || []).filter(p => p.on_sale || key === 'sale').map(p => ({ ...p, _category: key }))
       );
-
-      const filtered = productSearchQuery
-        ? saleProducts.filter(p => productMatchesSearch(p, productSearchQuery))
-        : saleProducts;
+      const filtered = productSearchQuery ? saleProducts.filter(p => productMatchesSearch(p, productSearchQuery)) : saleProducts;
 
       return `
         <div class="fade-in">
@@ -2855,104 +2092,48 @@ function renderLoadMoreButton(products) {
           </div>
           ${renderProductSearchBar()}
           ${filtered.length === 0
-            ? `<div class="text-center py-20">
-                <p class="text-stone-400 text-lg">لا توجد منتجات مخفضة حالياً</p>
-                <p class="text-stone-300 text-sm mt-2">No sale products found</p>
-               </div>`
+            ? `<div class="text-center py-20"><p class="text-stone-400 text-lg">لا توجد منتجات مخفضة حالياً</p></div>`
             : `<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 ${filtered.map((p, i) => renderProductCard(p, p._category, i)).join('')}
-               </div>`
-          }
+               </div>`}
         </div>
       `;
     }
 
     function renderPage() {
       const mainContent = document.getElementById('main-content');
-
       switch (currentPage) {
-        case 'home':
-          mainContent.innerHTML = renderHomePage();
-          break;
-        case 'face':
-          mainContent.innerHTML = renderCategoryPage('face', 'الوجه', 'Face');
-          break;
-        case 'lips':
-          mainContent.innerHTML = renderCategoryPage('lips', 'الشفاه', 'Lips');
-          break;
-        case 'eyes':
-          mainContent.innerHTML = renderCategoryPage('eyes', 'العيون', 'Eyes');
-          break;
-        case 'foundation':
-          mainContent.innerHTML = renderCategoryPage('foundation', 'الأساس', 'Foundation');
-          break;
-        case 'setting':
-          mainContent.innerHTML = renderCategoryPage('setting', 'مثبتات', 'Setting');
-          break;
-        case 'gifts':
-          mainContent.innerHTML = renderCategoryPage('gifts', 'هدايا', 'Gifts');
-          break;
-        case 'packages':
-          mainContent.innerHTML = renderCategoryPage('packages', 'البكجات', 'Sets');
-          break;
-        case 'custom':
-          mainContent.innerHTML = renderCustomOrderPage();
-          break;
-        case 'about':
-          mainContent.innerHTML = renderAboutPage();
-          break;
-        case 'cart':
-          mainContent.innerHTML = renderCartPage();
-          break;
-        case 'nails':
-          mainContent.innerHTML = renderCategoryPage('nails', 'أظافر', 'Nails');
-          break;
-        case 'accessories':
-          mainContent.innerHTML = renderCategoryPage('accessories', 'اكسسوارات', 'Accessories');
-          break;
-        case 'sale':
-          mainContent.innerHTML = renderSalePage();
-          break;
-        case 'all':
-          mainContent.innerHTML = renderAllProductsPage();
-          break;
-        default:
-          mainContent.innerHTML = renderHomePage();
+        case 'home': mainContent.innerHTML = renderHomePage(); break;
+        case 'face': mainContent.innerHTML = renderCategoryPage('face', 'الوجه', 'Face'); break;
+        case 'lips': mainContent.innerHTML = renderCategoryPage('lips', 'الشفاه', 'Lips'); break;
+        case 'eyes': mainContent.innerHTML = renderCategoryPage('eyes', 'العيون', 'Eyes'); break;
+        case 'foundation': mainContent.innerHTML = renderCategoryPage('foundation', 'الأساس', 'Foundation'); break;
+        case 'setting': mainContent.innerHTML = renderCategoryPage('setting', 'مثبتات', 'Setting'); break;
+        case 'gifts': mainContent.innerHTML = renderCategoryPage('gifts', 'هدايا', 'Gifts'); break;
+        case 'packages': mainContent.innerHTML = renderCategoryPage('packages', 'البكجات', 'Sets'); break;
+        case 'custom': mainContent.innerHTML = renderCustomOrderPage(); break;
+        case 'about': mainContent.innerHTML = renderAboutPage(); break;
+        case 'cart': mainContent.innerHTML = renderCartPage(); break;
+        case 'nails': mainContent.innerHTML = renderCategoryPage('nails', 'أظافر', 'Nails'); break;
+        case 'accessories': mainContent.innerHTML = renderCategoryPage('accessories', 'اكسسوارات', 'Accessories'); break;
+        case 'sale': mainContent.innerHTML = renderSalePage(); break;
+        case 'all': mainContent.innerHTML = renderAllProductsPage(); break;
+        default: mainContent.innerHTML = renderHomePage();
       }
-
       syncSearchInputs();
     }
 
-    // Element SDK Integration
     if (window.elementSdk) {
       window.elementSdk.init({
         defaultConfig,
         onConfigChange: async (newConfig) => {
           config = { ...defaultConfig, ...newConfig };
-
           document.getElementById('nav-store-name').textContent = config.store_name || defaultConfig.store_name;
           document.getElementById('footer-store-name').textContent = config.store_name || defaultConfig.store_name;
           document.getElementById('footer-store-name-english').textContent = config.store_name_english || defaultConfig.store_name_english;
           document.getElementById('footer-instagram').href = config.instagram_url || defaultConfig.instagram_url;
-
-          const heroStoreName = document.getElementById('hero-store-name');
-          if (heroStoreName) heroStoreName.textContent = config.store_name || defaultConfig.store_name;
-
-          const heroStoreNameEnglish = document.getElementById('hero-store-name-english');
-          if (heroStoreNameEnglish) heroStoreNameEnglish.textContent = config.store_name_english || defaultConfig.store_name_english;
-
-          const customInstagramLink = document.getElementById('custom-instagram-link');
-          if (customInstagramLink) customInstagramLink.href = config.instagram_url || defaultConfig.instagram_url;
-
-          const aboutInstagramLink = document.getElementById('about-instagram-link');
-          if (aboutInstagramLink) aboutInstagramLink.href = config.instagram_url || defaultConfig.instagram_url;
         },
-        mapToCapabilities: (cfg) => ({
-          recolorables: [],
-          borderables: [],
-          fontEditable: undefined,
-          fontSizeable: undefined
-        }),
+        mapToCapabilities: (cfg) => ({ recolorables: [], borderables: [], fontEditable: undefined, fontSizeable: undefined }),
         mapToEditPanelValues: (cfg) => new Map([
           ['store_name', cfg.store_name || defaultConfig.store_name],
           ['store_name_english', cfg.store_name_english || defaultConfig.store_name_english],
@@ -2961,14 +2142,9 @@ function renderLoadMoreButton(products) {
       });
     }
 
-    function loadDefaultProducts() {
-      // products already initialised as empty arrays — nothing to do
-    }
+    function loadDefaultProducts() { /* products already initialised as empty arrays */ }
 
-    // ══════════════════════════════════════════════════════
-    //  COMING SOON — data & render
-    // ══════════════════════════════════════════════════════
-
+    // ══ COMING SOON ══
     const CS_LABEL_MAP = {
       coming_soon:     { ar: 'قادم قريباً',   en: 'Coming Soon'    },
       launching_soon:  { ar: 'إطلاق قريب',    en: 'Launching Soon' },
@@ -2979,22 +2155,15 @@ function renderLoadMoreButton(products) {
       secret_drop:     { ar: 'درب سري',        en: 'Secret Drop'    }
     };
 
-    let _csItems   = [];
-    let _csFetched = false;
-    let _csTimers  = [];
+    let _csItems = [], _csFetched = false, _csTimers = [];
 
     async function _fetchCS() {
       if (_csFetched) return _csItems;
       if (!supabaseClient) { _csFetched = true; return []; }
       try {
-        const { data, error } = await supabaseClient
-          .from('coming_soon')
-          .select('*')
-          .eq('is_active', true)
-          .order('display_order')
-          .order('created_at');
+        const { data, error } = await supabaseClient.from('coming_soon').select('*').eq('is_active', true).order('display_order').order('created_at');
         if (error) throw error;
-        _csItems   = data || [];
+        _csItems = data || [];
         _csFetched = true;
       } catch (e) {
         console.warn('coming_soon fetch skipped:', e.message);
@@ -3004,12 +2173,8 @@ function renderLoadMoreButton(products) {
     }
 
     function renderComingSoonSection() {
-      // Data is already fetched via _fetchCS() in init() — render synchronously
       if (!_csItems.length) return '';
-
       const cardsHtml = _csItems.map((item, i) => _buildCSCard(item, i)).join('');
-
-      // Start countdown timers after this render cycle
       setTimeout(() => {
         _csTimers.forEach(clearInterval);
         _csTimers = [];
@@ -3026,19 +2191,14 @@ function renderLoadMoreButton(products) {
 
       return `
         <div class="cs-section my-20">
-          <!-- Heading — same pattern as "منتجات مميزة" -->
           <div class="cs-heading">
             <h2>قادم قريباً</h2>
             <span class="cs-sub">Coming Soon</span>
             <div class="cs-rule"></div>
           </div>
-          <!-- Cards track -->
           <div class="cs-track-wrap">
-            <div class="cs-track" id="cs-track">
-              ${cardsHtml}
-            </div>
+            <div class="cs-track" id="cs-track">${cardsHtml}</div>
           </div>
-          <!-- Nav arrows -->
           <div class="cs-nav">
             <button class="cs-nav-btn" onclick="csScrollTrack(-1)" aria-label="السابق">
               <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
@@ -3053,7 +2213,6 @@ function renderLoadMoreButton(products) {
     function _buildCSCard(item, index) {
       const lbl = CS_LABEL_MAP[item.label] || CS_LABEL_MAP['coming_soon'];
       const hasCountdown = item.launch_date && new Date(item.launch_date) > Date.now();
-
       const countdownHtml = hasCountdown ? `
         <div class="cs-countdown" id="cscd-${item.id}">
           <div class="cs-cd-unit"><span class="cs-cd-num cd-d">--</span><span class="cs-cd-lbl">يوم</span></div>
@@ -3066,29 +2225,18 @@ function renderLoadMoreButton(products) {
           <div class="cs-card-img">
             ${item.image
               ? `<img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name)}" loading="lazy">`
-              : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#FCE8EF;">
-                   <div style="width:60px;height:60px;border-radius:50%;background:#F9D0DC;opacity:0.6;"></div>
-                 </div>`
-            }
-            <!-- Hover overlay -->
-            <div class="cs-hover-reveal">
-              <span class="cs-hover-pill">${escapeHtml(lbl.en)}</span>
-            </div>
-
-            <div class="cs-lock">
-              <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            </div>
+              : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#FCE8EF;"><div style="width:60px;height:60px;border-radius:50%;background:#F9D0DC;opacity:0.6;"></div></div>`}
+            <div class="cs-hover-reveal"><span class="cs-hover-pill">${escapeHtml(lbl.en)}</span></div>
+            <div class="cs-lock"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
             ${countdownHtml}
           </div>
           <div class="cs-card-body">
             <div class="cs-card-name">${escapeHtml(item.name)}</div>
             <span class="cs-card-name-en">${escapeHtml(item.nameEn || '')}</span>
-            <!-- Blurred price -->
             <div class="cs-price-row">
               <div class="cs-price-blur" style="width:52px;"></div>
               <div class="cs-price-blur" style="width:34px;opacity:0.5;"></div>
             </div>
-            <!-- CTA -->
             <button class="cs-cta" disabled>
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
               ${escapeHtml(lbl.ar)}
@@ -3099,10 +2247,7 @@ function renderLoadMoreButton(products) {
 
     function _tickCS(el, target) {
       const diff = new Date(target) - Date.now();
-      if (diff <= 0) {
-        el.innerHTML = '';
-        return;
-      }
+      if (diff <= 0) { el.innerHTML = ''; return; }
       const d = Math.floor(diff / 86400000);
       const h = Math.floor((diff % 86400000) / 3600000);
       const m = Math.floor((diff % 3600000) / 60000);
@@ -3119,25 +2264,13 @@ function renderLoadMoreButton(products) {
       if (t) t.scrollBy({ left: dir * 240 * 2, behavior: 'smooth' });
     }
 
-    // Initialize
     async function init() {
-      // Disable animations during initial load for better performance
       document.body.classList.add('disable-animations');
-      
       try {
-        // Initialize Supabase client now that the SDK was loaded (we used defer)
-        try {
-          if (!supabaseClient && window.supabase && typeof window.supabase.createClient === 'function') {
-            supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
-          }
-        } catch (e) {
-          console.warn('Supabase SDK not ready yet:', e);
+        if (!supabaseClient && window.supabase && typeof window.supabase.createClient === 'function') {
+          supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
         }
-
-        await Promise.all([
-          fetchProducts(),
-          _fetchCS()
-        ]);
+        await Promise.all([fetchProducts(), _fetchCS()]);
       } catch (e) {
         console.error('fetchProducts failed, loading defaults:', e);
         loadDefaultProducts();
@@ -3146,15 +2279,11 @@ function renderLoadMoreButton(products) {
         const hashPage = (location.hash && location.hash.length > 1) ? location.hash.replace('#', '') : null;
         const initialPage = (history.state && history.state.page) ? history.state.page : (hashPage || 'home');
         currentPage = initialPage;
-        // Hide hero on non-home pages on initial load
         const hero = document.getElementById('hero-slideshow');
         if (hero && initialPage !== 'home') hero.style.display = 'none';
-        // Replace the history entry so popstate has a consistent state
         try { history.replaceState({ page: initialPage }, '', '#' + initialPage); } catch (e) {}
-
         renderPage();
         updateCartCount();
-        
         document.body.classList.remove('disable-animations');
       } catch (e) {
         console.error('renderPage failed:', e);
@@ -3165,7 +2294,6 @@ function renderLoadMoreButton(products) {
     function loadEmailJS() {
       if (window.emailjs) return Promise.resolve(window.emailjs);
       if (window._emailjsLoader) return window._emailjsLoader;
-
       window._emailjsLoader = new Promise((resolve, reject) => {
         const s = document.createElement('script');
         s.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
@@ -3174,7 +2302,6 @@ function renderLoadMoreButton(products) {
         s.onerror = (e) => reject(e || new Error('Failed to load EmailJS'));
         document.head.appendChild(s);
       });
-
       return window._emailjsLoader;
     }
 
@@ -3188,13 +2315,10 @@ function renderLoadMoreButton(products) {
   <script>
     // ══ HERO SLIDESHOW ══
     (function() {
-      const TOTAL   = document.querySelectorAll('.hero-slide').length;
-      let current   = 0;
-      let paused    = false;
-      let timer     = null;
-      const DELAY   = 5000;
+      const TOTAL = document.querySelectorAll('.hero-slide').length;
+      let current = 0, paused = false, timer = null;
+      const DELAY = 5000;
 
-      // Build dots
       const dotsEl = document.getElementById('hero-dots');
       for (let i = 0; i < TOTAL; i++) {
         const d = document.createElement('button');
@@ -3210,11 +2334,9 @@ function renderLoadMoreButton(products) {
         current = (n + TOTAL) % TOTAL;
         const nextSlide = document.getElementById('hero-slide-' + current);
         nextSlide.classList.add('active');
-        // Re-trigger caption animation
         const cap = nextSlide.querySelector('.hero-caption');
         if (cap) { cap.style.animation = 'none'; void cap.offsetWidth; cap.style.animation = ''; }
         dotsEl.children[current].classList.add('active');
-        // Auto-play embedded video if this slide has one
         const vid = nextSlide.querySelector('video');
         if (vid) { vid.currentTime = 0; vid.play().catch(()=>{}); }
       }
@@ -3224,22 +2346,17 @@ function renderLoadMoreButton(products) {
         timer = setInterval(() => { if (!paused) goTo(current + 1); }, DELAY);
       }
 
-      window.heroMove = function(dir) {
-        goTo(current + dir);
-        startTimer(); // reset interval on manual nav
-      };
-
+      window.heroMove = function(dir) { goTo(current + dir); startTimer(); };
       window.heroTogglePause = function() {
         paused = !paused;
         const icon = document.getElementById('hero-pause-icon');
         icon.innerHTML = paused
-          ? '<polygon points="5,3 19,12 5,21"/>'         // play icon
-          : '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>'; // pause icon
+          ? '<polygon points="5,3 19,12 5,21"/>'
+          : '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
       };
 
       startTimer();
     })();
   </script>
 </body>
-
 </html>
