@@ -9,7 +9,25 @@
   <link rel="icon" type="image/png" href="favicon.png?v=1">
   <link rel="shortcut icon" type="image/png" href="favicon.png?v=1">
   <link rel="apple-touch-icon" href="favicon.png?v=1">
+  <!-- PWA / Add to Home Screen -->
+  <meta name="theme-color" content="#7B1040">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="متجر ليان">
+  <meta name="mobile-web-app-capable" content="yes">
+  <!-- Open Graph for sharing -->
+  <meta property="og:title" content="متجر ليان — منتجات تجميل أصلية">
+  <meta property="og:description" content="منتجات مكياج وعناية أصلية 100% مع توصيل للضفة والقدس والداخل">
+  <meta property="og:image" content="CT.png">
+  <meta property="og:type" content="website">
+  <meta name="description" content="متجر ليان — منتجات مكياج وعناية أصلية 100٪ بأسعار منافسة مع توصيل لكل فلسطين">
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <!-- Performance: DNS preconnect to Supabase + CDNs -->
+  <link rel="preconnect" href="https://mdfrvmsruwzhhszoqumn.supabase.co" crossorigin>
+  <link rel="dns-prefetch" href="https://mdfrvmsruwzhhszoqumn.supabase.co">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <!-- Preload first hero image -->
+  <link rel="preload" as="image" href="CT.png" fetchpriority="high">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&display=swap" rel="stylesheet">
@@ -313,6 +331,23 @@
 
     .modal-overlay { animation: fadeIn 0.3s ease; }
     .modal-content { animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+
+    /* ── Product image gallery ── */
+    .gallery-wrap { position: relative; width: 100%; aspect-ratio: 1; border-radius: 1.5rem; overflow: hidden; }
+    .gallery-main { width: 100%; height: 100%; object-fit: cover; display: block; transition: opacity 0.25s ease; }
+    .gallery-main.fade { opacity: 0; }
+    .gallery-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.85); border: none; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.12); transition: background 0.2s, transform 0.2s; z-index: 2; }
+    .gallery-arrow:hover { background: white; transform: translateY(-50%) scale(1.1); }
+    .gallery-arrow-prev { right: 10px; }
+    .gallery-arrow-next { left: 10px; }
+    .gallery-dots { display: flex; justify-content: center; gap: 6px; margin-top: 10px; }
+    .gallery-dot { width: 7px; height: 7px; border-radius: 50%; background: #e2c4cc; border: none; cursor: pointer; padding: 0; transition: background 0.2s, transform 0.2s; }
+    .gallery-dot.active { background: #7B1040; transform: scale(1.3); }
+    .gallery-thumbs { display: flex; gap: 8px; margin-top: 10px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
+    .gallery-thumbs::-webkit-scrollbar { display: none; }
+    .gallery-thumb { width: 56px; height: 56px; border-radius: 10px; object-fit: cover; cursor: pointer; border: 2px solid transparent; flex-shrink: 0; transition: border-color 0.2s, transform 0.2s; }
+    .gallery-thumb.active { border-color: #7B1040; transform: scale(1.05); }
+    .gallery-thumb:hover { border-color: #b5506e; }
 
     .cart-bounce { animation: bounce-cart 0.6s ease-in-out; }
 
@@ -671,6 +706,338 @@
     .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
   <style>
+    /* ── WhatsApp FAB ── */
+    .whatsapp-fab {
+      position: fixed;
+      bottom: 28px;
+      left: 24px;
+      z-index: 999;
+      width: 56px; height: 56px;
+      background: #25D366;
+      color: white;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 20px rgba(37,211,102,0.45);
+      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s ease;
+      text-decoration: none;
+    }
+    .whatsapp-fab:hover {
+      transform: scale(1.12);
+      box-shadow: 0 8px 30px rgba(37,211,102,0.55);
+    }
+    html[dir="rtl"] .whatsapp-fab { left: auto; right: 24px; }
+
+    /* ── Delivery option cards (checkout) ── */
+    .delivery-option { display: block; cursor: pointer; }
+    .delivery-option input { position: absolute; opacity: 0; width: 0; height: 0; }
+    .delivery-card {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      padding: 16px 18px;
+      border: 2px solid #F9D0DC;
+      border-radius: 16px;
+      background: #fff;
+      transition: all 0.2s ease;
+    }
+    .delivery-option:hover .delivery-card { border-color: #E8A5A5; }
+    .delivery-option input:checked + .delivery-card {
+      border-color: #7B1040;
+      background: #FFF0F4;
+      box-shadow: 0 2px 12px rgba(123,16,64,0.12);
+    }
+    .delivery-radio-dot {
+      flex-shrink: 0;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      border: 2px solid #E8A5A5;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s ease;
+    }
+    .delivery-option input:checked + .delivery-card .delivery-radio-dot {
+      border-color: #7B1040;
+      background: #7B1040;
+    }
+    .delivery-radio-dot::after {
+      content: '';
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: #fff;
+      transform: scale(0);
+      transition: transform 0.15s ease;
+    }
+    .delivery-option input:checked + .delivery-card .delivery-radio-dot::after {
+      transform: scale(1);
+    }
+
+    /* ── Confetti (order confirmation) ── */
+    .confetti-container { position: fixed; inset: 0; pointer-events: none; z-index: 9999; overflow: hidden; }
+    .confetti-piece {
+      position: absolute; top: -12px; width: 8px; height: 14px; opacity: 0.9; border-radius: 2px;
+      animation: confetti-fall linear forwards;
+    }
+    @keyframes confetti-fall {
+      to { transform: translateY(105vh) rotate(540deg); opacity: 0.4; }
+    }
+
+    /* ── Mobile "tap for details" hint on product cards ── */
+    .tap-hint {
+      position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
+      background: rgba(255,255,255,0.92); color: #7B1040;
+      font-size: 11px; font-weight: 700; white-space: nowrap;
+      padding: 5px 12px; border-radius: 999px;
+      display: flex; align-items: center; gap: 4px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      animation: tap-hint-pulse 2s ease-in-out infinite;
+      pointer-events: none;
+    }
+    @keyframes tap-hint-pulse {
+      0%, 100% { opacity: 0.85; transform: translateX(-50%) translateY(0); }
+      50% { opacity: 1; transform: translateX(-50%) translateY(-3px); }
+    }
+    @media (min-width: 768px) {
+      .tap-hint { display: none; }
+    }
+
+    /* ── Mobile "scroll for shades" hint inside product modal ── */
+    .scroll-hint {
+      position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%);
+      display: none; align-items: center; justify-content: center; gap: 6px;
+      background: rgba(255,255,255,0.92); color: #B0535F;
+      font-size: 12px; font-weight: 700; white-space: nowrap;
+      padding: 6px 14px; border-radius: 999px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      z-index: 5; pointer-events: none;
+      animation: scroll-hint-bounce 1.6s ease-in-out infinite;
+      transition: opacity 0.3s ease;
+    }
+    .scroll-hint svg { animation: scroll-hint-bounce 1.6s ease-in-out infinite; }
+    @keyframes scroll-hint-bounce {
+      0%, 100% { transform: translateY(0); opacity: 0.85; }
+      50% { transform: translateY(4px); opacity: 1; }
+    }
+    @media (max-width: 767px) {
+      .scroll-hint.show { display: flex; }
+    }
+
+    /* ── Scroll to top ── */
+    #scroll-top-btn {
+      position: fixed;
+      bottom: 96px; left: 24px; z-index: 999;
+      width: 44px; height: 44px;
+      background: white; border: 1.5px solid #F9D0DC;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 16px rgba(123,16,64,0.12);
+      cursor: pointer; opacity: 0; pointer-events: none;
+      transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+      color: #7B1040;
+    }
+    #scroll-top-btn.visible { opacity: 1; pointer-events: auto; }
+    #scroll-top-btn:hover { transform: scale(1.12); box-shadow: 0 8px 24px rgba(123,16,64,0.2); }
+    html[dir="rtl"] #scroll-top-btn { left: auto; right: 24px; }
+
+    /* ── Cart icon bounce ── */
+    @keyframes cart-bounce { 0%,100%{transform:scale(1)} 30%{transform:scale(1.3)} 60%{transform:scale(0.9)} 80%{transform:scale(1.08)} }
+    .cart-bounce { animation: cart-bounce 0.55s cubic-bezier(0.36,0.07,0.19,0.97); }
+
+    /* ── Trust Badges ── */
+    .trust-section {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding: 32px 16px;
+    }
+    .trust-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: white;
+      border: 1px solid #F9D0DC;
+      border-radius: 14px;
+      padding: 14px 22px;
+      box-shadow: 0 2px 12px rgba(123,16,64,0.06);
+      min-width: 180px;
+      flex: 1;
+      max-width: 230px;
+    }
+    .trust-icon {
+      width: 40px; height: 40px;
+      background: #FFF0F4;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+    .trust-text strong {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #44403c;
+    }
+    .trust-text span {
+      font-size: 0.72rem;
+      color: #a8a29e;
+    }
+
+    /* ── Better toast ── */
+    .layan-toast {
+      position: fixed;
+      bottom: 28px; left: 50%;
+      transform: translateX(-50%);
+      display: flex; align-items: center; gap: 10px;
+      padding: 14px 22px;
+      border-radius: 100px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.18);
+      z-index: 9999;
+      font-family: 'Tajawal', sans-serif;
+      font-size: 0.9rem; font-weight: 600;
+      animation: toast-in 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards;
+      pointer-events: none;
+    }
+    @keyframes toast-in {
+      from { opacity: 0; transform: translateX(-50%) translateY(16px); }
+      to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+    .toast-success { background: #7B1040; color: white; }
+    .toast-error   { background: #44403c; color: white; }
+
+    /* ── Sort bar ── */
+    .sort-bar {
+      display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 28px; align-items: center;
+    }
+    .sort-label { font-size: 0.8rem; color: #a8a29e; font-weight: 600; margin-left: 4px; }
+    .sort-btn {
+      padding: 7px 18px; border-radius: 100px; border: 1px solid #F9D0DC;
+      background: white; font-family: 'Tajawal', sans-serif; font-size: 0.8rem;
+      font-weight: 600; color: #78716c; cursor: pointer; transition: all 0.2s ease;
+    }
+    .sort-btn:hover { border-color: #7B1040; color: #7B1040; }
+    .sort-btn.active { background: #7B1040; color: white; border-color: #7B1040; }
+
+    /* ── Wishlist heart ── */
+    .wishlist-btn {
+      position: absolute; top: 10px; right: 10px; z-index: 5;
+      width: 32px; height: 32px; border-radius: 50%;
+      background: rgba(255,255,255,0.92); border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .wishlist-btn:hover { transform: scale(1.18); }
+
+    /* ── Product image hover zoom ── */
+    .product-image img { transition: transform 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94); will-change: transform; }
+    .product-card:hover .product-image img { transform: scale(1.07); }
+
+    /* ── Recently viewed carousel ── */
+    .rv-carousel {
+      display: flex; gap: 14px; overflow-x: auto; padding: 4px 2px 16px;
+      scrollbar-width: none; -webkit-overflow-scrolling: touch;
+    }
+    .rv-carousel::-webkit-scrollbar { display: none; }
+    .rv-card {
+      min-width: 130px; max-width: 130px; border-radius: 18px;
+      background: white; border: 1px solid #F9D0DC;
+      overflow: hidden; cursor: pointer; flex-shrink: 0;
+      transition: transform 0.22s ease, box-shadow 0.22s ease;
+    }
+    .rv-card:hover { transform: translateY(-4px); box-shadow: 0 10px 28px rgba(123,16,64,0.13); }
+    .rv-card-img { height: 110px; overflow: hidden; background: #fdf0f4; }
+    .rv-card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
+    .rv-card:hover .rv-card-img img { transform: scale(1.06); }
+    .rv-card-info { padding: 10px 11px 12px; }
+    .rv-card-name { font-size: 0.72rem; font-weight: 700; color: #44403c; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 3px; }
+    .rv-card-price { font-size: 0.78rem; color: #f43f5e; font-weight: 700; }
+
+    /* ── Related products mini-cards in modal ── */
+    .related-strip {
+      display: flex; gap: 12px; overflow-x: auto; padding: 4px 2px 8px;
+      scrollbar-width: none;
+    }
+    .related-strip::-webkit-scrollbar { display: none; }
+    .related-mini {
+      min-width: 100px; max-width: 100px; border-radius: 14px;
+      background: #fff8fb; border: 1px solid #F9D0DC;
+      overflow: hidden; cursor: pointer; flex-shrink: 0;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      text-align: center;
+    }
+    .related-mini:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(123,16,64,0.1); }
+    .related-mini-img { height: 80px; overflow: hidden; background: #fdf0f4; }
+    .related-mini-img img { width: 100%; height: 100%; object-fit: cover; }
+    .related-mini-info { padding: 6px 8px 8px; }
+    .related-mini-name { font-size: 0.62rem; font-weight: 700; color: #44403c; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .related-mini-price { font-size: 0.7rem; color: #f43f5e; font-weight: 700; margin-top: 3px; }
+
+    /* ── New arrival badge ── */
+    .new-badge {
+      position: absolute; top: 10px; left: 10px; z-index: 5;
+      background: #7B1040; color: white;
+      font-family: 'Tajawal', sans-serif;
+      font-size: 0.58rem; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; padding: 3px 10px; border-radius: 100px;
+      box-shadow: 0 2px 8px rgba(123,16,64,0.3);
+    }
+
+    /* ── Cart progress bar ── */
+    .cart-progress-wrap {
+      background: #FFF5F8; border-radius: 16px; padding: 14px 18px; margin-bottom: 20px;
+      border: 1px solid #F9D0DC;
+    }
+    .cart-progress-wrap.done {
+      background: #f0fdf4; border-color: #bbf7d0;
+    }
+    .progress-track {
+      height: 5px; background: #F9D0DC; border-radius: 100px; overflow: hidden; margin-top: 10px;
+    }
+    .progress-fill {
+      height: 100%; background: linear-gradient(90deg, #7B1040, #b03060);
+      border-radius: 100px; transition: width 0.7s cubic-bezier(0.34,1.56,0.64,1);
+    }
+
+    /* ── Skeleton shimmer ── */
+    @keyframes skeleton-shimmer {
+      0%   { background-position: -600px 0; }
+      100% { background-position:  600px 0; }
+    }
+    .skel {
+      background: linear-gradient(90deg, #fce8ef 25%, #f9d0dc 50%, #fce8ef 75%);
+      background-size: 600px 100%;
+      animation: skeleton-shimmer 1.4s infinite linear;
+      border-radius: 8px;
+    }
+    .skel-card {
+      background: white;
+      border: 1px solid #F9D0DC;
+      border-radius: 1.5rem;
+      overflow: hidden;
+    }
+
+    /* ── Refined section heading ── */
+    .section-heading {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+    .section-heading h2 {
+      font-size: 1.875rem;
+      font-weight: 800;
+      color: #44403c;
+      margin-bottom: 4px;
+    }
+    .section-heading .sub {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.2rem;
+      color: #7B1040;
+      letter-spacing: 1px;
+    }
+    .section-heading .rule {
+      width: 64px; height: 2px;
+      background: linear-gradient(90deg, transparent, #F9D0DC, transparent);
+      margin: 14px auto 0;
+    }
+  </style>
+
+  <style>
     body { box-sizing: border-box; }
 
     #hero-slideshow {
@@ -809,6 +1176,12 @@
             <button onclick="navigateTo('custom')" class="nav-link text-gray-700 hover:text-[#7B1040] text-sm font-semibold">CUSTOM ORDER</button>
           </div>
           <div class="flex items-center gap-4">
+            <button onclick="navigateTo('wishlist')" class="relative p-2 rounded-full hover:bg-[#F9D0DC] transition-all" aria-label="المفضلة">
+              <svg class="w-6 h-6 text-[#7B1040]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+              </svg>
+              <span id="wishlist-count" class="absolute -top-1 -left-1 w-5 h-5 bg-[#7B1040] text-white text-xs rounded-full flex items-center justify-center hidden font-bold">0</span>
+            </button>
             <button onclick="navigateTo('cart')" id="cart-button" class="relative p-2 rounded-full hover:bg-[#F9D0DC] transition-all">
               <svg class="w-6 h-6 text-[#7B1040]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
@@ -835,6 +1208,7 @@
           <button onclick="navigateTo('accessories')" class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF0F4] transition-colors text-sm font-medium border border-[#F9D0DC]">اكسسوارات</button>
           <button onclick="navigateTo('sale')" class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF0F4] transition-colors text-sm font-medium border border-[#F9D0DC]">مخفض</button>
           <button onclick="navigateTo('all')" class="w-full text-right px-4 py-3 rounded-lg bg-white text-[#7B1040] hover:bg-[#FFF0F4] transition-colors text-sm font-bold border border-[#7B1040]">كل المنتجات</button>
+          <button onclick="navigateTo('wishlist')" class="w-full text-right px-4 py-3 rounded-lg bg-white text-[#C96A8A] hover:bg-[#FFF0F4] transition-colors text-sm font-medium border border-[#F9D0DC]">قائمة الأمنيات</button>
           <button onclick="navigateTo('about')" class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF0F4] transition-colors text-sm font-medium border border-[#F9D0DC]">من نحن</button>
           <button onclick="navigateTo('custom')" class="w-full text-right px-4 py-3 rounded-lg bg-white text-gray-700 hover:bg-[#FFF0F4] transition-colors text-sm font-medium border border-[#F9D0DC]">طلب مخصص</button>
         </div>
@@ -843,7 +1217,7 @@
 
     <div id="hero-slideshow">
       <div class="hero-slide active" id="hero-slide-0">
-        <img src="CT.png" alt="Layan Beauty">
+        <img src="CT.png" alt="Layan Beauty" loading="eager" fetchpriority="high">
         <div class="hero-slide-overlay"></div>
         <div class="hero-caption">
           <h2>أفضل منتجات الميك اب الاصلية</h2>
@@ -908,28 +1282,73 @@
           </svg>
         </button>
         <div id="modal-content" class="h-full overflow-auto p-6 md:p-12"></div>
+        <span id="modal-scroll-hint" class="scroll-hint">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+          اسحبي للأسفل لرؤية الألوان
+        </span>
       </div>
     </div>
 
-    <footer class="border-t border-rose-100/50 mt-20 py-12">
+    <footer class="border-t border-rose-100/50 mt-20 py-14">
       <div class="max-w-7xl mx-auto px-4">
         <div class="text-center">
-          <h3 id="footer-store-name" class="text-3xl font-bold text-[#7B1040] mb-2">متجر ليان</h3>
-          <p id="footer-store-name-english" class="cursive-english text-xl text-[#7B1040] mb-6">Layan's Beauty Shop</p>
-          <a id="footer-instagram" href="https://www.instagram.com/layansbeautyshop/" target="_blank" rel="noopener noreferrer"
-            class="inline-flex items-center gap-2 text-gray-600 hover:text-pink-500 transition-all hover:scale-110">
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-            </svg>
-            <span>تابعونا على انستغرام</span>
-          </a>
-          <p class="mt-8 text-xs text-gray-400">جميع الحقوق محفوظة © 2026 متجر ليان</p>
+          <h3 id="footer-store-name" class="text-3xl font-bold text-[#7B1040] mb-1">متجر ليان</h3>
+          <p id="footer-store-name-english" class="cursive-english text-xl text-[#7B1040] mb-8">Layan's Beauty Shop</p>
+
+          <!-- Contact links -->
+          <div class="flex items-center justify-center gap-6 flex-wrap mb-8">
+            <a id="footer-instagram" href="https://www.instagram.com/layansbeautyshop/" target="_blank" rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 text-stone-500 hover:text-pink-500 transition-all hover:scale-105 text-sm font-medium">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+              </svg>
+              <span>انستغرام</span>
+            </a>
+            <span class="text-stone-200">|</span>
+            <a href="https://wa.me/972566440233?text=مرحباً،%20أود%20الاستفسار%20عن%20منتجاتكم" target="_blank" rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 text-stone-500 hover:text-[#25D366] transition-all hover:scale-105 text-sm font-medium">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+              </svg>
+              <span>واتساب</span>
+            </a>
+          </div>
+
+          <!-- Quick links -->
+          <div class="flex items-center justify-center gap-4 flex-wrap mb-8 text-xs text-stone-400">
+            <button onclick="navigateTo('about')" class="hover:text-[#7B1040] transition-colors">من نحن</button>
+            <span>·</span>
+            <button onclick="navigateTo('all')" class="hover:text-[#7B1040] transition-colors">كل المنتجات</button>
+            <span>·</span>
+            <button onclick="navigateTo('sale')" class="hover:text-[#7B1040] transition-colors">العروض</button>
+            <span>·</span>
+            <button onclick="navigateTo('wishlist')" class="hover:text-[#7B1040] transition-colors">المفضلة</button>
+            <span>·</span>
+            <button onclick="navigateTo('custom')" class="hover:text-[#7B1040] transition-colors">طلب مخصص</button>
+          </div>
+
+          <p class="text-xs text-gray-400 tracking-wide">جميع المنتجات أصلية 100% — الثقة أولاً</p>
+          <p class="mt-2 text-xs text-gray-400">جميع الحقوق محفوظة © 2026 متجر ليان</p>
         </div>
       </div>
     </footer>
   </div>
 
-  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- WhatsApp Floating Button -->
+  <a href="https://wa.me/972566440233?text=مرحباً،%20أود%20الاستفسار%20عن%20منتجاتكم"
+     target="_blank" rel="noopener noreferrer"
+     class="whatsapp-fab" aria-label="تواصل عبر واتساب">
+    <svg viewBox="0 0 24 24" fill="currentColor" width="28" height="28">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+    </svg>
+  </a>
+
+  <!-- Scroll to top button -->
+  <button id="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="للأعلى">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+  </button>
+
+  <!-- No external Supabase library needed — using direct REST fetch() -->
 
   <script>
     const defaultConfig = {
@@ -943,34 +1362,79 @@
     const EMAIL_CONFIG = {
       serviceId: 'service_mv74rko',
       templateId: 'template_vavvxop',
+      // Optional: create a separate "order receipt" template in EmailJS for a nicer
+      // customer-facing email, then put its ID here. If left as-is, the customer
+      // receipt (when an email is provided at checkout) reuses the same template.
+      receiptTemplateId: 'YOUR_RECEIPT_TEMPLATE_ID',
       publicKey: '2nzPj2ekNkGugeeOM'
     };
     const supabaseUrl = 'https://mdfrvmsruwzhhszoqumn.supabase.co';
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1kZnJ2bXNydXd6aGhzem9xdW1uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2NTMyOTksImV4cCI6MjA4ODIyOTI5OX0.rwIAoCZSVecvyvZA6Vhm1tPbzSBhgggpdy_xJ6aKjbM';
-    let supabaseClient = null;
+    // Direct REST API — no external library needed
+    const sbHeaders = { 'apikey': supabaseKey, 'Authorization': `Bearer ${supabaseKey}`, 'Content-Type': 'application/json' };
+    async function sbGet(path, timeoutMs = 9000) {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+      try {
+        const res = await fetch(`${supabaseUrl}/rest/v1/${path}`, {
+          headers: sbHeaders,
+          signal: ctrl.signal
+        });
+        if (!res.ok) throw new Error(`Supabase ${res.status}: ${path}`);
+        return res.json();
+      } finally {
+        clearTimeout(timer);
+      }
+    }
+    async function sbPost(path, body) {
+      const res = await fetch(`${supabaseUrl}/rest/v1/${path}`, {
+        method: 'POST', headers: { ...sbHeaders, 'Prefer': 'return=minimal' }, body: JSON.stringify(body)
+      });
+      if (!res.ok) throw new Error(`Supabase POST ${res.status}: ${path}`);
+      return res;
+    }
+    async function sbPatch(path, body) {
+      const res = await fetch(`${supabaseUrl}/rest/v1/${path}`, {
+        method: 'PATCH', headers: { ...sbHeaders, 'Prefer': 'return=minimal' }, body: JSON.stringify(body)
+      });
+      if (!res.ok) throw new Error(`Supabase PATCH ${res.status}: ${path}`);
+      return res;
+    }
 
     let products = {
       face: [], lips: [], eyes: [], foundation: [], setting: [], gifts: [], packages: [], nails: [], accessories: [], sale: []
     };
 
-    async function fetchProducts() {
-      if (!supabaseClient && window.supabase && typeof window.supabase.createClient === 'function') {
-        try {
-          supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
-        } catch (e) {
-          console.warn('Failed to create supabase client during fetchProducts init:', e);
-        }
-      }
+    // Shared delivery options — selected during checkout (shipping details step)
+    const DELIVERY_OPTIONS = [
+      { id: 'd1', name: 'استلام مجاني من نقطة جامعة القدس - أبو ديس', price: 0 },
+      { id: 'd2', name: 'توصيل إلى مدن الضفة الغربية', price: 20 },
+      { id: 'd3', name: 'توصيل إلى القدس', price: 30 },
+      { id: 'd4', name: 'توصيل إلى الداخل المحتل', price: 70 }
+    ];
+    let productsLoaded = false; // true once first real data (cache or network) is available
 
-      if (!supabaseClient) {
-        console.warn('Supabase client not available; loading default products.');
-        loadDefaultProducts();
-        return;
-      }
+    // ── localStorage cache (stale-while-revalidate) ──
+    const CACHE_KEY    = 'layan_products_v2';
+    const CACHE_CS_KEY = 'layan_cs_v2';
+    const CACHE_TTL    = 30 * 60 * 1000; // 30 minutes
 
+    function saveToCache(key, data) {
+      try { localStorage.setItem(key, JSON.stringify({ data, ts: Date.now() })); } catch(e) {}
+    }
+    function loadFromCache(key) {
       try {
-        const { data, error } = await supabaseClient.from('products').select('*');
-        if (error) throw error;
+        const raw = localStorage.getItem(key);
+        if (!raw) return null;
+        const { data, ts } = JSON.parse(raw);
+        if (Date.now() - ts > CACHE_TTL) { localStorage.removeItem(key); return null; }
+        return data;
+      } catch(e) { return null; }
+    }
+
+    async function fetchProducts() {
+      try {
+        const data = await sbGet('products?select=id,name,nameEn,price,original_price,discount_pct,on_sale,description,stock,shades,category,created_at&order=created_at.desc');
 
         if (data && data.length > 0) {
           const newProducts = {
@@ -1016,19 +1480,37 @@
               discount_pct: p.discount_pct || null,
               on_sale: p.on_sale || false,
               description: p.description,
-              images: p.images || [],
               stock: p.stock || 10,
-              shades: p.shades || []
+              shades: p.shades || [],
+              created_at: p.created_at || null
             });
           });
 
           products = newProducts;
+          productsLoaded = true;
+          saveToCache(CACHE_KEY, products); // persist for next visit
         } else {
           loadDefaultProducts();
         }
       } catch (err) {
         console.error('Error fetching products:', err);
-        loadDefaultProducts();
+        // Show a retry button instead of leaving the skeleton forever
+        if (!productsLoaded) {
+          const main = document.getElementById('main-content');
+          if (main) main.innerHTML = `
+            <div class="fade-in text-center py-32">
+              <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-rose-50 border border-rose-100 flex items-center justify-center">
+                <svg class="w-10 h-10 text-rose-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+              </div>
+              <h2 class="text-2xl font-bold text-stone-600 mb-3">تعذّر تحميل المنتجات</h2>
+              <p class="text-stone-400 mb-8 text-sm">تحققي من اتصالك بالإنترنت وأعيدي المحاولة</p>
+              <button onclick="location.reload()" class="btn-primary text-white px-8 py-4 rounded-full font-medium">
+                إعادة المحاولة
+              </button>
+            </div>`;
+        }
       }
     }
 
@@ -1202,10 +1684,22 @@
       `;
     }
 
+    const PAGE_TITLES = {
+      home: 'متجر ليان', face: 'الوجه — متجر ليان', lips: 'الشفاه — متجر ليان',
+      eyes: 'العيون — متجر ليان', foundation: 'الأساس — متجر ليان',
+      setting: 'مثبتات — متجر ليان', gifts: 'هدايا — متجر ليان',
+      packages: 'البكجات — متجر ليان', nails: 'أظافر — متجر ليان',
+      accessories: 'اكسسوارات — متجر ليان', sale: 'عروض وتخفيضات — متجر ليان',
+      all: 'كل المنتجات — متجر ليان', wishlist: 'المفضلة — متجر ليان',
+      cart: 'السلة — متجر ليان', about: 'من نحن — متجر ليان',
+      custom: 'طلب مخصص — متجر ليان'
+    };
+
     function navigateTo(page, replace = false) {
       if (!page) page = 'home';
       currentPage = page;
       resetProductPagination();
+      document.title = PAGE_TITLES[page] || 'متجر ليان';
       const hero = document.getElementById('hero-slideshow');
       if (hero) hero.style.display = (page === 'home') ? '' : 'none';
       const mobileMenu = document.getElementById('mobile-menu');
@@ -1222,6 +1716,7 @@
     window.addEventListener('popstate', (event) => {
       const page = (event.state && event.state.page) ? event.state.page : (location.hash ? location.hash.replace('#', '') : 'home');
       currentPage = page || 'home';
+      document.title = PAGE_TITLES[currentPage] || 'متجر ليان';
       const hero = document.getElementById('hero-slideshow');
       if (hero) hero.style.display = (currentPage === 'home') ? '' : 'none';
       renderPage();
@@ -1270,32 +1765,9 @@
     }
 
     async function addToCart(productId, category, shadeId) {
+      // Use local data (already fresh from page-load fetch) — no live re-fetch needed
       let product = products[category].find(p => p.id === productId);
       if (!product) return;
-
-      if (supabaseClient) {
-        try {
-          let prodRow = null, fetchErr = null;
-          ({ data: prodRow, error: fetchErr } = await supabaseClient.from('products').select('id, shades, stock').eq('id', productId).maybeSingle());
-          if (!fetchErr && !prodRow) {
-            const numericId = Number(productId);
-            if (Number.isFinite(numericId)) {
-              const res = await supabaseClient.from('products').select('id, shades, stock').eq('id', numericId).maybeSingle();
-              prodRow = res.data; fetchErr = res.error;
-            }
-          }
-          if (!fetchErr && prodRow) {
-            const local = (products[category] || []).find(p => String(p.id) === String(productId) || String(p.id) === String(prodRow.id));
-            if (local) {
-              if (Array.isArray(prodRow.shades)) local.shades = prodRow.shades;
-              if (prodRow.stock !== undefined && prodRow.stock !== null) local.stock = prodRow.stock;
-              product = local;
-            }
-          }
-        } catch (err) {
-          console.error('Failed to refresh product before addToCart:', err);
-        }
-      }
 
       const shade = product.shades.find(s => s.id === shadeId);
       if (!shade) return;
@@ -1324,21 +1796,20 @@
       showAddedToCartFeedback();
     }
 
-    function showAddedToCartFeedback() {
-      const feedback = document.createElement('div');
-      feedback.className = 'fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-[#7B1040] text-white px-6 py-4 rounded-full shadow-xl z-50 fade-in font-medium';
-      feedback.textContent = 'تمت الإضافة إلى السلة';
-      document.body.appendChild(feedback);
-      setTimeout(() => feedback.remove(), 2000);
+    function showToast(message, type = 'success') {
+      document.querySelectorAll('.layan-toast').forEach(t => t.remove());
+      const t = document.createElement('div');
+      t.className = `layan-toast toast-${type}`;
+      const icon = type === 'success'
+        ? `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>`
+        : `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;
+      t.innerHTML = icon + `<span>${message}</span>`;
+      document.body.appendChild(t);
+      setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'opacity 0.3s'; setTimeout(() => t.remove(), 300); }, 2200);
     }
 
-    function showUnavailableFeedback(message = 'هذا اللون غير متوفر') {
-      const feedback = document.createElement('div');
-      feedback.className = 'fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-stone-700 text-white px-6 py-4 rounded-full shadow-xl z-50 fade-in font-medium';
-      feedback.textContent = message;
-      document.body.appendChild(feedback);
-      setTimeout(() => feedback.remove(), 2000);
-    }
+    function showAddedToCartFeedback() { showToast('تمت الإضافة إلى السلة', 'success'); }
+    function showUnavailableFeedback(message = 'هذا اللون غير متوفر') { showToast(message, 'error'); }
 
     function getStock(product, shade) {
       const raw = (shade && shade.stock !== undefined && shade.stock !== null)
@@ -1374,6 +1845,7 @@
     function openProductModal(productId, category) {
       const product = products[category].find(p => p.id === productId);
       if (!product) return;
+      addToRecentlyViewed(productId, category);
       const modal = document.getElementById('product-modal');
       const content = document.getElementById('modal-content');
       const firstAvailableShade = product.shades.find(s => ((s.stock !== undefined) ? s.stock > 0 : product.stock > 0));
@@ -1382,15 +1854,42 @@
         ? selectedShades[productId]
         : (firstAvailableShade || product.shades[0]);
 
+      // Build gallery images for current shade
+      const _galleryImgs = (() => {
+        if (!currentShade) return [];
+        if (currentShade.images && Array.isArray(currentShade.images) && currentShade.images.length > 0) return currentShade.images;
+        if (currentShade.image) return [currentShade.image];
+        return [];
+      })();
+      window._modalGalleryImgs = _galleryImgs;
+      window._modalGalleryIdx = 0;
+
       content.innerHTML = `
         <div class="grid md:grid-cols-2 gap-12 h-full">
-          <div class="flex items-center justify-center">
-            <div class="w-full max-w-md aspect-square rounded-3xl overflow-hidden product-image shadow-lg" style="background: ${currentShade ? currentShade.color + '15' : '#f5e6e615'};">
-              ${currentShade && currentShade.image
-                ? `<img loading="lazy" decoding="async" src="${currentShade.image}" class="w-full h-full object-cover" alt="${currentShade.name}">`
-                : `<div class="w-full h-full flex items-center justify-center p-8">
-                     <div class="w-40 h-40 rounded-full shadow-lg" style="background: ${currentShade ? currentShade.color : '#7B1040'};"></div>
-                   </div>`}
+          <div class="flex flex-col items-center justify-center">
+            <div class="w-full max-w-md shadow-lg rounded-3xl" style="background: ${currentShade ? currentShade.color + '15' : '#f5e6e615'};">
+              ${_galleryImgs.length > 0 ? `
+                <div class="gallery-wrap" id="modal-gallery-wrap">
+                  <img id="modal-gallery-main" class="gallery-main" src="${_galleryImgs[0]}" alt="${currentShade ? currentShade.name : ''}">
+                  ${_galleryImgs.length > 1 ? `
+                    <button class="gallery-arrow gallery-arrow-prev" onclick="galleryNav(1)" title="السابق">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7B1040" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                    </button>
+                    <button class="gallery-arrow gallery-arrow-next" onclick="galleryNav(-1)" title="التالي">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7B1040" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+                    </button>
+                  ` : ''}
+                </div>
+                ${_galleryImgs.length > 1 ? `
+                  <div class="gallery-thumbs px-3 pb-3" id="modal-gallery-thumbs">
+                    ${_galleryImgs.map((src, i) => `<img src="${src}" class="gallery-thumb${i === 0 ? ' active' : ''}" onclick="galleryGoTo(${i})" alt="">`).join('')}
+                  </div>
+                ` : ''}
+              ` : `
+                <div class="w-full aspect-square flex items-center justify-center p-8 rounded-3xl">
+                  <div class="w-40 h-40 rounded-full shadow-lg" style="background: ${currentShade ? currentShade.color : '#7B1040'};"></div>
+                </div>
+              `}
             </div>
           </div>
           <div class="flex flex-col justify-center">
@@ -1419,19 +1918,106 @@
               <p class="text-sm text-stone-500 mt-4">اللون المختار: <span class="font-medium text-stone-700">${currentShade.name}</span></p>
             </div>
             ${product.shades.some(s => { const st = getStock(product, s); return st === null ? true : st > 0; }) ? `
-              <button onclick="addToCart('${productId}', '${category}', '${currentShade.id}'); closeProductModal();" class="btn-primary text-white py-4 px-8 rounded-full text-lg font-medium">
-                أضيفي إلى السلة
-              </button>
+              <div class="flex items-center gap-4 mb-4">
+                <div class="flex items-center gap-3 bg-rose-50 rounded-full p-1.5 border border-rose-100">
+                  <button onclick="modalQtyChange(-1)" class="quantity-btn w-9 h-9 rounded-full flex items-center justify-center text-stone-600 hover:text-white text-xl font-bold">−</button>
+                  <span id="modal-qty" class="w-8 text-center font-bold text-stone-700 text-lg">1</span>
+                  <button onclick="modalQtyChange(1)" class="quantity-btn w-9 h-9 rounded-full flex items-center justify-center text-stone-600 hover:text-white text-xl font-bold">+</button>
+                </div>
+                <button onclick="addToCartFromModal('${productId}', '${category}', '${currentShade.id}')" class="btn-primary text-white py-4 px-6 rounded-full text-base font-medium flex-1">
+                  أضيفي إلى السلة
+                </button>
+              </div>
             ` : `
               <div class="text-center py-6 bg-rose-50 rounded-2xl">
                 <p class="text-stone-400 font-medium">غير متوفر حالياً</p>
               </div>
             `}
+            <div class="mt-3 flex items-center gap-2">
+              <a href="https://wa.me/?text=${encodeURIComponent(product.name + ' — ' + location.origin + location.pathname + '#product=' + category + ':' + productId)}" target="_blank" rel="noopener noreferrer"
+                class="flex-1 flex items-center justify-center gap-2 py-3 rounded-full border border-[#F9D0DC] text-stone-500 hover:border-[#25D366] hover:text-[#25D366] transition-all text-sm font-semibold">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                شاركي المنتج
+              </a>
+              <button type="button" onclick="copyProductLink('${category}', '${productId}', this)"
+                class="copy-link-btn flex items-center justify-center w-12 h-12 flex-shrink-0 rounded-full border border-[#F9D0DC] text-stone-500 hover:border-rose-400 hover:text-rose-500 transition-all" title="نسخ الرابط">
+                <svg class="copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                <svg class="check-icon" style="display:none" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+              </button>
+            </div>
           </div>
         </div>
+        ${(() => {
+          const related = (products[category] || []).filter(p => p.id !== productId).slice(0, 6);
+          if (related.length === 0) return '';
+          return `
+            <div class="mt-10 border-t border-[#F9D0DC] pt-8">
+              <h3 class="text-base font-bold text-stone-700 mb-4">قد يعجبكِ أيضاً</h3>
+              <div class="related-strip">
+                ${related.map(rp => {
+                  const rs = rp.shades && rp.shades[0];
+                  return `<div class="related-mini" onclick="openProductModal('${rp.id}', '${category}')">
+                    <div class="related-mini-img" style="background:${rs ? rs.color + '15' : '#fdf0f4'};">
+                      ${rs && rs.image
+                        ? `<img loading="lazy" src="${rs.image}" alt="${rp.name}">`
+                        : `<div style="width:36px;height:36px;border-radius:50%;background:${rs ? rs.color : '#7B1040'};margin:22px auto;"></div>`}
+                    </div>
+                    <div class="related-mini-info">
+                      <p class="related-mini-name">${rp.name}</p>
+                      <p class="related-mini-price">₪${rp.price}</p>
+                    </div>
+                  </div>`;
+                }).join('')}
+              </div>
+            </div>`;
+        })()}
       `;
       modal.classList.remove('hidden');
+      // Touch swipe support for gallery
+      if (_galleryImgs.length > 1) {
+        let _tsX = null;
+        const wrap = document.getElementById('modal-gallery-wrap');
+        if (wrap) {
+          wrap.addEventListener('touchstart', e => { _tsX = e.changedTouches[0].clientX; }, { passive: true });
+          wrap.addEventListener('touchend', e => {
+            if (_tsX === null) return;
+            const dx = e.changedTouches[0].clientX - _tsX;
+            if (Math.abs(dx) > 40) galleryNav(dx > 0 ? 1 : -1);
+            _tsX = null;
+          }, { passive: true });
+        }
+      }
+
+      // "Scroll down to see shades" hint (mobile only) — show if content overflows,
+      // hide once the user scrolls.
+      const hint = document.getElementById('modal-scroll-hint');
+      if (hint) {
+        hint.classList.remove('show');
+        if (content.scrollHeight > content.clientHeight + 40) {
+          hint.classList.add('show');
+        }
+        content.onscroll = () => {
+          if (content.scrollTop > 30) hint.classList.remove('show');
+        };
+      }
     }
+
+    function galleryGoTo(idx) {
+      const imgs = window._modalGalleryImgs || [];
+      if (!imgs.length) return;
+      idx = ((idx % imgs.length) + imgs.length) % imgs.length;
+      window._modalGalleryIdx = idx;
+      const mainEl = document.getElementById('modal-gallery-main');
+      if (mainEl) {
+        mainEl.classList.add('fade');
+        setTimeout(() => {
+          mainEl.src = imgs[idx];
+          mainEl.classList.remove('fade');
+        }, 150);
+      }
+      document.querySelectorAll('.gallery-thumb').forEach((t, i) => t.classList.toggle('active', i === idx));
+    }
+    function galleryNav(dir) { galleryGoTo((window._modalGalleryIdx || 0) + dir); }
 
     function selectModalShade(productId, category, shadeId) {
       const product = products[category].find(p => p.id === productId);
@@ -1444,6 +2030,163 @@
 
     function closeProductModal() {
       document.getElementById('product-modal').classList.add('hidden');
+      const hint = document.getElementById('modal-scroll-hint');
+      if (hint) hint.classList.remove('show');
+    }
+
+    function copyProductLink(category, productId, btn) {
+      const url = `${location.origin}${location.pathname}#product=${category}:${productId}`;
+      const showCopied = () => {
+        const icon = btn.querySelector('.copy-icon');
+        const check = btn.querySelector('.check-icon');
+        if (!icon || !check) return;
+        icon.style.display = 'none';
+        check.style.display = '';
+        setTimeout(() => { icon.style.display = ''; check.style.display = 'none'; }, 1500);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).then(showCopied).catch(() => {
+          const ta = document.createElement('textarea');
+          ta.value = url; ta.style.position = 'fixed'; ta.style.opacity = '0';
+          document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); showCopied(); } catch (e) {}
+          ta.remove();
+        });
+      } else {
+        const ta = document.createElement('textarea');
+        ta.value = url; ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.select();
+        try { document.execCommand('copy'); showCopied(); } catch (e) {}
+        ta.remove();
+      }
+    }
+
+    // ── Confetti (order confirmation celebration) ──
+    function triggerConfetti() {
+      const colors = ['#7B1040', '#E8A5A5', '#F9D0DC', '#FFD66B', '#A7F3D0', '#93C5FD'];
+      const container = document.createElement('div');
+      container.className = 'confetti-container';
+      const count = 70;
+      for (let i = 0; i < count; i++) {
+        const piece = document.createElement('div');
+        piece.className = 'confetti-piece';
+        piece.style.left = (Math.random() * 100) + 'vw';
+        piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+        piece.style.width = (6 + Math.random() * 6) + 'px';
+        piece.style.height = (10 + Math.random() * 8) + 'px';
+        piece.style.animationDelay = (Math.random() * 0.4) + 's';
+        piece.style.animationDuration = (2.2 + Math.random() * 1.6) + 's';
+        container.appendChild(piece);
+      }
+      document.body.appendChild(container);
+      setTimeout(() => container.remove(), 4200);
+    }
+    function modalQtyChange(delta) {
+      const el = document.getElementById('modal-qty');
+      if (!el) return;
+      const cur = parseInt(el.textContent) || 1;
+      el.textContent = Math.max(1, Math.min(cur + delta, 20));
+    }
+    async function addToCartFromModal(productId, category, shadeId) {
+      const qty = parseInt(document.getElementById('modal-qty')?.textContent) || 1;
+      for (let i = 0; i < qty; i++) await addToCart(productId, category, shadeId);
+      closeProductModal();
+    }
+
+    // ── Recently Viewed ──
+    const RV_KEY = 'layan_rv_v1';
+    const RV_MAX = 10;
+
+    function getRecentlyViewed() {
+      try { return JSON.parse(localStorage.getItem(RV_KEY) || '[]'); } catch(e) { return []; }
+    }
+    function addToRecentlyViewed(productId, category) {
+      let rv = getRecentlyViewed();
+      rv = rv.filter(x => x.id !== String(productId));
+      rv.unshift({ id: String(productId), category });
+      if (rv.length > RV_MAX) rv = rv.slice(0, RV_MAX);
+      try { localStorage.setItem(RV_KEY, JSON.stringify(rv)); } catch(e) {}
+    }
+    function renderRecentlyViewedSection(excludeId) {
+      if (!productsLoaded) return '';
+      const rv = getRecentlyViewed();
+      const rvProducts = rv
+        .filter(e => excludeId ? e.id !== String(excludeId) : true)
+        .map(entry => {
+          const arr = products[entry.category];
+          if (!arr) return null;
+          const p = arr.find(x => String(x.id) === entry.id);
+          return p ? { ...p, _category: entry.category } : null;
+        }).filter(Boolean);
+      if (rvProducts.length < 2) return '';
+      return `
+        <div class="my-16">
+          <div class="flex items-center justify-between mb-8">
+            <div>
+              <h2 class="text-2xl font-bold text-stone-700">شاهدتيها مؤخراً</h2>
+              <p class="cursive-english text-rose-400 mt-1 text-sm">Recently Viewed</p>
+            </div>
+          </div>
+          <div class="rv-carousel">
+            ${rvProducts.map(p => {
+              const shade = p.shades && p.shades[0];
+              return `<div class="rv-card" onclick="openProductModal('${p.id}', '${p._category}')">
+                <div class="rv-card-img" style="background:${shade ? shade.color + '15' : '#fdf0f4'};">
+                  ${shade && shade.image
+                    ? `<img loading="lazy" src="${shade.image}" alt="${p.name}">`
+                    : `<div style="width:50px;height:50px;border-radius:50%;background:${shade ? shade.color : '#7B1040'};margin:30px auto;"></div>`}
+                </div>
+                <div class="rv-card-info">
+                  <p class="rv-card-name">${p.name}</p>
+                  <p class="rv-card-price">₪${p.price}</p>
+                </div>
+              </div>`;
+            }).join('')}
+          </div>
+        </div>`;
+    }
+
+    // ── Wishlist ──
+    function getWishlist() {
+      try { return new Set(JSON.parse(localStorage.getItem('layan_wishlist') || '[]')); } catch(e) { return new Set(); }
+    }
+    function toggleWishlist(productId, e) {
+      if (e) e.stopPropagation();
+      const list = getWishlist();
+      const id = String(productId);
+      if (list.has(id)) list.delete(id); else list.add(id);
+      localStorage.setItem('layan_wishlist', JSON.stringify([...list]));
+      updateWishlistCount();
+      debouncedRenderPage();
+    }
+    function updateWishlistCount() {
+      const count = getWishlist().size;
+      const el = document.getElementById('wishlist-count');
+      if (!el) return;
+      el.textContent = count;
+      el.classList.toggle('hidden', count === 0);
+    }
+
+    // ── Sort ──
+    let productSort = 'default';
+    function setSort(val) {
+      productSort = val;
+      resetProductPagination();
+      debouncedRenderPage();
+    }
+    function applySortFilter(arr) {
+      if (productSort === 'price_asc')  return [...arr].sort((a,b) => a.price - b.price);
+      if (productSort === 'price_desc') return [...arr].sort((a,b) => b.price - a.price);
+      if (productSort === 'newest')     return [...arr].sort((a,b) => new Date(b.created_at||0) - new Date(a.created_at||0));
+      if (productSort === 'sale')       return [...arr].sort((a,b) => (b.on_sale?1:0)-(a.on_sale?1:0));
+      return arr;
+    }
+    function renderSortBar() {
+      const opts = [['default','الافتراضي'],['newest','الأحدث'],['price_asc','السعر: الأقل'],['price_desc','السعر: الأعلى'],['sale','العروض أولاً']];
+      return `<div class="sort-bar">
+        <span class="sort-label">ترتيب:</span>
+        ${opts.map(([v,l]) => `<button onclick="setSort('${v}')" class="sort-btn${productSort===v?' active':''}">${l}</button>`).join('')}
+      </div>`;
     }
 
     function renderProductCard(product, category, index) {
@@ -1476,20 +2219,33 @@
       const currentShadeStock = shadeStockMap[currentShade?.id] || null;
       const canAddCurrent = (currentShadeStock === null) ? true : (reservedForCurrent < currentShadeStock);
 
+      const isNew = product.created_at && (Date.now() - new Date(product.created_at).getTime()) < 30 * 24 * 60 * 60 * 1000;
+      const wishlisted = getWishlist().has(String(product.id));
+
       return `
         <div class="product-card rounded-3xl overflow-hidden slide-up" style="animation-delay: ${index * 0.03}s;">
           <div class="aspect-square cursor-pointer relative overflow-hidden product-image transition-transform"
             onclick="openProductModal('${product.id}', '${category}')"
             style="background: ${currentShade ? currentShade.color + '15' : '#f5e6e615'};">
             ${currentShade && currentShade.image
-              ? `<img loading="lazy" decoding="async" src="${currentShade.image}" class="w-full h-full object-cover" alt="${currentShade.name}">`
+              ? `<img ${index < 4 ? 'loading="eager" fetchpriority="high"' : 'loading="lazy"'} decoding="async" src="${currentShade.image}" class="w-full h-full object-cover" alt="${currentShade.name}">`
               : `<div class="absolute inset-0 flex items-center justify-center">
                    <div class="w-24 h-24 rounded-full shadow-md" style="background: ${currentShade ? currentShade.color : '#7B1040'};"></div>
                  </div>`}
+            ${isNew ? '<span class="new-badge">جديد</span>' : ''}
+            <button class="wishlist-btn" onclick="toggleWishlist('${product.id}', event)" aria-label="أضيفي للمفضلة">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="${wishlisted ? '#7B1040' : 'none'}" stroke="${wishlisted ? '#7B1040' : '#78716c'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+              </svg>
+            </button>
             ${isOutOfStock ? `
               <div class="absolute inset-0 bg-white/40 backdrop-blur-sm flex items-center justify-center">
                 <span class="bg-white px-4 py-2 rounded-full text-stone-500 text-sm font-medium">نفد من المخزون</span>
               </div>` : ''}
+            <span class="tap-hint">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11.24V7.5a2.5 2.5 0 015 0v3.74"/><path d="M14 10.5V6a2.5 2.5 0 015 0v8.5a6 6 0 01-6 6h-2c-2 0-3-.5-4.5-2.5L4 14.5c-.5-.7-.3-1.8.5-2.2.8-.4 1.7-.1 2.2.6L8 14.5"/></svg>
+              اضغطي للتفاصيل
+            </span>
           </div>
           <div class="p-5 md:p-6">
             <h3 class="font-bold text-stone-700 mb-1 text-sm md:text-base">${product.name}</h3>
@@ -1533,9 +2289,11 @@
 
     function renderCategoryPage(categoryKey, title, titleEn) {
       const categoryProducts = products[categoryKey] || [];
-      const filteredProducts = productSearchQuery.trim()
-        ? categoryProducts.filter(product => productMatchesSearch(product, productSearchQuery))
-        : categoryProducts;
+      const filteredProducts = applySortFilter(
+        productSearchQuery.trim()
+          ? categoryProducts.filter(product => productMatchesSearch(product, productSearchQuery))
+          : categoryProducts
+      );
       if (currentProductsPage === 1) resetProductPagination();
       const paginatedProducts = getPaginatedProducts(filteredProducts);
 
@@ -1547,20 +2305,18 @@
             <div class="mt-6 w-24 h-[1px] bg-[#F9D0DC] mx-auto"></div>
           </div>
           ${renderProductSearchBar()}
-          ${categoryProducts.length === 0 ? `
-            <div class="text-center py-24">
-              <p class="text-stone-500 text-lg">لا توجد منتجات في هذا القسم حالياً</p>
-            </div>
-          ` : filteredProducts.length === 0 ? `
-            <div class="text-center py-24">
-              <p class="text-stone-500 text-lg">لا توجد نتائج مطابقة للبحث</p>
-            </div>
-          ` : `
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
-              ${paginatedProducts.map((product, index) => renderProductCard(product, categoryKey, index)).join('')}
-            </div>
-            ${renderLoadMoreButton(filteredProducts)}
-          `}
+          ${renderSortBar()}
+          ${categoryProducts.length === 0
+            ? (!productsLoaded
+                ? renderSkeletonGrid(8)
+                : `<div class="text-center py-24"><p class="text-stone-500 text-lg">لا توجد منتجات في هذا القسم حالياً</p></div>`)
+            : filteredProducts.length === 0
+              ? `<div class="text-center py-24"><p class="text-stone-500 text-lg">لا توجد نتائج مطابقة للبحث</p></div>`
+              : `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
+                  ${paginatedProducts.map((product, index) => renderProductCard(product, categoryKey, index)).join('')}
+                 </div>
+                 ${renderLoadMoreButton(filteredProducts)}`
+          }
         </div>
       `;
     }
@@ -1590,6 +2346,28 @@
 
       return `
         <div class="fade-in">
+          <!-- Trust badges -->
+          <div class="trust-section">
+            <div class="trust-badge">
+              <div class="trust-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7B1040" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              </div>
+              <div class="trust-text"><strong>منتجات أصلية 100%</strong><span>مضمونة من المصدر</span></div>
+            </div>
+            <div class="trust-badge">
+              <div class="trust-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7B1040" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+              </div>
+              <div class="trust-text"><strong>توصيل متاح للجميع</strong></div>
+            </div>
+            <div class="trust-badge">
+              <div class="trust-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7B1040" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+              </div>
+              <div class="trust-text"><strong>دفع عند الاستلام</strong><span>أو عبر الواتساب</span></div>
+            </div>
+          </div>
+
           ${renderProductSearchBar()}
           ${productSearchQuery.trim() ? `
             <div class="my-20">
@@ -1615,20 +2393,49 @@
           ${renderComingSoonSection()}
           <div class="section-divider"></div>
 
-          <div class="my-20">
-            <div class="text-center mb-12">
-              <h2 class="text-3xl font-bold text-stone-700">منتجات مميزة</h2>
-              <p class="cursive-english text-rose-400 mt-2">Featured Collection</p>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-              ${products.lips.length > 0 ? renderProductCard(products.lips[0], 'lips', 0) : ''}
-              ${products.foundation.length > 0 ? renderProductCard(products.foundation[0], 'foundation', 1) : ''}
-              ${products.eyes.length > 0 ? renderProductCard(products.eyes[0], 'eyes', 2) : ''}
-              ${products.packages.length > 0 ? renderProductCard(products.packages[0], 'packages', 3) : ''}
-            </div>
-          </div>
+          ${(() => {
+            if (!productsLoaded) return `<div class="my-20">${renderSkeletonGrid(4)}</div>`;
+            const THIRTY_DAYS = 30 * 24 * 60 * 60 * 1000;
+            const now = Date.now();
+            const newArrivals = Object.entries(products).flatMap(([cat, arr]) =>
+              arr.filter(p => p.created_at && (now - new Date(p.created_at).getTime()) < THIRTY_DAYS)
+                 .map(p => ({ ...p, _category: cat }))
+            ).sort((a,b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 8);
+
+            if (newArrivals.length > 0) return `
+              <div class="my-20">
+                <div class="text-center mb-12">
+                  <span class="inline-block bg-[#7B1040] text-white text-xs font-bold px-4 py-1.5 rounded-full mb-4 tracking-widest uppercase">جديد</span>
+                  <h2 class="text-3xl font-bold text-stone-700">وصل حديثاً</h2>
+                  <p class="cursive-english text-rose-400 mt-2">New Arrivals</p>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+                  ${newArrivals.map((p, i) => renderProductCard(p, p._category, i)).join('')}
+                </div>
+                ${newArrivals.length >= 4 ? `<div class="text-center mt-10"><button onclick="navigateTo('all')" class="border border-[#7B1040] text-[#7B1040] px-8 py-3 rounded-full font-medium hover:bg-[#7B1040] hover:text-white transition-all">عرض كل المنتجات الجديدة</button></div>` : ''}
+              </div>`;
+
+            // Fallback: featured collection
+            const hasFeatured = products.lips.length > 0 || products.foundation.length > 0 || products.eyes.length > 0 || products.packages.length > 0;
+            if (!hasFeatured) return '';
+            return `
+              <div class="my-20">
+                <div class="text-center mb-12">
+                  <h2 class="text-3xl font-bold text-stone-700">منتجات مميزة</h2>
+                  <p class="cursive-english text-rose-400 mt-2">Featured Collection</p>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+                  ${products.lips.length > 0 ? renderProductCard(products.lips[0], 'lips', 0) : ''}
+                  ${products.foundation.length > 0 ? renderProductCard(products.foundation[0], 'foundation', 1) : ''}
+                  ${products.eyes.length > 0 ? renderProductCard(products.eyes[0], 'eyes', 2) : ''}
+                  ${products.packages.length > 0 ? renderProductCard(products.packages[0], 'packages', 3) : ''}
+                </div>
+              </div>`;
+          })()}
 
           <div class="section-divider"></div>
+
+          ${renderRecentlyViewedSection()}
 
           <div class="my-20">
             <div class="text-center mb-12">
@@ -1636,16 +2443,22 @@
               <p class="cursive-english text-rose-400 mt-2">Our Collections</p>
             </div>
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-              <button onclick="navigateTo('all')" class="category-card p-6 md:p-8 rounded-3xl text-center slide-up" style="animation-delay: 0s; background: white; border: 1px solid #7B1040;">
-                <h3 class="font-bold text-[#7B1040] text-lg">كل المنتجات</h3>
-                <p class="cursive-english text-sm text-stone-500">View All</p>
-              </button>
-              ${categories.map((cat, index) => `
-                <button onclick="navigateTo('${cat.key}')" class="category-card p-6 md:p-8 rounded-3xl text-center slide-up" style="animation-delay: ${(index + 1) * 0.08}s; background: white; border: 1px solid #F9D0DC;">
+              ${(() => {
+                const total = Object.values(products).reduce((s, arr) => s + (arr || []).length, 0);
+                return `<button onclick="navigateTo('all')" class="category-card p-6 md:p-8 rounded-3xl text-center slide-up" style="animation-delay: 0s; background: white; border: 1px solid #7B1040;">
+                  <h3 class="font-bold text-[#7B1040] text-lg">كل المنتجات</h3>
+                  <p class="cursive-english text-sm text-stone-500">View All</p>
+                  ${total > 0 ? `<p class="text-xs text-stone-400 mt-1">${total} منتج</p>` : ''}
+                </button>`;
+              })()}
+              ${categories.map((cat, index) => {
+                const count = (products[cat.key] || []).length;
+                return `<button onclick="navigateTo('${cat.key}')" class="category-card p-6 md:p-8 rounded-3xl text-center slide-up" style="animation-delay: ${(index + 1) * 0.08}s; background: white; border: 1px solid #F9D0DC;">
                   <h3 class="font-bold text-stone-700 text-lg">${cat.name}</h3>
                   <p class="cursive-english text-sm text-stone-500">${cat.nameEn}</p>
-                </button>
-              `).join('')}
+                  ${count > 0 ? `<p class="text-xs text-stone-400 mt-1">${count} منتج</p>` : ''}
+                </button>`;
+              }).join('')}
             </div>
           </div>
         </div>
@@ -1653,26 +2466,37 @@
     }
 
     function renderCartPage() {
-      const deliveryOptions = [
-        { id: 'd1', name: 'استلام مجاني من نقطة جامعة القدس - أبو ديس', price: 0 },
-        { id: 'd2', name: 'توصيل إلى مدن الضفة الغربية', price: 20 },
-        { id: 'd3', name: 'توصيل إلى القدس', price: 30 },
-        { id: 'd4', name: 'توصيل إلى الداخل المحتل', price: 70 }
-      ];
-
       const subtotal = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
 
       if (cart.length === 0) {
+        // Grab a few products to suggest
+        const suggestions = Object.entries(products)
+          .flatMap(([cat, arr]) => arr.map(p => ({ ...p, _category: cat })))
+          .sort(() => Math.random() - 0.5)
+          .slice(0, 4);
         return `
-          <div class="fade-in text-center py-24">
-            <div class="w-24 h-24 mx-auto mb-8 rounded-full bg-[#FFF0F4] border border-[#F9D0DC] flex items-center justify-center">
-              <svg class="w-12 h-12 text-[#7B1040]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
-              </svg>
+          <div class="fade-in">
+            <div class="text-center py-20">
+              <div class="w-24 h-24 mx-auto mb-8 rounded-full bg-[#FFF0F4] border border-[#F9D0DC] flex items-center justify-center">
+                <svg class="w-12 h-12 text-[#7B1040]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                </svg>
+              </div>
+              <h2 class="text-3xl font-bold text-stone-700 mb-3">السلة فارغة</h2>
+              <p class="text-stone-500 mb-8 text-lg">لم تضيفي أي منتجات بعد</p>
+              <button onclick="navigateTo('all')" class="btn-primary text-white px-8 py-4 rounded-full font-medium">تسوقي الآن</button>
             </div>
-            <h2 class="text-3xl font-bold text-stone-700 mb-3">السلة فارغة</h2>
-            <p class="text-stone-500 mb-8 text-lg">لم تضيفي أي منتجات بعد</p>
-            <button onclick="navigateTo('home')" class="btn-primary text-white px-8 py-4 rounded-full font-medium">ابدأي التسوق</button>
+            ${suggestions.length > 0 ? `
+              <div class="section-divider"></div>
+              <div class="my-12">
+                <div class="text-center mb-10">
+                  <h3 class="text-2xl font-bold text-stone-700">قد يعجبكِ</h3>
+                  <p class="cursive-english text-rose-400 mt-1">You Might Like</p>
+                </div>
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
+                  ${suggestions.map((p, i) => renderProductCard(p, p._category, i)).join('')}
+                </div>
+              </div>` : ''}
           </div>
         `;
       }
@@ -1685,15 +2509,26 @@
           </div>
           <div class="grid lg:grid-cols-3 gap-8">
             <div class="lg:col-span-2 space-y-5">
-              ${cart.map((item, index) => `
-                <div class="glass-card rounded-2xl p-5 md:p-6 flex gap-5 slide-up" style="animation-delay: ${index * 0.03}s;">
-                  <div class="w-20 h-20 md:w-24 md:h-24 rounded-xl flex-shrink-0 flex items-center justify-center" style="background: ${item.shade.color}15;">
-                    <div class="w-10 h-10 rounded-full shadow-md" style="background: ${item.shade.color};"></div>
+              ${cart.map((item, index) => {
+                const lineTotal = item.product.price * item.quantity;
+                const saved = item.product.on_sale && item.product.original_price
+                  ? Math.round((item.product.original_price - item.product.price) * item.quantity) : 0;
+                return `
+                <div class="glass-card rounded-2xl p-5 md:p-6 flex gap-4 slide-up" style="animation-delay:${index * 0.03}s;">
+                  <div class="w-20 h-20 md:w-24 md:h-24 rounded-xl flex-shrink-0 overflow-hidden cursor-pointer"
+                       style="background:${item.shade.color}15;"
+                       onclick="openProductModal('${item.productId}', '${item.category}')">
+                    ${item.shade.image
+                      ? `<img loading="lazy" src="${item.shade.image}" class="w-full h-full object-cover" alt="${item.shade.name}">`
+                      : `<div class="w-full h-full flex items-center justify-center"><div class="w-10 h-10 rounded-full shadow-md" style="background:${item.shade.color};"></div></div>`}
                   </div>
-                  <div class="flex-1">
-                    <h3 class="font-bold text-stone-700 text-base md:text-lg">${item.product.name}</h3>
-                    <p class="text-sm text-stone-500">اللون: <span class="font-medium text-stone-700">${item.shade.name}</span></p>
-                    <p class="text-rose-500 font-bold mt-2">₪${item.product.price}</p>
+                  <div class="flex-1 min-w-0">
+                    <h3 class="font-bold text-stone-700 text-base md:text-lg leading-tight mb-1">${item.product.name}</h3>
+                    <p class="text-sm text-stone-500 mb-1">اللون: <span class="font-medium text-stone-700">${item.shade.name}</span></p>
+                    <div class="flex items-center gap-2 flex-wrap">
+                      <p class="text-rose-500 font-bold">₪${lineTotal}</p>
+                      ${saved > 0 ? `<span class="text-xs bg-green-50 text-green-600 px-2 py-0.5 rounded-full font-semibold">وفرتِ ₪${saved}</span>` : ''}
+                    </div>
                   </div>
                   <div class="flex flex-col items-end gap-3">
                     <button onclick="removeFromCart(${index})" class="text-stone-300 hover:text-rose-400 transition-colors p-2">
@@ -1707,8 +2542,8 @@
                       <button onclick="updateQuantity(${index}, 1)" class="quantity-btn w-8 h-8 rounded-full flex items-center justify-center text-stone-600 hover:text-white text-lg">+</button>
                     </div>
                   </div>
-                </div>
-              `).join('')}
+                </div>`;
+              }).join('')}
             </div>
             <div class="lg:col-span-1">
               <div class="glass-card rounded-3xl p-8 sticky top-28">
@@ -1718,27 +2553,9 @@
                     <span class="font-medium">المجموع الفرعي</span>
                     <span class="font-bold">₪${subtotal}</span>
                   </div>
-                  <div class="flex justify-between text-stone-600">
+                  <div class="flex justify-between text-stone-600 text-sm">
                     <span class="font-medium">التوصيل</span>
-                    <span id="delivery-cost" class="font-bold">₪0</span>
-                  </div>
-                  <div class="flex justify-between text-lg">
-                    <span class="font-bold text-stone-700">الإجمالي</span>
-                    <span id="total-cost" class="font-bold text-[#7B1040]">₪${subtotal}</span>
-                  </div>
-                </div>
-                <div class="mb-8">
-                  <p class="font-bold text-stone-700 mb-4">خيارات التوصيل:</p>
-                  <div class="space-y-3">
-                    ${deliveryOptions.map((option, index) => `
-                      <div>
-                        <input type="radio" id="delivery-${option.id}" name="delivery" value="${option.price}" class="hidden" onchange="updateDelivery(${option.price})" ${index === 0 ? 'checked' : ''}>
-                        <label for="delivery-${option.id}" class="block p-3 border-2 border-rose-100 rounded-xl cursor-pointer hover:border-rose-300 transition-all text-sm">
-                          <span class="block text-stone-700 font-medium">${option.name}</span>
-                          <span class="text-rose-500 font-bold text-sm mt-1">${option.price === 0 ? 'مجاني' : `₪${option.price}`}</span>
-                        </label>
-                      </div>
-                    `).join('')}
+                    <span class="text-stone-400">تُحدد في الخطوة التالية</span>
                   </div>
                 </div>
                 <div class="mb-8 p-4 bg-[#FFF0F4] rounded-2xl border border-[#F9D0DC]">
@@ -1754,15 +2571,20 @@
       `;
     }
 
-    function updateDelivery(price) {
+    function updateCheckoutTotal() {
       const subtotal = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
-      document.getElementById('delivery-cost').textContent = `₪${price}`;
-      document.getElementById('total-cost').textContent = `₪${(subtotal + price).toFixed(2)}`;
+      const deliveryEl = document.querySelector('input[name="delivery"]:checked');
+      const deliveryPrice = deliveryEl ? parseInt(deliveryEl.value || '0') : 0;
+      const total = Math.round((subtotal + deliveryPrice) * 100) / 100;
+      const deliveryCostEl = document.getElementById('checkout-delivery-cost');
+      const totalEl = document.getElementById('checkout-total-cost');
+      if (deliveryCostEl) deliveryCostEl.textContent = deliveryPrice === 0 ? 'مجاني' : `₪${deliveryPrice}`;
+      if (totalEl) totalEl.textContent = `₪${total.toFixed(2)}`;
     }
 
     function showCheckoutForm() {
       const subtotal = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
-      const deliveryPrice = parseInt(document.querySelector('input[name="delivery"]:checked').value);
+      const deliveryPrice = DELIVERY_OPTIONS[0].price;
       const total = Math.round((subtotal + deliveryPrice) * 100) / 100;
 
       const mainContent = document.getElementById('main-content');
@@ -1787,6 +2609,34 @@
                 <input type="tel" id="cust-phone" required class="w-full px-5 py-4 rounded-2xl border border-rose-100 focus:border-rose-400 focus:ring-4 focus:ring-rose-400/10 outline-none transition-all" placeholder="05x-xxxxxxx">
               </div>
               <div class="pt-4 border-t border-rose-50">
+                <label class="block text-stone-700 font-bold mb-3">اختاري طريقة التوصيل <span class="text-rose-500">*</span></label>
+                <div class="space-y-3">
+                  ${DELIVERY_OPTIONS.map((option, index) => `
+                    <label class="delivery-option">
+                      <input type="radio" name="delivery" value="${option.price}" onchange="updateCheckoutTotal()" ${index === 0 ? 'checked' : ''}>
+                      <span class="delivery-card">
+                        <span class="flex items-center gap-3">
+                          <span class="delivery-radio-dot"></span>
+                          <span class="font-medium text-stone-700 text-sm md:text-base">${option.name}</span>
+                        </span>
+                        <span class="font-bold text-sm md:text-base ${option.price === 0 ? 'text-green-600' : 'text-rose-500'} whitespace-nowrap">${option.price === 0 ? 'مجاني' : `₪${option.price}`}</span>
+                      </span>
+                    </label>
+                  `).join('')}
+                </div>
+              </div>
+              <div class="bg-rose-50/70 border border-rose-100 rounded-2xl p-5">
+                <label class="flex items-center gap-2 text-stone-700 font-bold mb-2">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7B1040" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z" stroke="none"/><path d="M3 6.5l9 6 9-6M4 5h16a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V6a1 1 0 011-1z"/></svg>
+                  احصلي على إيصال طلبك عبر البريد الإلكتروني <span class="text-stone-400 font-normal text-sm">(اختياري)</span>
+                </label>
+                <input type="email" id="cust-email" class="w-full px-5 py-4 rounded-2xl border border-rose-100 focus:border-rose-400 focus:ring-4 focus:ring-rose-400/10 outline-none transition-all bg-white" placeholder="example@gmail.com">
+                <p class="text-xs text-stone-500 mt-2 flex items-center gap-1.5">
+                  <svg class="shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7B1040" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+                  إذا أدخلتِ بريدك الإلكتروني، سنرسل لكِ إيصالاً رسمياً بتفاصيل طلبك فور تأكيده.
+                </p>
+              </div>
+              <div class="pt-4 border-t border-rose-50">
                 <label class="block text-stone-700 font-bold mb-2">عنوان بديل (اختياري)</label>
                 <input type="text" id="cust-address-alt" class="w-full px-5 py-4 rounded-2xl border border-rose-100 focus:border-rose-400 focus:ring-4 focus:ring-rose-400/10 outline-none transition-all" placeholder="عنوان آخر للتوصل في حال عدم التواجد">
               </div>
@@ -1799,10 +2649,18 @@
                 <textarea id="cust-notes" rows="3" class="w-full px-5 py-4 rounded-2xl border border-rose-100 focus:border-rose-400 focus:ring-4 focus:ring-rose-400/10 outline-none transition-all resize-none" placeholder="أي ملاحظات إضافية بخصوص الطلب أو التوصيل..."></textarea>
               </div>
               <div class="pt-6">
-                <div class="bg-rose-50 rounded-2xl p-5 mb-8">
-                  <div class="flex justify-between items-center">
+                <div class="bg-rose-50 rounded-2xl p-5 mb-8 space-y-2">
+                  <div class="flex justify-between items-center text-sm text-stone-500">
+                    <span class="font-medium">المجموع الفرعي</span>
+                    <span class="font-bold">₪${subtotal}</span>
+                  </div>
+                  <div class="flex justify-between items-center text-sm text-stone-500">
+                    <span class="font-medium">التوصيل</span>
+                    <span id="checkout-delivery-cost" class="font-bold">${deliveryPrice === 0 ? 'مجاني' : `₪${deliveryPrice}`}</span>
+                  </div>
+                  <div class="flex justify-between items-center pt-2 border-t border-rose-100/70">
                     <span class="text-stone-700 font-bold">الإجمالي النهائي:</span>
-                    <span class="text-2xl font-bold text-[#7B1040]">₪${total.toFixed(2)}</span>
+                    <span id="checkout-total-cost" class="text-2xl font-bold text-[#7B1040]">₪${total.toFixed(2)}</span>
                   </div>
                 </div>
                 <button type="submit" class="btn-primary w-full text-white py-5 rounded-full text-xl font-bold">تأكيد الطلب</button>
@@ -1843,10 +2701,13 @@
         return;
       }
 
+      const customerEmail = document.getElementById('cust-email').value.trim();
+
       const orderData = {
         customer_name: customerName,
         address: address,
         phone: phone,
+        email: customerEmail || '',
         address_alt: document.getElementById('cust-address-alt').value || '',
         phone_alt: document.getElementById('cust-phone-alt').value || '',
         notes: document.getElementById('cust-notes').value || '',
@@ -1872,53 +2733,66 @@
       let supabaseOk = false;
       let emailOk = false;
 
-      if (supabaseClient) {
-        try {
-          const { error } = await supabaseClient.from('orders').insert([orderData]);
-          if (error) throw error;
-          supabaseOk = true;
-        } catch (err) {
-          console.error('Supabase save failed:', err);
-        }
-      }
-
-      if (supabaseClient && cartSnapshot.length > 0) {
-        for (const ci of cartSnapshot) {
+      try {
+        await sbPost('orders', [orderData]);
+        supabaseOk = true;
+      } catch(err) {
+        console.error('Order save failed:', err);
+        // Retry without the optional email field, in case the 'orders' table
+        // doesn't have an 'email' column yet.
+        if (orderData.email !== undefined) {
           try {
-            const { data: prodRow, error: fetchErr } = await supabaseClient.from('products').select('id, shades, stock').eq('id', ci.productId).maybeSingle();
-            if (fetchErr || !prodRow) continue;
-            let updatePayload = {};
-            if (Array.isArray(prodRow.shades) && prodRow.shades.length > 0) {
-              const newShades = prodRow.shades.map(s => {
-                if (s && (s.id === ci.shadeId || String(s.id) === String(ci.shadeId))) {
-                  const current = (s.stock !== undefined) ? Number(s.stock) : (prodRow.stock !== undefined ? Number(prodRow.stock) : null);
-                  if (current !== null) return { ...s, stock: Math.max(0, current - ci.quantity) };
-                }
-                return s;
-              });
-              updatePayload.shades = newShades;
-            } else if (prodRow.stock !== undefined) {
-              updatePayload.stock = Math.max(0, Number(prodRow.stock) - ci.quantity);
-            }
-            if (Object.keys(updatePayload).length > 0) {
-              await supabaseClient.from('products').update(updatePayload).eq('id', ci.productId);
-            }
-          } catch (err) {
-            console.error('Error updating stock for', ci.productId, err);
+            const { email, ...orderDataNoEmail } = orderData;
+            await sbPost('orders', [orderDataNoEmail]);
+            supabaseOk = true;
+          } catch (err2) {
+            console.error('Order save retry (no email) failed:', err2);
           }
         }
       }
 
-      try {
-        const emailConfigReady =
-          EMAIL_CONFIG.serviceId !== 'YOUR_SERVICE_ID' &&
-          EMAIL_CONFIG.templateId !== 'YOUR_TEMPLATE_ID' &&
-          EMAIL_CONFIG.publicKey !== 'YOUR_PUBLIC_KEY';
+      // Update stock in background (non-blocking)
+      if (cartSnapshot.length > 0) {
+        (async () => {
+          for (const ci of cartSnapshot) {
+            try {
+              const rows = await sbGet(`products?id=eq.${ci.productId}&select=id,shades,stock`);
+              const prodRow = rows?.[0];
+              if (!prodRow) continue;
+              let updatePayload = {};
+              if (Array.isArray(prodRow.shades) && prodRow.shades.length > 0) {
+                updatePayload.shades = prodRow.shades.map(s => {
+                  if (s && (s.id === ci.shadeId || String(s.id) === String(ci.shadeId))) {
+                    const cur = (s.stock !== undefined) ? Number(s.stock) : (prodRow.stock !== undefined ? Number(prodRow.stock) : null);
+                    if (cur !== null) return { ...s, stock: Math.max(0, cur - ci.quantity) };
+                  }
+                  return s;
+                });
+              } else if (prodRow.stock !== undefined) {
+                updatePayload.stock = Math.max(0, Number(prodRow.stock) - ci.quantity);
+              }
+              if (Object.keys(updatePayload).length > 0) {
+                await sbPatch(`products?id=eq.${ci.productId}`, updatePayload);
+              }
+            } catch(err) {
+              console.error('Stock update failed for', ci.productId, err);
+            }
+          }
+        })();
+      }
 
+      const emailConfigReady =
+        EMAIL_CONFIG.serviceId !== 'YOUR_SERVICE_ID' &&
+        EMAIL_CONFIG.templateId !== 'YOUR_TEMPLATE_ID' &&
+        EMAIL_CONFIG.publicKey !== 'YOUR_PUBLIC_KEY';
+
+      const itemsList = orderData.items.map(i => `${i.name} (${i.shade}) × ${i.quantity} — ₪${i.price * i.quantity}`).join('\n');
+      const orderDate = new Date().toLocaleString('ar-SA');
+
+      try {
         if (emailConfigReady) {
           try { await loadEmailJS(); } catch (e) { console.error('Failed to load EmailJS:', e); }
           if (window.emailjs) {
-            const itemsList = orderData.items.map(i => `${i.name} (${i.shade}) × ${i.quantity} — ₪${i.price * i.quantity}`).join('\n');
             try {
               window.emailjs.init(EMAIL_CONFIG.publicKey);
               await window.emailjs.send(EMAIL_CONFIG.serviceId, EMAIL_CONFIG.templateId, {
@@ -1931,13 +2805,42 @@
                 items_list: itemsList,
                 total: `₪${total}`,
                 notes: orderData.notes || '—',
-                order_date: new Date().toLocaleString('ar-SA')
+                order_date: orderDate
               });
               emailOk = true;
             } catch (err) { console.error('EmailJS send failed:', err); }
           }
         }
       } catch (err) { console.error('EmailJS send failed:', err); }
+
+      // Send a receipt email to the customer, if they provided one
+      if (customerEmail) {
+        try {
+          if (emailConfigReady) {
+            try { await loadEmailJS(); } catch (e) { console.error('Failed to load EmailJS:', e); }
+            if (window.emailjs) {
+              const receiptTemplateId = (EMAIL_CONFIG.receiptTemplateId && EMAIL_CONFIG.receiptTemplateId !== 'YOUR_RECEIPT_TEMPLATE_ID')
+                ? EMAIL_CONFIG.receiptTemplateId
+                : EMAIL_CONFIG.templateId;
+              try {
+                window.emailjs.init(EMAIL_CONFIG.publicKey);
+                await window.emailjs.send(EMAIL_CONFIG.serviceId, receiptTemplateId, {
+                  to_email: customerEmail,
+                  customer_name: orderData.customer_name,
+                  phone: orderData.phone,
+                  address: orderData.address,
+                  address_alt: orderData.address_alt,
+                  phone_alt: orderData.phone_alt,
+                  items_list: itemsList,
+                  total: `₪${total}`,
+                  notes: orderData.notes || '—',
+                  order_date: orderDate
+                });
+              } catch (err) { console.error('Customer receipt email failed:', err); }
+            }
+          }
+        } catch (err) { console.error('Customer receipt email failed:', err); }
+      }
 
       if (!supabaseOk && !emailOk) {
         alert('عذراً، حدث خطأ أثناء إتمام الطلب. يرجى المحاولة مرة أخرى أو التواصل معنا عبر الانستغرام.');
@@ -1967,21 +2870,71 @@
 
       cart = [];
       updateCartCount();
-      showOrderConfirmation(emailOk);
+      showOrderConfirmation(emailOk, customerEmail);
     }
 
-    function showOrderConfirmation(emailOk = true) {
+    function showOrderConfirmation(emailOk = true, customerEmail = '') {
+      const orderNum = 'LB-' + Date.now().toString().slice(-6);
+      triggerConfetti();
       const mainContent = document.getElementById('main-content');
       mainContent.innerHTML = `
-        <div class="fade-in text-center py-32">
-          <div class="w-28 h-28 mx-auto mb-8 rounded-full bg-gradient-to-br from-green-100 to-emerald-100 flex items-center justify-center">
+        <div class="fade-in max-w-lg mx-auto py-16 text-center">
+          <!-- Checkmark animation -->
+          <div class="w-28 h-28 mx-auto mb-8 rounded-full flex items-center justify-center" style="background: linear-gradient(135deg, #d1fae5, #a7f3d0);">
             <svg class="w-14 h-14 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
             </svg>
           </div>
-          <h2 class="text-4xl font-bold text-stone-700 mb-4">شكراً لك!</h2>
-          <p class="text-stone-600 text-lg mb-3">تم استلام طلبك بنجاح</p>
-          <button onclick="cart = []; updateCartCount(); navigateTo('home');" class="btn-primary text-white px-8 py-4 rounded-full font-medium">
+
+          <h2 class="text-4xl font-bold text-stone-700 mb-3">شكراً لكِ!</h2>
+          <p class="cursive-english text-xl text-rose-400 mb-2">Thank You!</p>
+          <p class="text-stone-500 mb-1">رقم طلبكِ: <span class="font-bold text-[#7B1040]">${orderNum}</span></p>
+          <p class="text-stone-500 text-sm ${customerEmail ? 'mb-2' : 'mb-10'}">سنتواصل معكِ قريباً لتأكيد الطلب</p>
+          ${customerEmail ? `<p class="text-stone-500 text-sm mb-10">تم إرسال إيصال الطلب إلى <span class="font-bold text-[#7B1040]">${customerEmail}</span></p>` : ''}
+
+          <!-- What's next -->
+          <div class="glass-card rounded-3xl p-8 mb-8 text-right space-y-5">
+            <h3 class="text-lg font-bold text-stone-700 text-center mb-6">ماذا يحدث الآن؟</h3>
+            <div class="flex items-start gap-4">
+              <div class="w-9 h-9 rounded-full bg-[#FFF0F4] border border-[#F9D0DC] flex items-center justify-center flex-shrink-0">
+                <span class="text-sm font-bold text-[#7B1040]">1</span>
+              </div>
+              <div>
+                <p class="font-semibold text-stone-700">استلام الطلب</p>
+                <p class="text-sm text-stone-500">سيصلكِ تأكيد عبر الهاتف خلال ساعات</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4">
+              <div class="w-9 h-9 rounded-full bg-[#FFF0F4] border border-[#F9D0DC] flex items-center justify-center flex-shrink-0">
+                <span class="text-sm font-bold text-[#7B1040]">2</span>
+              </div>
+              <div>
+                <p class="font-semibold text-stone-700">تجهيز الطلب</p>
+                <p class="text-sm text-stone-500">نجهّز طلبكِ بعناية ليصلكِ بأفضل حال</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4">
+              <div class="w-9 h-9 rounded-full bg-[#FFF0F4] border border-[#F9D0DC] flex items-center justify-center flex-shrink-0">
+                <span class="text-sm font-bold text-[#7B1040]">3</span>
+              </div>
+              <div>
+                <p class="font-semibold text-stone-700">التوصيل</p>
+                <p class="text-sm text-stone-500">يصلكِ طلبكِ في الوقت المحدد</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Instagram follow nudge -->
+          <div class="glass-card rounded-3xl p-6 mb-8 bg-gradient-to-br from-[#FFF0F4] to-white border border-[#F9D0DC]">
+            <p class="text-sm font-semibold text-stone-600 mb-3">تابعينا على الانستغرام لأحدث المنتجات والعروض</p>
+            <a href="${config?.instagram_url || defaultConfig.instagram_url}" target="_blank" rel="noopener noreferrer"
+               class="inline-flex items-center gap-2 btn-primary text-white px-6 py-3 rounded-full text-sm font-bold">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+              @layansbeautyshop
+            </a>
+          </div>
+
+          <button onclick="navigateTo('home');" class="w-full border border-[#7B1040] text-[#7B1040] py-4 rounded-full font-medium hover:bg-[#7B1040] hover:text-white transition-all">
             العودة للتسوق
           </button>
         </div>
@@ -2057,7 +3010,8 @@
     function renderAllProductsPage() {
       const categoryKeys = ['face', 'lips', 'eyes', 'foundation', 'setting', 'gifts', 'packages', 'nails', 'accessories', 'sale'];
       const allProducts = categoryKeys.flatMap(key => (products[key] || []).map(p => ({ ...p, _category: key })));
-      const filtered = productSearchQuery ? allProducts.filter(p => productMatchesSearch(p, productSearchQuery)) : allProducts;
+      const filtered = applySortFilter(productSearchQuery ? allProducts.filter(p => productMatchesSearch(p, productSearchQuery)) : allProducts);
+      const paginated = getPaginatedProducts(filtered);
 
       return `
         <div class="fade-in">
@@ -2065,13 +3019,18 @@
             <h1 class="text-5xl font-bold text-stone-700 mb-3">كل المنتجات</h1>
             <p class="cursive-english text-2xl text-rose-400">All Products</p>
             <div class="mt-6 w-24 h-1 bg-gradient-to-r from-transparent via-rose-300 to-transparent mx-auto"></div>
+            ${filtered.length > 0 ? `<p class="text-sm text-stone-400 mt-3">${filtered.length} منتج</p>` : ''}
           </div>
           ${renderProductSearchBar()}
+          ${renderSortBar()}
           ${filtered.length === 0
-            ? `<div class="text-center py-20"><p class="text-stone-400 text-lg">لا توجد منتجات</p></div>`
-            : `<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                ${filtered.map(p => renderProductCard(p, p._category)).join('')}
-               </div>`}
+            ? (!productsLoaded
+                ? renderSkeletonGrid(8)
+                : `<div class="text-center py-20"><p class="text-stone-400 text-lg">لا توجد منتجات</p></div>`)
+            : `<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
+                ${paginated.map((p, i) => renderProductCard(p, p._category, i)).join('')}
+               </div>
+               ${renderLoadMoreButton(filtered)}`}
         </div>
       `;
     }
@@ -2081,7 +3040,8 @@
       const saleProducts = categoryKeys.flatMap(key =>
         (products[key] || []).filter(p => p.on_sale || key === 'sale').map(p => ({ ...p, _category: key }))
       );
-      const filtered = productSearchQuery ? saleProducts.filter(p => productMatchesSearch(p, productSearchQuery)) : saleProducts;
+      const filtered = applySortFilter(productSearchQuery ? saleProducts.filter(p => productMatchesSearch(p, productSearchQuery)) : saleProducts);
+      const paginated = getPaginatedProducts(filtered);
 
       return `
         <div class="fade-in">
@@ -2089,15 +3049,51 @@
             <h1 class="text-5xl font-bold text-stone-700 mb-3">مخفض</h1>
             <p class="cursive-english text-2xl text-rose-400">Sale</p>
             <div class="mt-6 w-24 h-1 bg-gradient-to-r from-transparent via-rose-300 to-transparent mx-auto"></div>
+            ${filtered.length > 0 ? `<p class="text-sm text-stone-400 mt-3">${filtered.length} منتج مخفض</p>` : ''}
           </div>
           ${renderProductSearchBar()}
+          ${renderSortBar()}
           ${filtered.length === 0
-            ? `<div class="text-center py-20"><p class="text-stone-400 text-lg">لا توجد منتجات مخفضة حالياً</p></div>`
-            : `<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                ${filtered.map((p, i) => renderProductCard(p, p._category, i)).join('')}
-               </div>`}
+            ? (!productsLoaded
+                ? renderSkeletonGrid(8)
+                : `<div class="text-center py-20"><p class="text-stone-400 text-lg">لا توجد منتجات مخفضة حالياً</p></div>`)
+            : `<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
+                ${paginated.map((p, i) => renderProductCard(p, p._category, i)).join('')}
+               </div>
+               ${renderLoadMoreButton(filtered)}`}
         </div>
       `;
+    }
+
+    function renderWishlistPage() {
+      const list = getWishlist();
+      const categoryKeys = ['face','lips','eyes','foundation','setting','gifts','packages','nails','accessories','sale'];
+      const allProducts = categoryKeys.flatMap(key => (products[key]||[]).map(p => ({...p, _category: key})));
+      const saved = allProducts.filter(p => list.has(String(p.id)));
+      return `
+        <div class="fade-in">
+          <div class="text-center mb-16">
+            <h1 class="text-5xl font-bold text-stone-700 mb-3">المفضلة</h1>
+            <p class="cursive-english text-2xl text-[#7B1040]">Wishlist</p>
+            <div class="mt-6 w-24 h-[1px] bg-[#F9D0DC] mx-auto"></div>
+          </div>
+          ${list.size === 0 ? `
+            <div class="text-center py-24">
+              <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-[#FFF0F4] border border-[#F9D0DC] flex items-center justify-center">
+                <svg class="w-10 h-10 text-[#7B1040]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                </svg>
+              </div>
+              <h2 class="text-2xl font-bold text-stone-700 mb-3">المفضلة فارغة</h2>
+              <p class="text-stone-500 mb-8">اضغطي على قلب أي منتج لحفظه هنا</p>
+              <button onclick="navigateTo('all')" class="btn-primary text-white px-8 py-4 rounded-full font-medium">تصفحي المنتجات</button>
+            </div>
+          ` : `
+            <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
+              ${saved.map((p, i) => renderProductCard(p, p._category, i)).join('')}
+            </div>
+          `}
+        </div>`;
     }
 
     function renderPage() {
@@ -2118,6 +3114,7 @@
         case 'accessories': mainContent.innerHTML = renderCategoryPage('accessories', 'اكسسوارات', 'Accessories'); break;
         case 'sale': mainContent.innerHTML = renderSalePage(); break;
         case 'all': mainContent.innerHTML = renderAllProductsPage(); break;
+        case 'wishlist': mainContent.innerHTML = renderWishlistPage(); break;
         default: mainContent.innerHTML = renderHomePage();
       }
       syncSearchInputs();
@@ -2159,13 +3156,13 @@
 
     async function _fetchCS() {
       if (_csFetched) return _csItems;
-      if (!supabaseClient) { _csFetched = true; return []; }
+      const cachedCS = loadFromCache(CACHE_CS_KEY);
+      if (cachedCS) { _csItems = cachedCS; _csFetched = true; return _csItems; }
       try {
-        const { data, error } = await supabaseClient.from('coming_soon').select('*').eq('is_active', true).order('display_order').order('created_at');
-        if (error) throw error;
-        _csItems = data || [];
+        _csItems = await sbGet('coming_soon?select=*&is_active=eq.true&order=display_order.asc,created_at.asc') || [];
         _csFetched = true;
-      } catch (e) {
+        saveToCache(CACHE_CS_KEY, _csItems);
+      } catch(e) {
         console.warn('coming_soon fetch skipped:', e.message);
         _csItems = []; _csFetched = true;
       }
@@ -2264,31 +3261,106 @@
       if (t) t.scrollBy({ left: dir * 240 * 2, behavior: 'smooth' });
     }
 
+    function renderSkeletonGrid(count = 8) {
+      const cards = Array.from({ length: count }, () => `
+        <div class="skel-card">
+          <div class="aspect-square skel"></div>
+          <div style="padding:20px;display:flex;flex-direction:column;gap:10px;">
+            <div class="skel" style="height:14px;width:70%;"></div>
+            <div class="skel" style="height:11px;width:45%;"></div>
+            <div class="skel" style="height:18px;width:30%;margin-top:4px;"></div>
+            <div class="skel" style="height:40px;width:100%;border-radius:100px;margin-top:4px;"></div>
+          </div>
+        </div>`).join('');
+      return `<div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">${cards}</div>`;
+    }
+
+    function _resolveInitialPage() {
+      const hashPage = (location.hash && location.hash.length > 1) ? location.hash.replace('#', '') : null;
+      if (hashPage && hashPage.startsWith('product=')) return hashPage;
+      return (history.state && history.state.page) ? history.state.page : (hashPage || 'home');
+    }
+
+    // For a "product=category:id" deep-link, return { category, id, page } where
+    // page is the underlying category page to render behind the product modal.
+    function _parseProductDeepLink(page) {
+      if (!page || !page.startsWith('product=')) return null;
+      const raw = page.slice('product='.length);
+      const sepIdx = raw.indexOf(':');
+      if (sepIdx === -1) return null;
+      const category = raw.slice(0, sepIdx);
+      const id = raw.slice(sepIdx + 1);
+      const validCategory = ['face','lips','eyes','foundation','setting','gifts','packages','nails','accessories','sale','all'].includes(category);
+      return { category, id, page: validCategory ? category : 'home' };
+    }
+
+    function _showSkeletons(page) {
+      // Hide the spinner, show the page shell with skeleton cards immediately
+      const loader = document.getElementById('initial-loader');
+      if (loader) loader.style.display = 'none';
+      const deepLink = _parseProductDeepLink(page);
+      const effectivePage = deepLink ? deepLink.page : page;
+      const hero = document.getElementById('hero-slideshow');
+      if (hero) hero.style.display = (effectivePage === 'home') ? '' : 'none';
+      const main = document.getElementById('main-content');
+      if (!main) return;
+      const isCategory = ['face','lips','eyes','foundation','setting','gifts','packages','nails','accessories','sale','all'].includes(effectivePage);
+      if (isCategory || effectivePage === 'home') {
+        main.innerHTML = `<div class="fade-in">${renderSkeletonGrid(8)}</div>`;
+      }
+    }
+
+    function _applyPage(page) {
+      const deepLink = _parseProductDeepLink(page);
+      const effectivePage = deepLink ? deepLink.page : page;
+      currentPage = effectivePage;
+      const hero = document.getElementById('hero-slideshow');
+      if (hero) hero.style.display = (effectivePage === 'home') ? '' : 'none';
+      try { history.replaceState({ page: effectivePage }, '', '#' + effectivePage); } catch(e) {}
+      renderPage();
+      updateCartCount();
+      updateWishlistCount();
+      const loader = document.getElementById('initial-loader');
+      if (loader) loader.style.display = 'none';
+      if (deepLink) {
+        const productExists = (products[deepLink.category] || []).some(p => p.id === deepLink.id);
+        if (productExists) openProductModal(deepLink.id, deepLink.category);
+      }
+    }
+
     async function init() {
       document.body.classList.add('disable-animations');
-      try {
-        if (!supabaseClient && window.supabase && typeof window.supabase.createClient === 'function') {
-          supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
-        }
-        await Promise.all([fetchProducts(), _fetchCS()]);
-      } catch (e) {
-        console.error('fetchProducts failed, loading defaults:', e);
-        loadDefaultProducts();
+
+      const initialPage = _resolveInitialPage();
+
+      // Show skeletons IMMEDIATELY — zero wait
+      _showSkeletons(initialPage);
+      document.body.classList.remove('disable-animations');
+
+      const cachedProducts = loadFromCache(CACHE_KEY);
+      const cachedCS       = loadFromCache(CACHE_CS_KEY);
+
+      if (cachedProducts) {
+        // Render from cache — feels instant
+        products = cachedProducts;
+        productsLoaded = true;
+        if (cachedCS) { _csItems = cachedCS; _csFetched = true; }
+        _applyPage(initialPage);
+
+        // Silent background refresh
+        _csFetched = false;
+        Promise.all([fetchProducts(), _fetchCS()]).then(() => renderPage())
+          .catch(e => console.warn('background refresh failed:', e));
+        return;
       }
-      try {
-        const hashPage = (location.hash && location.hash.length > 1) ? location.hash.replace('#', '') : null;
-        const initialPage = (history.state && history.state.page) ? history.state.page : (hashPage || 'home');
-        currentPage = initialPage;
-        const hero = document.getElementById('hero-slideshow');
-        if (hero && initialPage !== 'home') hero.style.display = 'none';
-        try { history.replaceState({ page: initialPage }, '', '#' + initialPage); } catch (e) {}
-        renderPage();
-        updateCartCount();
-        document.body.classList.remove('disable-animations');
-      } catch (e) {
-        console.error('renderPage failed:', e);
-        document.body.classList.remove('disable-animations');
-      }
+
+      // First visit — fetch (skeletons are already visible)
+      await Promise.all([
+        fetchProducts().catch(e => console.warn('products fetch failed:', e)),
+        _fetchCS().catch(e => console.warn('cs fetch failed:', e))
+      ]);
+      // fetchProducts() shows its own error UI if productsLoaded is still false
+      if (productsLoaded) _applyPage(initialPage);
     }
 
     function loadEmailJS() {
@@ -2310,6 +3382,22 @@
     } else {
       init();
     }
+
+    // ── Scroll-to-top visibility ──
+    (function() {
+      const btn = document.getElementById('scroll-top-btn');
+      if (!btn) return;
+      let ticking = false;
+      window.addEventListener('scroll', function() {
+        if (!ticking) {
+          requestAnimationFrame(function() {
+            btn.classList.toggle('visible', window.scrollY > 400);
+            ticking = false;
+          });
+          ticking = true;
+        }
+      }, { passive: true });
+    })();
   </script>
 
   <script>
