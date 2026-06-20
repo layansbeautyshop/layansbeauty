@@ -4,6 +4,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Meta Pixel Code -->
+  <script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window, document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', '2228659511226149');
+  fbq('track', 'PageView');
+  </script>
+  <noscript><img height="1" width="1" style="display:none"
+  src="https://www.facebook.com/tr?id=2228659511226149&ev=PageView&noscript=1"
+  /></noscript>
+  <!-- End Meta Pixel Code -->
   <title>متجر ليان - Layan's Beauty Shop</title>
 
   <link rel="icon" type="image/png" href="favicon.png?v=1">
@@ -1510,6 +1528,16 @@
 
       updateCartCount();
       showAddedToCartFeedback();
+
+      if (typeof fbq === 'function') {
+        fbq('track', 'AddToCart', {
+          content_ids: [String(productId)],
+          content_name: product.name,
+          content_type: 'product',
+          value: product.price,
+          currency: 'ILS'
+        });
+      }
     }
 
     function showToast(message, type = 'success') {
@@ -2299,6 +2327,16 @@
       const deliveryPrice = DELIVERY_OPTIONS[0].price;
       const total = Math.round((subtotal + deliveryPrice) * 100) / 100;
 
+      if (typeof fbq === 'function') {
+        fbq('track', 'InitiateCheckout', {
+          content_ids: cart.map(item => String(item.productId)),
+          content_type: 'product',
+          num_items: cart.reduce((n, item) => n + item.quantity, 0),
+          value: subtotal,
+          currency: 'ILS'
+        });
+      }
+
       const mainContent = document.getElementById('main-content');
       mainContent.innerHTML = `
         <div class="fade-in max-w-2xl mx-auto">
@@ -2582,6 +2620,17 @@
 
       cart = [];
       updateCartCount();
+
+      if (typeof fbq === 'function') {
+        fbq('track', 'Purchase', {
+          content_ids: orderData.items.map(i => String(i.id)),
+          content_type: 'product',
+          num_items: orderData.items.reduce((n, i) => n + i.quantity, 0),
+          value: orderData.total,
+          currency: 'ILS'
+        });
+      }
+
       showOrderConfirmation(emailOk, customerEmail);
     }
 
@@ -3033,4 +3082,4 @@
     })();
   </script>
 </body>
-</html>                                                                                                                                                                            
+</html>
