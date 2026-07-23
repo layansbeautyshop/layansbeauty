@@ -771,6 +771,91 @@
       background: linear-gradient(90deg, transparent, #F9D0DC, transparent);
       margin: 14px auto 0;
     }
+    .promo-popup-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(60, 20, 35, 0.55);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      animation: promoPopupFade 0.25s ease;
+    }
+    @keyframes promoPopupFade {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .promo-popup-card {
+      position: relative;
+      background: #FFF5F8;
+      border: 1px solid #F9D0DC;
+      border-radius: 24px;
+      max-width: 380px;
+      width: 100%;
+      padding: 36px 28px 30px;
+      text-align: center;
+      box-shadow: 0 25px 60px rgba(123, 16, 64, 0.25);
+    }
+    .promo-popup-close {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: none;
+      background: white;
+      color: #7B1040;
+      font-size: 20px;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+    .promo-popup-close:hover { background: #FFF0F4; }
+    .promo-popup-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #44403c;
+      margin: 0 0 10px;
+    }
+    .promo-popup-text {
+      font-size: 0.95rem;
+      color: #78716c;
+      margin: 0 0 22px;
+      line-height: 1.6;
+    }
+    .promo-popup-code-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .promo-popup-code {
+      border: 1.5px dashed #7B1040;
+      border-radius: 12px;
+      padding: 10px 18px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      color: #7B1040;
+      background: white;
+    }
+    .promo-popup-copy-btn {
+      background: #7B1040;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 11px 20px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .promo-popup-copy-btn:hover { background: #5c0c30; }
   </style>
 
   <style>
@@ -869,6 +954,29 @@
     <div class="bg-float bg-float-1"></div>
     <div class="bg-float bg-float-2"></div>
     <div class="bg-float bg-float-3"></div>
+
+    <div id="promo-banner" class="w-full text-center py-2.5 px-4" style="background:#7B1040; color:#fff;">
+      <p class="text-sm font-semibold flex flex-wrap items-center justify-center gap-2">
+        <span>🎓 بمناسبة موسم التخرج نقدم لكم خصم 10% بكود</span>
+        <button onclick="copyPromoBannerCode()" title="اضغطي للنسخ"
+          style="background:rgba(255,255,255,0.15); border:1px dashed rgba(255,255,255,0.6);"
+          class="px-2.5 py-0.5 rounded-full font-bold tracking-wide hover:bg-white/20 transition-colors">
+          GRAD10
+        </button>
+      </p>
+    </div>
+
+    <div id="promo-popup-overlay" class="promo-popup-overlay" style="display:none;" onclick="if(event.target===this) closePromoPopup();">
+      <div class="promo-popup-card">
+        <button onclick="closePromoPopup()" class="promo-popup-close" aria-label="إغلاق">×</button>
+        <p class="promo-popup-title">🎓 بمناسبة موسم التخرج نقدم لكم</p>
+        <p class="promo-popup-text">خصم 10% — استخدمي الكود التالي</p>
+        <div class="promo-popup-code-row">
+          <span class="promo-popup-code">GRAD10</span>
+          <button onclick="copyPromoBannerCode()" class="promo-popup-copy-btn">نسخ الكود</button>
+        </div>
+      </div>
+    </div>
 
     <nav class="nav-wrapper sticky top-0 z-40 shadow-sm">
       <div class="max-w-7xl mx-auto px-4 py-4">
@@ -980,12 +1088,12 @@
         </div>
       </div>
       <div class="hero-slide" id="hero-slide-3">
-        <img src="red.png" alt="Packages">
+        <img src="red.png" alt="Graduation Gifts">
         <div class="hero-slide-overlay"></div>
         <div class="hero-caption">
-          <h2>البكجات والهدايا</h2>
-          <p>أفضل الأسعار وأجمل التشكيلات</p>
-          <button class="hero-caption-btn" onclick="navigateTo('packages')">اكتشفي البكجات</button>
+          <h2>🎓 هدايا التخرج</h2>
+          <p>فاجئي خريجتك بهدية تليق بنجاحها</p>
+          <button class="hero-caption-btn" onclick="navigateTo('gifts')">اكتشفي هدايا التخرج</button>
         </div>
       </div>
       <button class="hero-arrow prev" onclick="heroMove(-1)" aria-label="السابق">
@@ -1098,10 +1206,6 @@
     const EMAIL_CONFIG = {
       serviceId: 'service_mv74rko',
       templateId: 'template_vavvxop',
-      // Optional: create a separate "order receipt" template in EmailJS for a nicer
-      // customer-facing email, then put its ID here. If left as-is, the customer
-      // receipt (when an email is provided at checkout) reuses the same template.
-      receiptTemplateId: 'YOUR_RECEIPT_TEMPLATE_ID',
       publicKey: '2nzPj2ekNkGugeeOM'
     };
     const supabaseUrl = 'https://mdfrvmsruwzhhszoqumn.supabase.co';
@@ -1116,7 +1220,11 @@
           headers: sbHeaders,
           signal: ctrl.signal
         });
-        if (!res.ok) throw new Error(`Supabase ${res.status}: ${path}`);
+        if (!res.ok) {
+          let detail = '';
+          try { const errJson = await res.json(); detail = errJson.message || errJson.hint || errJson.details || JSON.stringify(errJson); } catch (e) {}
+          throw new Error(`Supabase ${res.status}: ${path}${detail ? ' — ' + detail : ''}`);
+        }
         return res.json();
       } finally {
         clearTimeout(timer);
@@ -1126,8 +1234,27 @@
       const res = await fetch(`${supabaseUrl}/rest/v1/${path}`, {
         method: 'POST', headers: { ...sbHeaders, 'Prefer': 'return=minimal' }, body: JSON.stringify(body)
       });
-      if (!res.ok) throw new Error(`Supabase POST ${res.status}: ${path}`);
+      if (!res.ok) {
+        let detail = '';
+        try { const errJson = await res.json(); detail = errJson.message || errJson.hint || ''; } catch (e) {}
+        const err = new Error(`Supabase POST ${res.status}: ${path}${detail ? ' — ' + detail : ''}`);
+        err.status = res.status;
+        err.detail = detail;
+        throw err;
+      }
       return res;
+    }
+    // Calls a Postgres function (RPC) exposed by Supabase, e.g. is_promo_available.
+    async function sbRpc(fnName, params) {
+      const res = await fetch(`${supabaseUrl}/rest/v1/rpc/${fnName}`, {
+        method: 'POST', headers: sbHeaders, body: JSON.stringify(params)
+      });
+      if (!res.ok) {
+        let detail = '';
+        try { const errJson = await res.json(); detail = errJson.message || errJson.hint || ''; } catch (e) {}
+        throw new Error(`Supabase RPC ${res.status}: ${fnName}${detail ? ' — ' + detail : ''}`);
+      }
+      return res.json();
     }
     async function sbPatch(path, body) {
       const res = await fetch(`${supabaseUrl}/rest/v1/${path}`, {
@@ -1148,6 +1275,146 @@
       { id: 'd3', name: 'توصيل إلى القدس', price: 30 },
       { id: 'd4', name: 'توصيل إلى الداخل المحتل', price: 70 }
     ];
+    // Optional gift box wrapping — adds a flat fee at checkout when selected.
+    const GIFT_BOX_PRICE = 10;
+    // ── Promo codes ──
+    // Add / edit codes here for the on-page preview/UI only. The real source of truth is the
+    // 'promo_codes' table in Supabase, enforced by a database trigger on every order — so even
+    // if these values drift or someone tampers with the browser, the stored order is always
+    // repriced correctly server-side. Keep this in sync with the 'promo_codes' table for a
+    // consistent preview before checkout.
+    // singleUsePerCustomer: true means the code is checked against the customer's phone number
+    // via a secure database function (not a public table) so it can't be reused.
+    const PROMO_CODES = {
+      'GRAD10': { type: 'percent', value: 10, singleUsePerCustomer: true }
+    };
+    // { code, type, value, singleUsePerCustomer, verifiedPhone } once a valid, verified code is applied.
+    // verifiedPhone holds the exact phone number the code was checked against (single-use codes only).
+    let appliedPromo = null;
+    let promoCheckInFlight = false;
+
+    function normalizePhone(phone) {
+      return (phone || '').replace(/[\s\-()]/g, '').trim();
+    }
+
+    function calcDiscount(subtotal) {
+      if (!appliedPromo) return 0;
+      if (appliedPromo.type === 'percent') {
+        return Math.round((subtotal * appliedPromo.value / 100) * 100) / 100;
+      }
+      return 0;
+    }
+
+    // Asks the database whether this phone number can still use this code — the actual
+    // 'promo_usage' table is locked down, so this goes through a security-definer RPC instead.
+    async function isPromoAlreadyUsed(phone, code) {
+      const available = await sbRpc('is_promo_available', { p_phone: phone, p_code: code });
+      return available === false;
+    }
+
+    async function applyPromoCode(inputId, msgId, phoneInputId) {
+      const input = document.getElementById(inputId);
+      const msgEl = document.getElementById(msgId);
+      const raw = (input?.value || '').trim().toUpperCase();
+      if (promoCheckInFlight) return;
+
+      if (!raw) {
+        if (msgEl) { msgEl.textContent = 'الرجاء إدخال كود الخصم'; msgEl.className = 'text-xs mt-2 text-rose-500 font-semibold'; }
+        return;
+      }
+      const promo = PROMO_CODES[raw];
+      if (!promo) {
+        appliedPromo = null;
+        refreshTotalsUI('كود الخصم غير صحيح', 'text-xs mt-2 text-rose-500 font-semibold');
+        return;
+      }
+
+      if (!promo.singleUsePerCustomer) {
+        appliedPromo = { code: raw, ...promo };
+        refreshTotalsUI();
+        return;
+      }
+
+      // Single-use codes need the customer's phone number to check/record against.
+      const phoneEl = phoneInputId ? document.getElementById(phoneInputId) : null;
+      const phone = normalizePhone(phoneEl?.value || '');
+      if (!phone) {
+        if (msgEl) { msgEl.textContent = 'الرجاء إدخال رقم الهاتف أولاً للتحقق من الكود'; msgEl.className = 'text-xs mt-2 text-rose-500 font-semibold'; }
+        return;
+      }
+
+      promoCheckInFlight = true;
+      if (msgEl) { msgEl.textContent = 'جاري التحقق من الكود...'; msgEl.className = 'text-xs mt-2 text-stone-400 font-semibold'; }
+      let resultMessage = '';
+      let resultClass = 'text-xs mt-2 text-rose-500 font-semibold';
+      try {
+        const used = await isPromoAlreadyUsed(phone, raw);
+        if (used) {
+          appliedPromo = null;
+          resultMessage = 'لقد قمتِ بطلب سابق واستخدمتِ هذا الكود من قبل — الكود صالح لمرة واحدة فقط لكل عميلة';
+        } else {
+          appliedPromo = { code: raw, ...promo, verifiedPhone: phone };
+        }
+      } catch (err) {
+        console.error('Promo check failed:', err);
+        appliedPromo = null;
+        resultMessage = 'تعذر التحقق من الكود الآن، حاولي مجدداً';
+      } finally {
+        promoCheckInFlight = false;
+        refreshTotalsUI(resultMessage, resultClass);
+      }
+    }
+
+    function removePromoCode() {
+      appliedPromo = null;
+      refreshTotalsUI();
+    }
+
+    // Renders the checkout page's promo box: applied badge, or code input requiring the phone field.
+    // Accepts an optional message/class so a re-render (e.g. after a failed check) doesn't wipe
+    // out the feedback message that was just shown to the customer.
+    function renderCheckoutPromoBox(message, msgClass) {
+      if (appliedPromo) {
+        return `
+          <div class="flex items-center justify-between bg-green-50 border border-green-100 rounded-xl px-4 py-3">
+            <span class="text-sm font-bold text-green-700">كود "${appliedPromo.code}" مفعّل — خصم ${appliedPromo.value}%</span>
+            <button type="button" onclick="removePromoCode()" class="text-xs text-stone-400 hover:text-rose-500 font-semibold">إزالة</button>
+          </div>`;
+      }
+      return `
+        <label class="block text-stone-700 font-bold mb-2 text-sm">لديكِ كود خصم؟</label>
+        <div class="flex gap-2">
+          <input type="text" id="checkout-promo-input" placeholder="أدخلي الكود" onkeydown="if(event.key==='Enter'){event.preventDefault();applyPromoCode('checkout-promo-input','checkout-promo-msg','cust-phone');}" class="flex-1 min-w-0 px-4 py-3 rounded-xl border border-rose-100 focus:border-rose-400 focus:ring-4 focus:ring-rose-400/10 outline-none transition-all text-sm">
+          <button type="button" onclick="applyPromoCode('checkout-promo-input','checkout-promo-msg','cust-phone')" class="px-5 py-3 rounded-xl bg-[#7B1040] text-white text-sm font-bold hover:bg-[#5c0c30] transition-colors">تطبيق</button>
+        </div>
+        <p id="checkout-promo-msg" class="${msgClass || 'text-xs mt-2'}">${message || ''}</p>`;
+    }
+
+    // If a verified single-use promo is applied and the customer edits the phone number
+    // afterwards, the verification no longer matches — clear it and ask them to reapply.
+    function onCheckoutPhoneChanged() {
+      if (appliedPromo && appliedPromo.singleUsePerCustomer) {
+        const phoneEl = document.getElementById('cust-phone');
+        const phone = normalizePhone(phoneEl?.value || '');
+        if (phone !== appliedPromo.verifiedPhone) {
+          appliedPromo = null;
+          refreshTotalsUI();
+        }
+      }
+    }
+
+    // Refreshes any totals/promo UI currently on screen after a promo change, without
+    // wiping other fields the customer has already typed into the checkout form.
+    function refreshTotalsUI(message, msgClass) {
+      const promoBox = document.getElementById('checkout-promo-box');
+      if (promoBox) promoBox.innerHTML = renderCheckoutPromoBox(message, msgClass);
+      if (document.getElementById('checkout-total-cost')) {
+        updateCheckoutTotal();
+      } else if (currentPage === 'cart') {
+        renderPage();
+      }
+    }
+
     let productsLoaded = false; // true once first real data (cache or network) is available
 
     // ── localStorage cache (stale-while-revalidate) ──
@@ -1538,6 +1805,47 @@
           value: product.price,
           currency: 'ILS'
         });
+      }
+    }
+
+    function copyPromoBannerCode() {
+      const code = 'GRAD10';
+      const done = () => showToast('تم نسخ الكود GRAD10', 'success');
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(code).then(done).catch(() => fallbackCopy(code, done));
+      } else {
+        fallbackCopy(code, done);
+      }
+      function fallbackCopy(text, cb) {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); cb(); } catch (e) {}
+        document.body.removeChild(ta);
+      }
+    }
+
+    const PROMO_POPUP_KEY = 'layan_promo_popup_seen_grad10';
+
+    function showPromoPopup() {
+      const overlay = document.getElementById('promo-popup-overlay');
+      if (overlay) overlay.style.display = 'flex';
+    }
+
+    function closePromoPopup() {
+      const overlay = document.getElementById('promo-popup-overlay');
+      if (overlay) overlay.style.display = 'none';
+      try { sessionStorage.setItem(PROMO_POPUP_KEY, '1'); } catch (e) {}
+    }
+
+    function maybeShowPromoPopup() {
+      let alreadySeen = false;
+      try { alreadySeen = sessionStorage.getItem(PROMO_POPUP_KEY) === '1'; } catch (e) {}
+      if (!alreadySeen) {
+        setTimeout(showPromoPopup, 600);
       }
     }
 
@@ -2136,12 +2444,12 @@
 
           ${(() => {
             if (!productsLoaded) return `<div class="my-20">${renderSkeletonGrid(4)}</div>`;
-            const THIRTY_DAYS = 30 * 24 * 60 * 60 * 1000;
-            const now = Date.now();
+            // Always show the 10 most recently added products (regardless of how long ago they
+            // were added), so this section never shrinks or empties out once items pass 30 days.
+            // The "جديد" badge on each card still only shows for items actually added within 30 days.
             const newArrivals = Object.entries(products).flatMap(([cat, arr]) =>
-              arr.filter(p => p.created_at && (now - new Date(p.created_at).getTime()) < THIRTY_DAYS)
-                 .map(p => ({ ...p, _category: cat }))
-            ).sort((a,b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 8);
+              arr.filter(p => p.created_at).map(p => ({ ...p, _category: cat }))
+            ).sort((a,b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 10);
 
             if (newArrivals.length > 0) return `
               <div class="my-20">
@@ -2208,6 +2516,7 @@
 
     function renderCartPage() {
       const subtotal = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+      const cartDiscount = calcDiscount(subtotal);
 
       if (cart.length === 0) {
         // Grab a few products to suggest
@@ -2289,15 +2598,32 @@
             <div class="lg:col-span-1">
               <div class="glass-card rounded-3xl p-8 sticky top-28">
                 <h3 class="text-2xl font-bold text-stone-700 mb-8">ملخص الطلب</h3>
-                <div class="space-y-4 mb-8 pb-8 border-b border-rose-100/50">
+                <div class="space-y-4 mb-6 pb-6 border-b border-rose-100/50">
                   <div class="flex justify-between text-stone-600">
                     <span class="font-medium">المجموع الفرعي</span>
-                    <span class="font-bold">₪${subtotal}</span>
+                    <span class="font-bold" id="cart-subtotal">₪${subtotal}</span>
                   </div>
+                  ${appliedPromo ? `
+                  <div class="flex justify-between text-green-600 text-sm">
+                    <span class="font-medium">خصم (${appliedPromo.code})</span>
+                    <span class="font-bold">−₪${cartDiscount}</span>
+                  </div>` : ''}
                   <div class="flex justify-between text-stone-600 text-sm">
                     <span class="font-medium">التوصيل</span>
                     <span class="text-stone-400">تُحدد في الخطوة التالية</span>
                   </div>
+                </div>
+                <div class="mb-6 pb-6 border-b border-rose-100/50">
+                  ${appliedPromo ? `
+                    <div class="flex items-center justify-between bg-green-50 border border-green-100 rounded-xl px-4 py-3">
+                      <span class="text-sm font-bold text-green-700">كود "${appliedPromo.code}" مفعّل — خصم ${appliedPromo.value}%</span>
+                      <button type="button" onclick="removePromoCode()" class="text-xs text-stone-400 hover:text-rose-500 font-semibold">إزالة</button>
+                    </div>
+                  ` : `
+                    <p class="text-sm text-stone-500 bg-[#FFF0F4] border border-[#F9D0DC] rounded-xl px-4 py-3">
+                      لديكِ كود خصم؟ يمكنكِ إدخاله في الخطوة التالية بعد إدخال رقم هاتفك.
+                    </p>
+                  `}
                 </div>
                 <div class="mb-8 p-4 bg-[#FFF0F4] rounded-2xl border border-[#F9D0DC]">
                   <p class="font-bold text-stone-700 mb-2">طريقة الدفع:</p>
@@ -2314,19 +2640,29 @@
 
     function updateCheckoutTotal() {
       const subtotal = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+      const discount = calcDiscount(subtotal);
       const deliveryEl = document.querySelector('input[name="delivery"]:checked');
       const deliveryPrice = deliveryEl ? parseInt(deliveryEl.value || '0') : 0;
-      const total = Math.round((subtotal + deliveryPrice) * 100) / 100;
+      const giftBoxEl = document.getElementById('gift-box-checkbox');
+      const giftBoxPrice = (giftBoxEl && giftBoxEl.checked) ? GIFT_BOX_PRICE : 0;
+      const total = Math.round((subtotal - discount + deliveryPrice + giftBoxPrice) * 100) / 100;
       const deliveryCostEl = document.getElementById('checkout-delivery-cost');
       const totalEl = document.getElementById('checkout-total-cost');
+      const discountRow = document.getElementById('checkout-discount-row');
+      const discountEl = document.getElementById('checkout-discount-cost');
+      const giftBoxRow = document.getElementById('checkout-giftbox-row');
       if (deliveryCostEl) deliveryCostEl.textContent = deliveryPrice === 0 ? 'مجاني' : `₪${deliveryPrice}`;
       if (totalEl) totalEl.textContent = `₪${total.toFixed(2)}`;
+      if (discountRow) discountRow.style.display = discount > 0 ? 'flex' : 'none';
+      if (discountEl) discountEl.textContent = `−₪${discount}`;
+      if (giftBoxRow) giftBoxRow.style.display = giftBoxPrice > 0 ? 'flex' : 'none';
     }
 
     function showCheckoutForm() {
       const subtotal = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+      const discount = calcDiscount(subtotal);
       const deliveryPrice = DELIVERY_OPTIONS[0].price;
-      const total = Math.round((subtotal + deliveryPrice) * 100) / 100;
+      const total = Math.round((subtotal - discount + deliveryPrice) * 100) / 100;
 
       if (typeof fbq === 'function') {
         fbq('track', 'InitiateCheckout', {
@@ -2357,7 +2693,7 @@
               </div>
               <div>
                 <label class="block text-stone-700 font-bold mb-2">رقم الهاتف <span class="text-rose-500">*</span></label>
-                <input type="tel" id="cust-phone" required class="w-full px-5 py-4 rounded-2xl border border-rose-100 focus:border-rose-400 focus:ring-4 focus:ring-rose-400/10 outline-none transition-all" placeholder="05x-xxxxxxx">
+                <input type="tel" id="cust-phone" required oninput="onCheckoutPhoneChanged()" class="w-full px-5 py-4 rounded-2xl border border-rose-100 focus:border-rose-400 focus:ring-4 focus:ring-rose-400/10 outline-none transition-all" placeholder="05x-xxxxxxx">
               </div>
               <div class="pt-4 border-t border-rose-50">
                 <label class="block text-stone-700 font-bold mb-3">اختاري طريقة التوصيل <span class="text-rose-500">*</span></label>
@@ -2376,17 +2712,6 @@
                   `).join('')}
                 </div>
               </div>
-              <div class="bg-rose-50/70 border border-rose-100 rounded-2xl p-5">
-                <label class="flex items-center gap-2 text-stone-700 font-bold mb-2">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7B1040" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z" stroke="none"/><path d="M3 6.5l9 6 9-6M4 5h16a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V6a1 1 0 011-1z"/></svg>
-                  احصلي على إيصال طلبك عبر البريد الإلكتروني <span class="text-stone-400 font-normal text-sm">(اختياري)</span>
-                </label>
-                <input type="email" id="cust-email" class="w-full px-5 py-4 rounded-2xl border border-rose-100 focus:border-rose-400 focus:ring-4 focus:ring-rose-400/10 outline-none transition-all bg-white" placeholder="example@gmail.com">
-                <p class="text-xs text-stone-500 mt-2 flex items-center gap-1.5">
-                  <svg class="shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7B1040" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
-                  إذا أدخلتِ بريدك الإلكتروني، سنرسل لكِ إيصالاً رسمياً بتفاصيل طلبك فور تأكيده.
-                </p>
-              </div>
               <div class="pt-4 border-t border-rose-50">
                 <label class="block text-stone-700 font-bold mb-2">عنوان بديل (اختياري)</label>
                 <input type="text" id="cust-address-alt" class="w-full px-5 py-4 rounded-2xl border border-rose-100 focus:border-rose-400 focus:ring-4 focus:ring-rose-400/10 outline-none transition-all" placeholder="عنوان آخر للتوصل في حال عدم التواجد">
@@ -2399,15 +2724,38 @@
                 <label class="block text-stone-700 font-bold mb-2">ملاحظات مع الطلب (اختياري)</label>
                 <textarea id="cust-notes" rows="3" class="w-full px-5 py-4 rounded-2xl border border-rose-100 focus:border-rose-400 focus:ring-4 focus:ring-rose-400/10 outline-none transition-all resize-none" placeholder="أي ملاحظات إضافية بخصوص الطلب أو التوصيل..."></textarea>
               </div>
+              <div class="pt-4 border-t border-rose-50" id="checkout-promo-box">
+                ${renderCheckoutPromoBox()}
+              </div>
+              <div class="pt-4 border-t border-rose-50">
+                <label class="flex items-center justify-between gap-3 bg-[#FFF0F4] border border-[#F9D0DC] rounded-2xl px-5 py-4 cursor-pointer select-none">
+                  <span class="flex items-center gap-3">
+                    <input type="checkbox" id="gift-box-checkbox" onchange="updateCheckoutTotal()" class="w-5 h-5 accent-[#7B1040] rounded">
+                    <span>
+                      <span class="block font-bold text-stone-700 text-sm md:text-base">تغليف هدية 🎁</span>
+                      <span class="block text-xs text-stone-500 mt-0.5">غلّفي طلبك بعلبة هدية أنيقة</span>
+                    </span>
+                  </span>
+                  <span class="font-bold text-sm md:text-base text-rose-500 whitespace-nowrap">+₪${GIFT_BOX_PRICE}</span>
+                </label>
+              </div>
               <div class="pt-6">
                 <div class="bg-rose-50 rounded-2xl p-5 mb-8 space-y-2">
                   <div class="flex justify-between items-center text-sm text-stone-500">
                     <span class="font-medium">المجموع الفرعي</span>
                     <span class="font-bold">₪${subtotal}</span>
                   </div>
+                  <div id="checkout-discount-row" class="flex justify-between items-center text-sm text-green-600" style="display:${discount > 0 ? 'flex' : 'none'};">
+                    <span class="font-medium">الخصم</span>
+                    <span id="checkout-discount-cost" class="font-bold">−₪${discount}</span>
+                  </div>
                   <div class="flex justify-between items-center text-sm text-stone-500">
                     <span class="font-medium">التوصيل</span>
                     <span id="checkout-delivery-cost" class="font-bold">${deliveryPrice === 0 ? 'مجاني' : `₪${deliveryPrice}`}</span>
+                  </div>
+                  <div id="checkout-giftbox-row" class="flex justify-between items-center text-sm text-stone-500" style="display:none;">
+                    <span class="font-medium">تغليف هدية</span>
+                    <span id="checkout-giftbox-cost" class="font-bold">+₪${GIFT_BOX_PRICE}</span>
                   </div>
                   <div class="flex justify-between items-center pt-2 border-t border-rose-100/70">
                     <span class="text-stone-700 font-bold">الإجمالي النهائي:</span>
@@ -2442,8 +2790,12 @@
 
       const deliveryEl = document.querySelector('input[name="delivery"]:checked');
       const deliveryPrice = deliveryEl ? parseInt(deliveryEl.value || '0') : 0;
+      const giftBoxEl = document.getElementById('gift-box-checkbox');
+      const giftBoxSelected = !!(giftBoxEl && giftBoxEl.checked);
+      const giftBoxPrice = giftBoxSelected ? GIFT_BOX_PRICE : 0;
       const subtotal = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
-      const total = Math.round((subtotal + deliveryPrice) * 100) / 100;
+      const discount = calcDiscount(subtotal);
+      const total = Math.round((subtotal - discount + deliveryPrice + giftBoxPrice) * 100) / 100;
 
       if (!cart || cart.length === 0) {
         alert('سلة التسوق فارغة. يرجى إضافة منتجات قبل المتابعة.');
@@ -2452,13 +2804,38 @@
         return;
       }
 
-      const customerEmail = document.getElementById('cust-email').value.trim();
+      // Final safety check: re-verify a single-use promo right before submitting, in case
+      // it was already redeemed (e.g. another tab/order) since it was applied.
+      if (appliedPromo && appliedPromo.singleUsePerCustomer) {
+        const normalizedPhone = normalizePhone(phone);
+        let alreadyUsedOnFinalCheck = false;
+        if (normalizedPhone !== appliedPromo.verifiedPhone) {
+          appliedPromo = null;
+        } else {
+          try {
+            alreadyUsedOnFinalCheck = await isPromoAlreadyUsed(normalizedPhone, appliedPromo.code);
+            if (alreadyUsedOnFinalCheck) {
+              appliedPromo = null;
+            }
+          } catch (err) {
+            console.error('Final promo re-check failed:', err);
+          }
+        }
+        if (!appliedPromo) {
+          alert(alreadyUsedOnFinalCheck
+            ? 'عذراً، لقد قمتِ بطلب سابق واستخدمتِ هذا الكود من قبل. هذا الكود صالح لمرة واحدة فقط لكل عميلة.'
+            : 'عذراً، كود الخصم لم يعد صالحاً. تم تحديث المجموع، يرجى مراجعته والمتابعة.');
+          btn.disabled = false;
+          btn.textContent = 'تأكيد الطلب';
+          showCheckoutForm();
+          return;
+        }
+      }
 
       const orderData = {
         customer_name: customerName,
         address: address,
         phone: phone,
-        email: customerEmail || '',
         address_alt: document.getElementById('cust-address-alt').value || '',
         phone_alt: document.getElementById('cust-phone-alt').value || '',
         notes: document.getElementById('cust-notes').value || '',
@@ -2470,6 +2847,10 @@
           price: item.product.price
         })),
         total: total,
+        promo_code: appliedPromo ? appliedPromo.code : '',
+        discount_amount: discount,
+        gift_box: giftBoxSelected,
+        gift_box_price: giftBoxPrice,
         status: 'new',
         created_at: new Date().toISOString()
       };
@@ -2484,23 +2865,51 @@
       let supabaseOk = false;
       let emailOk = false;
 
+      // Phrases the database trigger raises for genuine validation failures (bad pricing,
+      // reused promo code, unknown product, etc.) — as opposed to schema issues like a
+      // missing column, which the retries below are meant to work around.
+      const VALIDATION_ERROR_MARKERS = [
+        'already used', 'Invalid or inactive promo code', 'does not match expected pricing',
+        'Unknown product', 'Invalid quantity', 'Phone number is required', 'Order has no items'
+      ];
+      function isValidationRejection(err) {
+        const msg = (err && (err.detail || err.message)) || '';
+        return VALIDATION_ERROR_MARKERS.some(marker => msg.includes(marker));
+      }
+
       try {
         await sbPost('orders', [orderData]);
         supabaseOk = true;
-      } catch(err) {
+      } catch (err) {
         console.error('Order save failed:', err);
-        // Retry without the optional email field, in case the 'orders' table
-        // doesn't have an 'email' column yet.
-        if (orderData.email !== undefined) {
+        if (isValidationRejection(err)) {
+          // The database rejected the order on purpose (e.g. tampered total, reused promo
+          // code). Don't silently retry with fewer fields — surface it and stop.
+          const usedPromoIssue = (err.detail || err.message || '').includes('promo');
+          alert(usedPromoIssue
+            ? 'عذراً، لقد قمتِ بطلب سابق واستخدمتِ هذا الكود من قبل. هذا الكود صالح لمرة واحدة فقط لكل عميلة. يرجى إعادة المحاولة دون الكود أو التواصل معنا.'
+            : 'تعذر إتمام الطلب لأن تفاصيله لم تتطابق مع الأسعار الحالية. يرجى إعادة تحميل الصفحة والمحاولة من جديد.');
+          appliedPromo = null;
+          btn.disabled = false;
+          btn.textContent = 'تأكيد الطلب';
+          showCheckoutForm();
+          return;
+        }
+        // Retry without the promo fields, in case the 'orders' table
+        // doesn't have 'promo_code' / 'discount_amount' columns yet.
+        if (!supabaseOk) {
           try {
-            const { email, ...orderDataNoEmail } = orderData;
-            await sbPost('orders', [orderDataNoEmail]);
+            const { promo_code, discount_amount, gift_box, gift_box_price, ...orderDataMinimal } = orderData;
+            await sbPost('orders', [orderDataMinimal]);
             supabaseOk = true;
-          } catch (err2) {
-            console.error('Order save retry (no email) failed:', err2);
+          } catch (err3) {
+            console.error('Order save retry (minimal) failed:', err3);
           }
         }
       }
+
+      // Note: single-use promo redemption is now recorded server-side, atomically,
+      // by the 'orders_validate_pricing' database trigger — no client-side call needed.
 
       // Update stock in background (non-blocking)
       if (cartSnapshot.length > 0) {
@@ -2539,6 +2948,7 @@
 
       const itemsList = orderData.items.map(i => `${i.name} (${i.shade}) × ${i.quantity} — ₪${i.price * i.quantity}`).join('\n');
       const orderDate = new Date().toLocaleString('ar-SA');
+      const notesWithGiftBox = (giftBoxSelected ? `🎁 تغليف هدية (+₪${GIFT_BOX_PRICE})\n` : '') + (orderData.notes || '');
 
       try {
         if (emailConfigReady) {
@@ -2555,7 +2965,7 @@
                 phone_alt: orderData.phone_alt,
                 items_list: itemsList,
                 total: `₪${total}`,
-                notes: orderData.notes || '—',
+                notes: notesWithGiftBox || '—',
                 order_date: orderDate
               });
               emailOk = true;
@@ -2563,35 +2973,6 @@
           }
         }
       } catch (err) { console.error('EmailJS send failed:', err); }
-
-      // Send a receipt email to the customer, if they provided one
-      if (customerEmail) {
-        try {
-          if (emailConfigReady) {
-            try { await loadEmailJS(); } catch (e) { console.error('Failed to load EmailJS:', e); }
-            if (window.emailjs) {
-              const receiptTemplateId = (EMAIL_CONFIG.receiptTemplateId && EMAIL_CONFIG.receiptTemplateId !== 'YOUR_RECEIPT_TEMPLATE_ID')
-                ? EMAIL_CONFIG.receiptTemplateId
-                : EMAIL_CONFIG.templateId;
-              try {
-                window.emailjs.init(EMAIL_CONFIG.publicKey);
-                await window.emailjs.send(EMAIL_CONFIG.serviceId, receiptTemplateId, {
-                  to_email: customerEmail,
-                  customer_name: orderData.customer_name,
-                  phone: orderData.phone,
-                  address: orderData.address,
-                  address_alt: orderData.address_alt,
-                  phone_alt: orderData.phone_alt,
-                  items_list: itemsList,
-                  total: `₪${total}`,
-                  notes: orderData.notes || '—',
-                  order_date: orderDate
-                });
-              } catch (err) { console.error('Customer receipt email failed:', err); }
-            }
-          }
-        } catch (err) { console.error('Customer receipt email failed:', err); }
-      }
 
       if (!supabaseOk && !emailOk) {
         alert('عذراً، حدث خطأ أثناء إتمام الطلب. يرجى المحاولة مرة أخرى أو التواصل معنا عبر الانستغرام.');
@@ -2620,6 +3001,7 @@
       } catch (err) { console.error('Error updating local product stocks:', err); }
 
       cart = [];
+      appliedPromo = null;
       updateCartCount();
 
       if (typeof fbq === 'function') {
@@ -2632,10 +3014,10 @@
         });
       }
 
-      showOrderConfirmation(emailOk, customerEmail);
+      showOrderConfirmation(emailOk);
     }
 
-    function showOrderConfirmation(emailOk = true, customerEmail = '') {
+    function showOrderConfirmation(emailOk = true) {
       const orderNum = 'LB-' + Date.now().toString().slice(-6);
       triggerConfetti();
       const mainContent = document.getElementById('main-content');
@@ -2651,8 +3033,7 @@
           <h2 class="text-4xl font-bold text-stone-700 mb-3">شكراً لكِ!</h2>
           <p class="cursive-english text-xl text-rose-400 mb-2">Thank You!</p>
           <p class="text-stone-500 mb-1">رقم طلبكِ: <span class="font-bold text-[#7B1040]">${orderNum}</span></p>
-          <p class="text-stone-500 text-sm ${customerEmail ? 'mb-2' : 'mb-10'}">سنتواصل معكِ قريباً لتأكيد الطلب</p>
-          ${customerEmail ? `<p class="text-stone-500 text-sm mb-10">تم إرسال إيصال الطلب إلى <span class="font-bold text-[#7B1040]">${customerEmail}</span></p>` : ''}
+          <p class="text-stone-500 text-sm mb-10">سنتواصل معكِ قريباً عبر واتساب لتأكيد الطلب</p>
 
           <!-- What's next -->
           <div class="glass-card rounded-3xl p-8 mb-8 text-right space-y-5">
@@ -2662,8 +3043,8 @@
                 <span class="text-sm font-bold text-[#7B1040]">1</span>
               </div>
               <div>
-                <p class="font-semibold text-stone-700">استلام الطلب</p>
-                <p class="text-sm text-stone-500">سيصلكِ تأكيد عبر الهاتف خلال ساعات</p>
+                <p class="font-semibold text-stone-700">تأكيد الطلب</p>
+                <p class="text-sm text-stone-500">سنرسل لكِ رسالة عبر واتساب لتأكيد طلبك خلال ساعات</p>
               </div>
             </div>
             <div class="flex items-start gap-4">
@@ -2810,6 +3191,7 @@
           <div class="text-center mb-16">
             <h1 class="text-5xl font-bold text-stone-700 mb-3">مخفض</h1>
             <p class="cursive-english text-2xl text-rose-400">Sale</p>
+            <p class="text-base text-stone-500 mt-3">🎓 عروض التخرج — خصومات خاصة لخريجات التوجيهي</p>
             <div class="mt-6 w-24 h-1 bg-gradient-to-r from-transparent via-rose-300 to-transparent mx-auto"></div>
             ${filtered.length > 0 ? `<p class="text-sm text-stone-400 mt-3">${filtered.length} منتج مخفض</p>` : ''}
           </div>
@@ -2978,6 +3360,8 @@
       // Show skeletons IMMEDIATELY — zero wait
       _showSkeletons(initialPage);
       document.body.classList.remove('disable-animations');
+
+      maybeShowPromoPopup();
 
       const cachedProducts = loadFromCache(CACHE_KEY);
 
