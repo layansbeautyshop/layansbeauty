@@ -34,12 +34,19 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="متجر ليان">
   <meta name="mobile-web-app-capable" content="yes">
+  <link rel="canonical" href="https://layansbeauty.pages.dev/">
   <!-- Open Graph for sharing -->
-  <meta property="og:title" content="متجر ليان — منتجات تجميل أصلية">
-  <meta property="og:description" content="منتجات مكياج وعناية أصلية 100% مع توصيل للضفة والقدس والداخل">
+  <meta property="og:title" content="متجر ليان — Layan's Beauty Shop | منتجات مكياج وعناية أصلية 100%">
+  <meta property="og:description" content="متجر ليان (Layan's Beauty Shop): منتجات مكياج وعناية أصلية 100% مشتراة مباشرة من المواقع الرسمية للعلامات التجارية، مع توصيل لكل الضفة الغربية والقدس والداخل. Original, authentic makeup and skincare sourced directly from official brand sites, delivered across Palestine.">
   <meta property="og:image" content="CT.png">
   <meta property="og:type" content="website">
-  <meta name="description" content="متجر ليان — منتجات مكياج وعناية أصلية 100٪ بأسعار منافسة مع توصيل لكل فلسطين">
+  <meta property="og:url" content="https://layansbeauty.pages.dev/">
+  <meta property="og:locale" content="ar_AR">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="متجر ليان — Layan's Beauty Shop | منتجات مكياج وعناية أصلية 100%">
+  <meta name="twitter:description" content="منتجات مكياج وعناية أصلية 100% مشتراة مباشرة من المصادر الرسمية، توصيل لكل فلسطين. Authentic, original makeup and skincare — delivered across the West Bank, Jerusalem and beyond.">
+  <meta name="twitter:image" content="CT.png">
+  <meta name="description" content="متجر ليان (Layan's Beauty Shop) — منتجات مكياج وعناية أصلية 100٪ مشتراة مباشرة من المواقع الرسمية للعلامات التجارية العالمية، بأسعار منافسة، مع توصيل لكل الضفة الغربية والقدس والداخل. Trusted store for 100% original, authentic makeup and skincare in Palestine.">
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <!-- Performance: DNS preconnect to Supabase + CDNs -->
   <link rel="preconnect" href="https://mdfrvmsruwzhhszoqumn.supabase.co" crossorigin>
@@ -807,7 +814,7 @@
       from { opacity:0; transform:translateY(18px); }
       to   { opacity:1; transform:translateY(0); }
     }
-    .hero-caption h2 {
+    .hero-caption h1, .hero-caption h2 {
       font-family:'Tajawal',sans-serif; font-size:clamp(1.6rem,4vw,3.2rem);
       font-weight:800; line-height:1.1; margin:0 0 10px;
       text-transform:uppercase; letter-spacing:1px;
@@ -862,6 +869,86 @@
       html[dir="rtl"] .hero-caption { left:20px; right:20px; }
     }
   </style>
+
+  <!-- Structured data: helps search engines and AI assistants understand and cite this store -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Store",
+    "name": "Layan's Beauty Shop",
+    "alternateName": "متجر ليان",
+    "url": "https://layansbeauty.pages.dev/",
+    "logo": "https://layansbeauty.pages.dev/Newlogo.png",
+    "image": "https://layansbeauty.pages.dev/CT.png",
+    "description": "Trusted online store for 100% authentic, original makeup and skincare products, purchased directly from the official websites of global beauty brands. Delivery across the West Bank, Jerusalem, and the Green Line areas of Palestine, with free pickup near Al-Quds University in Abu Dis.",
+    "sameAs": ["https://www.instagram.com/layansbeautyshop/"],
+    "telephone": "+972566440233",
+    "priceRange": "₪₪",
+    "paymentAccepted": "Cash on Delivery",
+    "currenciesAccepted": "ILS",
+    "areaServed": [
+      { "@type": "AdministrativeArea", "name": "West Bank" },
+      { "@type": "City", "name": "Jerusalem" },
+      { "@type": "City", "name": "Abu Dis" }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "هل المنتجات في متجر ليان أصلية 100%؟",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "نعم، جميع منتجات متجر ليان يتم شراؤها مباشرة من المواقع الرسمية المعتمدة للعلامات التجارية العالمية، ونحن على استعداد دائم لإثبات أصالة أي منتج عبر الباركود أو تفاصيل الشراء."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "كيف يمكنني الطلب من متجر ليان؟",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "تصفّحي المنتجات على الموقع، أضيفيها للسلة، ثم أدخلي بيانات التوصيل عند إتمام الطلب. الدفع يتم عند الاستلام."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "ما هي مناطق التوصيل التي يغطيها متجر ليان؟",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "نوفر استلام مجاني من نقطة جامعة القدس - أبو ديس، بالإضافة إلى توصيل لمدن الضفة الغربية، القدس، والداخل المحتل."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "ما هي طريقة الدفع المتاحة في متجر ليان؟",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "الدفع عند الاستلام. للدفع عبر الفيزا يمكن التواصل معنا عبر الانستغرام."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "ما هي سياسة الاسترجاع والاستبدال في متجر ليان؟",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "لا يوجد استرجاع أو تبديل إلا في حال وجود خلل في المنتج، ويجب تصوير المنتج خلال أول 24 ساعة من الاستلام."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "كيف أتواصل مع متجر ليان؟",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "يمكنكِ التواصل معنا عبر واتساب أو عبر انستغرام @layansbeautyshop."
+        }
+      }
+    ]
+  }
+  </script>
 </head>
 
 <body>
@@ -953,10 +1040,10 @@
 
     <div id="hero-slideshow">
       <div class="hero-slide active" id="hero-slide-0">
-        <img src="CT.png" alt="Layan Beauty" loading="eager" fetchpriority="high">
+        <img src="CT.png" alt="متجر ليان - Layan's Beauty Shop - مكياج ومنتجات عناية أصلية 100%" loading="eager" fetchpriority="high">
         <div class="hero-slide-overlay"></div>
         <div class="hero-caption">
-          <h2>أفضل منتجات الميك اب الاصلية</h2>
+          <h1>أفضل منتجات الميك اب الاصلية</h1>
           <p>ارتقي بروتينك اليومي مع أفضل المنتجات</p>
           <button class="hero-caption-btn" onclick="navigateTo('all')">تسوقي الآن</button>
         </div>
@@ -1024,6 +1111,76 @@
         </span>
       </div>
     </div>
+
+    <section aria-labelledby="trust-heading" class="max-w-4xl mx-auto px-4 py-16">
+      <div class="section-heading">
+        <h2 id="trust-heading" class="text-2xl md:text-3xl font-bold text-stone-700">لماذا متجر ليان</h2>
+        <p class="cursive-english text-rose-400 mt-1">Why Layan's Beauty Shop</p>
+      </div>
+      <div class="grid md:grid-cols-3 gap-5 mb-14">
+        <div class="glass-card rounded-2xl p-6 text-center">
+          <p class="font-bold text-stone-700 mb-1">أصلية 100%</p>
+          <p class="text-sm text-stone-500 leading-relaxed">جميع المنتجات تُشترى مباشرة من المواقع الرسمية المعتمدة للعلامات التجارية العالمية.</p>
+        </div>
+        <div class="glass-card rounded-2xl p-6 text-center">
+          <p class="font-bold text-stone-700 mb-1">توصيل لكل فلسطين</p>
+          <p class="text-sm text-stone-500 leading-relaxed">استلام مجاني من نقطة جامعة القدس - أبو ديس، وتوصيل لمدن الضفة الغربية، القدس، والداخل المحتل.</p>
+        </div>
+        <div class="glass-card rounded-2xl p-6 text-center">
+          <p class="font-bold text-stone-700 mb-1">دفع عند الاستلام</p>
+          <p class="text-sm text-stone-500 leading-relaxed">ادفعي بأمان عند استلام طلبك، دون الحاجة لأي دفع مسبق.</p>
+        </div>
+      </div>
+
+      <div class="section-heading">
+        <h2 class="text-2xl md:text-3xl font-bold text-stone-700">الأسئلة الشائعة</h2>
+        <p class="cursive-english text-rose-400 mt-1">Frequently Asked Questions</p>
+      </div>
+      <div class="space-y-3">
+        <details class="glass-card rounded-2xl p-5 group">
+          <summary class="font-bold text-stone-700 cursor-pointer list-none flex items-center justify-between gap-3">
+            <span>هل المنتجات في متجر ليان أصلية 100%؟</span>
+            <span class="text-rose-400 group-open:rotate-45 transition-transform text-xl leading-none">+</span>
+          </summary>
+          <p class="text-sm text-stone-500 leading-relaxed mt-3">نعم، جميع منتجات متجر ليان يتم شراؤها مباشرة من المواقع الرسمية المعتمدة للعلامات التجارية العالمية، ونحن على استعداد دائم لإثبات أصالة أي منتج عبر الباركود أو تفاصيل الشراء.</p>
+        </details>
+        <details class="glass-card rounded-2xl p-5 group">
+          <summary class="font-bold text-stone-700 cursor-pointer list-none flex items-center justify-between gap-3">
+            <span>كيف يمكنني الطلب من متجر ليان؟</span>
+            <span class="text-rose-400 group-open:rotate-45 transition-transform text-xl leading-none">+</span>
+          </summary>
+          <p class="text-sm text-stone-500 leading-relaxed mt-3">تصفّحي المنتجات على الموقع، أضيفيها للسلة، ثم أدخلي بيانات التوصيل عند إتمام الطلب. الدفع يتم عند الاستلام.</p>
+        </details>
+        <details class="glass-card rounded-2xl p-5 group">
+          <summary class="font-bold text-stone-700 cursor-pointer list-none flex items-center justify-between gap-3">
+            <span>ما هي مناطق التوصيل التي يغطيها متجر ليان؟</span>
+            <span class="text-rose-400 group-open:rotate-45 transition-transform text-xl leading-none">+</span>
+          </summary>
+          <p class="text-sm text-stone-500 leading-relaxed mt-3">نوفر استلام مجاني من نقطة جامعة القدس - أبو ديس، بالإضافة إلى توصيل لمدن الضفة الغربية، القدس، والداخل المحتل.</p>
+        </details>
+        <details class="glass-card rounded-2xl p-5 group">
+          <summary class="font-bold text-stone-700 cursor-pointer list-none flex items-center justify-between gap-3">
+            <span>ما هي طريقة الدفع المتاحة في متجر ليان؟</span>
+            <span class="text-rose-400 group-open:rotate-45 transition-transform text-xl leading-none">+</span>
+          </summary>
+          <p class="text-sm text-stone-500 leading-relaxed mt-3">الدفع عند الاستلام. للدفع عبر الفيزا يمكن التواصل معنا عبر الانستغرام.</p>
+        </details>
+        <details class="glass-card rounded-2xl p-5 group">
+          <summary class="font-bold text-stone-700 cursor-pointer list-none flex items-center justify-between gap-3">
+            <span>ما هي سياسة الاسترجاع والاستبدال في متجر ليان؟</span>
+            <span class="text-rose-400 group-open:rotate-45 transition-transform text-xl leading-none">+</span>
+          </summary>
+          <p class="text-sm text-stone-500 leading-relaxed mt-3">لا يوجد استرجاع أو تبديل إلا في حال وجود خلل في المنتج، ويجب تصوير المنتج خلال أول 24 ساعة من الاستلام.</p>
+        </details>
+        <details class="glass-card rounded-2xl p-5 group">
+          <summary class="font-bold text-stone-700 cursor-pointer list-none flex items-center justify-between gap-3">
+            <span>كيف أتواصل مع متجر ليان؟</span>
+            <span class="text-rose-400 group-open:rotate-45 transition-transform text-xl leading-none">+</span>
+          </summary>
+          <p class="text-sm text-stone-500 leading-relaxed mt-3">يمكنكِ التواصل معنا عبر واتساب أو عبر انستغرام @layansbeautyshop.</p>
+        </details>
+      </div>
+    </section>
 
     <footer class="border-t border-rose-100/50 mt-20 py-14">
       <div class="max-w-7xl mx-auto px-4">
