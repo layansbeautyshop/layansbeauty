@@ -25,9 +25,9 @@
   <!-- End Meta Pixel Code -->
   <title>متجر ليان - Layan's Beauty Shop</title>
 
-  <link rel="icon" type="image/png" href="favicon.png?v=1">
-  <link rel="shortcut icon" type="image/png" href="favicon.png?v=1">
-  <link rel="apple-touch-icon" href="favicon.png?v=1">
+  <link rel="icon" type="image/png" href="favicon-192.png?v=1" sizes="192x192">
+  <link rel="shortcut icon" type="image/png" href="favicon-192.png?v=1">
+  <link rel="apple-touch-icon" href="favicon-192.png?v=1" sizes="192x192">
   <!-- PWA / Add to Home Screen -->
   <meta name="theme-color" content="#7B1040">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -51,14 +51,14 @@
   <!-- Performance: DNS preconnect to Supabase + CDNs -->
   <link rel="preconnect" href="https://mdfrvmsruwzhhszoqumn.supabase.co" crossorigin>
   <link rel="dns-prefetch" href="https://mdfrvmsruwzhhszoqumn.supabase.co">
+  <link rel="preconnect" href="https://cdn.tailwindcss.com">
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <!-- Preload first hero image -->
-  <link rel="preload" as="image" href="CT.png" fetchpriority="high">
+  <link rel="preload" as="image" href="CT.webp" type="image/webp" fetchpriority="high">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&display=swap" rel="stylesheet">
   <link
-    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&amp;family=Tajawal:wght@300;400;500;700&amp;family=Scheherazade+New:wght@400;700&amp;family=Caveat:wght@400;600&amp;display=swap"
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&amp;family=Tajawal:wght@300;400;500;700&amp;family=Scheherazade+New:wght@400;700&amp;display=swap"
     rel="stylesheet">
   <style>
     * {
@@ -721,6 +721,17 @@
       box-shadow: 0 2px 8px rgba(123,16,64,0.3);
     }
 
+    /* Kept small so unavailable products remain easy to browse. */
+    .stock-badge {
+      position: absolute; top: 10px; right: 50px; z-index: 5;
+      background: rgba(68, 64, 60, 0.92); color: white;
+      font-family: 'Tajawal', sans-serif;
+      font-size: 0.62rem; font-weight: 700;
+      padding: 4px 9px; border-radius: 999px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+      pointer-events: none;
+    }
+
     /* ── Cart progress bar ── */
     .cart-progress-wrap {
       background: #FFF5F8; border-radius: 16px; padding: 14px 18px; margin-bottom: 20px;
@@ -1040,7 +1051,7 @@
 
     <div id="hero-slideshow">
       <div class="hero-slide active" id="hero-slide-0">
-        <img src="CT.png" alt="متجر ليان - Layan's Beauty Shop - مكياج ومنتجات عناية أصلية 100%" loading="eager" fetchpriority="high">
+        <img src="CT.webp" width="1600" height="703" alt="متجر ليان - Layan's Beauty Shop - مكياج ومنتجات عناية أصلية 100%" loading="eager" fetchpriority="high" decoding="async">
         <div class="hero-slide-overlay"></div>
         <div class="hero-caption">
           <h1>أفضل منتجات الميك اب الاصلية</h1>
@@ -1049,7 +1060,7 @@
         </div>
       </div>
       <div class="hero-slide" id="hero-slide-1">
-        <img src="BNFT.png" alt="Lip Products">
+        <img data-src="BNFT.webp" width="1600" height="703" alt="Lip Products" loading="lazy" decoding="async">
         <div class="hero-slide-overlay"></div>
         <div class="hero-caption">
           <h2>مجموعة الشفاه</h2>
@@ -1058,7 +1069,7 @@
         </div>
       </div>
       <div class="hero-slide" id="hero-slide-2">
-        <img src="Multi.png" alt="Eye Makeup">
+        <img data-src="Multi.webp" width="1600" height="703" alt="Eye Makeup" loading="lazy" decoding="async">
         <div class="hero-slide-overlay"></div>
         <div class="hero-caption">
           <h2>مكياج العيون</h2>
@@ -1067,7 +1078,7 @@
         </div>
       </div>
       <div class="hero-slide" id="hero-slide-3">
-        <img src="red.png" alt="Graduation Gifts">
+        <img data-src="red.webp" width="1600" height="703" alt="Graduation Gifts" loading="lazy" decoding="async">
         <div class="hero-slide-overlay"></div>
         <div class="hero-caption">
           <h2>🎓 هدايا التخرج</h2>
@@ -1090,7 +1101,7 @@
     <main id="main-content" class="max-w-7xl mx-auto px-4 py-12">
       <div id="initial-loader" class="flex flex-col items-center justify-center py-40">
         <div class="flip-animation mb-8">
-          <img src="Newlogo.png" alt="متجر ليان" class="w-32 h-32 object-contain">
+          <img src="Newlogo.webp" width="384" height="256" alt="متجر ليان" class="w-32 h-32 object-contain" decoding="async">
         </div>
         <p class="text-[#7B1040] text-sm font-medium tracking-widest">متجر ليان ✦</p>
       </div>
@@ -1318,7 +1329,7 @@
     let productsLoaded = false; // true once first real data (cache or network) is available
 
     // ── localStorage cache (stale-while-revalidate) ──
-    const CACHE_KEY    = 'layan_products_v2';
+    const CACHE_KEY    = 'layan_products_v3';
     const CACHE_TTL    = 30 * 60 * 1000; // 30 minutes
 
     function saveToCache(key, data) {
@@ -1382,7 +1393,8 @@
               discount_pct: p.discount_pct || null,
               on_sale: p.on_sale || false,
               description: p.description,
-              stock: p.stock || 10,
+              // Keep 0 intact: it means the product is out of stock.
+              stock: p.stock === undefined || p.stock === null ? 10 : p.stock,
               shades: p.shades || [],
               created_at: p.created_at || null
             });
@@ -2175,7 +2187,7 @@
       const selectedShadeObj = selectedShades[productId];
       const shadeStockMap = {};
       let firstAvailableShade = null;
-      let productAvailable = false;
+      let productAvailable = !shades.length && isProductAvailable(product);
 
       for (let i = 0; i < shades.length; i++) {
         const s = shades[i];
@@ -2213,6 +2225,7 @@
                    <div class="w-24 h-24 rounded-full shadow-md" style="background: ${currentShade ? currentShade.color : '#7B1040'};"></div>
                  </div>`}
             ${isNew ? '<span class="new-badge">جديد</span>' : ''}
+            ${isOutOfStock ? '<span class="stock-badge">نفد من المخزون</span>' : ''}
             <button class="wishlist-btn" onclick="toggleWishlist('${product.id}', event)" aria-label="أضيفي للمفضلة">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="${wishlisted ? '#7B1040' : 'none'}" stroke="${wishlisted ? '#7B1040' : '#78716c'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
@@ -2244,8 +2257,9 @@
             </div>
             <button
               onclick="event.stopPropagation(); ${isOutOfStock ? `showUnavailableFeedback('عذراً، هذا المنتج نفد من المخزون')` : (!canAddCurrent ? `showUnavailableFeedback('عذراً، الكمية المتاحة من هذا اللون نفدت')` : `addToCart('${product.id}', '${category}', '${currentShade ? currentShade.id : ''}')`)}"
-              class="btn-primary w-full text-white py-3 rounded-full text-sm font-medium">
-              أضيفي للسلة
+              class="btn-primary w-full text-white py-3 rounded-full text-sm font-medium ${isOutOfStock || !canAddCurrent ? 'opacity-50' : ''}"
+              ${isOutOfStock || !canAddCurrent ? 'disabled' : ''}>
+              ${isOutOfStock ? 'نفد من المخزون' : (!canAddCurrent ? 'الكمية نفدت' : 'أضيفي للسلة')}
             </button>
           </div>
         </div>
@@ -3394,6 +3408,16 @@
       let current = 0, paused = false, timer = null;
       const DELAY = 5000;
 
+      // The first slide is loaded immediately. The remaining images load only
+      // when a visitor is about to see them, instead of delaying first paint.
+      function loadSlideImage(index) {
+        const slide = document.getElementById('hero-slide-' + index);
+        const image = slide && slide.querySelector('img[data-src]');
+        if (!image) return;
+        image.src = image.dataset.src;
+        image.removeAttribute('data-src');
+      }
+
       const dotsEl = document.getElementById('hero-dots');
       for (let i = 0; i < TOTAL; i++) {
         const d = document.createElement('button');
@@ -3407,6 +3431,7 @@
         document.getElementById('hero-slide-' + current).classList.remove('active');
         dotsEl.children[current].classList.remove('active');
         current = (n + TOTAL) % TOTAL;
+        loadSlideImage(current);
         const nextSlide = document.getElementById('hero-slide-' + current);
         nextSlide.classList.add('active');
         const cap = nextSlide.querySelector('.hero-caption');
@@ -3431,6 +3456,9 @@
       };
 
       startTimer();
+      const preloadNextSlide = () => loadSlideImage((current + 1) % TOTAL);
+      if ('requestIdleCallback' in window) requestIdleCallback(preloadNextSlide, { timeout: 3000 });
+      else setTimeout(preloadNextSlide, 1500);
     })();
   </script>
 </body>
