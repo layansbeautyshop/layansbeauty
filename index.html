@@ -1272,6 +1272,7 @@
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1kZnJ2bXNydXd6aGhzem9xdW1uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2NTMyOTksImV4cCI6MjA4ODIyOTI5OX0.rwIAoCZSVecvyvZA6Vhm1tPbzSBhgggpdy_xJ6aKjbM';
     // Direct REST API — no external library needed
     const sbHeaders = { 'apikey': supabaseKey, 'Authorization': `Bearer ${supabaseKey}`, 'Content-Type': 'application/json' };
+    const PRODUCTS_QUERY = 'products?select=id,name,nameEn,price,original_price,discount_pct,on_sale,description,stock,shades,category,created_at&order=created_at.desc';
     async function sbGet(path, timeoutMs = 9000) {
       const ctrl = new AbortController();
       const timer = setTimeout(() => ctrl.abort(), timeoutMs);
@@ -1289,6 +1290,18 @@
       } finally {
         clearTimeout(timer);
       }
+    }
+    async function getProducts() {
+      // On Cloudflare Pages this is served from the nearby edge cache. Keep the
+      // direct request as a fallback until the Pages Function is configured.
+      try {
+        const response = await fetch('/api/products');
+        if (response.ok) return response.json();
+        if (response.status !== 404) throw new Error(`Cached products API ${response.status}`);
+      } catch (error) {
+        console.warn('Cached products API unavailable; using Supabase directly.', error);
+      }
+      return sbGet(PRODUCTS_QUERY);
     }
     async function sbPost(path, body) {
       const res = await fetch(`${supabaseUrl}/rest/v1/${path}`, {
@@ -1330,7 +1343,10 @@
 
     // ── localStorage cache (stale-while-revalidate) ──
     const CACHE_KEY    = 'layan_products_v3';
-    const CACHE_TTL    = 30 * 60 * 1000; // 30 minutes
+    // Show the last successful catalogue immediately on repeat visits, then
+    // refresh it in the background. This avoids a long loading skeleton when
+    // the product API is slow, while keeping stock reasonably current.
+    const CACHE_MAX_AGE = 7 * 24 * 60 * 60 * 1000; // discard after one week
 
     function saveToCache(key, data) {
       try { localStorage.setItem(key, JSON.stringify({ data, ts: Date.now() })); } catch(e) {}
@@ -1340,14 +1356,14 @@
         const raw = localStorage.getItem(key);
         if (!raw) return null;
         const { data, ts } = JSON.parse(raw);
-        if (Date.now() - ts > CACHE_TTL) { localStorage.removeItem(key); return null; }
+        if (Date.now() - ts > CACHE_MAX_AGE) { localStorage.removeItem(key); return null; }
         return data;
       } catch(e) { return null; }
     }
 
     async function fetchProducts() {
       try {
-        const data = await sbGet('products?select=id,name,nameEn,price,original_price,discount_pct,on_sale,description,stock,shades,category,created_at&order=created_at.desc');
+        const data = await getProducts();
 
         if (data && data.length > 0) {
           const newProducts = {
