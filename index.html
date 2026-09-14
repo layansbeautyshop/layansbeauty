@@ -1340,7 +1340,7 @@
     let productsLoaded = false; // true once first real data (cache or network) is available
 
     // ── localStorage cache (stale-while-revalidate) ──
-    const CACHE_KEY    = 'layan_products_v5';
+    const CACHE_KEY    = 'layan_products_v6';
     // Show the last successful catalogue immediately on repeat visits, then
     // refresh it in the background. This avoids a long loading skeleton when
     // the product API is slow, while keeping stock reasonably current.
@@ -1355,6 +1355,16 @@
         if (!raw) return null;
         const { data, ts } = JSON.parse(raw);
         if (Date.now() - ts > CACHE_MAX_AGE) { localStorage.removeItem(key); return null; }
+        // Previous deployments cached photo paths whose files were absent.
+        // Never let those saved rows overwrite the embedded working previews.
+        const invalidPhotos = Object.values(data || {}).some(rows =>
+          !Array.isArray(rows) || rows.some(product => (product.shades || []).some(shade =>
+            [shade.image, ...(shade.images || [])].some(src =>
+              typeof src === 'string' && /^(?:\/?product-photos\/|\/api\/product-image\?)/.test(src)
+            )
+          ))
+        );
+        if (invalidPhotos) { localStorage.removeItem(key); return null; }
         return data;
       } catch(e) { return null; }
     }
@@ -2870,34 +2880,13 @@
         }
       }
 
-      // Update stock in background (non-blocking)
-      if (cartSnapshot.length > 0) {
-        (async () => {
-          for (const ci of cartSnapshot) {
-            try {
-              const rows = await sbGet(`products?id=eq.${ci.productId}&select=id,shades,stock`);
-              const prodRow = rows?.[0];
-              if (!prodRow) continue;
-              let updatePayload = {};
-              if (Array.isArray(prodRow.shades) && prodRow.shades.length > 0) {
-                updatePayload.shades = prodRow.shades.map(s => {
-                  if (s && (s.id === ci.shadeId || String(s.id) === String(ci.shadeId))) {
-                    const cur = (s.stock !== undefined) ? Number(s.stock) : (prodRow.stock !== undefined ? Number(prodRow.stock) : null);
-                    if (cur !== null) return { ...s, stock: Math.max(0, cur - ci.quantity) };
-                  }
-                  return s;
-                });
-              } else if (prodRow.stock !== undefined) {
-                updatePayload.stock = Math.max(0, Number(prodRow.stock) - ci.quantity);
-              }
-              if (Object.keys(updatePayload).length > 0) {
-                await sbPatch(`products?id=eq.${ci.productId}`, updatePayload);
-              }
-            } catch(err) {
-              console.error('Stock update failed for', ci.productId, err);
-            }
-          }
-        })();
+      // A notification is not an order record. Stop here if both database
+      // attempts failed, before sending email or touching inventory.
+      if (!supabaseOk) {
+        alert('عذراً، تعذّر إتمام طلبك. يُرجى المحاولة مرة أخرى، أو التواصل معنا للمساعدة. ما زالت المنتجات محفوظة في سلة التسوق.');
+        btn.disabled = false;
+        btn.textContent = 'تأكيد الطلب';
+        return;
       }
 
       const emailConfigReady =
@@ -2939,11 +2928,34 @@
         }
       } catch (err) { console.error('EmailJS send failed:', err); }
 
-      if (!supabaseOk && !emailOk) {
-        alert('عذراً، حدث خطأ أثناء إتمام الطلب. يرجى المحاولة مرة أخرى أو التواصل معنا عبر الانستغرام.');
-        btn.disabled = false;
-        btn.textContent = 'تأكيد الطلب';
-        return;
+      // Only a successfully saved order may reduce inventory.
+      if (supabaseOk && cartSnapshot.length > 0) {
+        (async () => {
+          for (const ci of cartSnapshot) {
+            try {
+              const rows = await sbGet(`products?id=eq.${ci.productId}&select=id,shades,stock`);
+              const prodRow = rows?.[0];
+              if (!prodRow) continue;
+              let updatePayload = {};
+              if (Array.isArray(prodRow.shades) && prodRow.shades.length > 0) {
+                updatePayload.shades = prodRow.shades.map(s => {
+                  if (s && (s.id === ci.shadeId || String(s.id) === String(ci.shadeId))) {
+                    const cur = (s.stock !== undefined) ? Number(s.stock) : (prodRow.stock !== undefined ? Number(prodRow.stock) : null);
+                    if (cur !== null) return { ...s, stock: Math.max(0, cur - ci.quantity) };
+                  }
+                  return s;
+                });
+              } else if (prodRow.stock !== undefined) {
+                updatePayload.stock = Math.max(0, Number(prodRow.stock) - ci.quantity);
+              }
+              if (Object.keys(updatePayload).length > 0) {
+                await sbPatch(`products?id=eq.${ci.productId}`, updatePayload);
+              }
+            } catch(err) {
+              console.error('Stock update failed for', ci.productId, err);
+            }
+          }
+        })();
       }
 
       try {
@@ -3379,7 +3391,7 @@
       const snapshotController = new AbortController();
       const snapshotTimer = setTimeout(() => snapshotController.abort(), 5000);
       try {
-        const response = await fetch('catalogue.json', { signal: snapshotController.signal });
+        const response = await fetch('catalogue.json', { signal: snapshotController.signal, cache: 'no-cache' });
         if (response.ok) {
           const snapshot = await response.json();
           if (Array.isArray(snapshot) && snapshot.length) {
