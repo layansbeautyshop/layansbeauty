@@ -48,7 +48,6 @@
   <meta name="twitter:image" content="CT.png">
   <meta name="description" content="متجر ليان (Layan's Beauty Shop) — منتجات مكياج وعناية أصلية 100٪ مشتراة مباشرة من المواقع الرسمية للعلامات التجارية العالمية، بأسعار منافسة، مع توصيل لكل الضفة الغربية والقدس والداخل. Trusted store for 100% original, authentic makeup and skincare in Palestine.">
   <link rel="stylesheet" href="storefront-utilities.v1.css">
-  <link rel="preload" href="catalogue.json" as="fetch" crossorigin="anonymous">
   <!-- Performance: DNS preconnect to Supabase + CDNs -->
   <link rel="preconnect" href="https://mdfrvmsruwzhhszoqumn.supabase.co" crossorigin>
   <link rel="dns-prefetch" href="https://mdfrvmsruwzhhszoqumn.supabase.co">
@@ -1287,20 +1286,68 @@
         clearTimeout(timer);
       }
     }
-    async function getProducts() {
-      // Static hosting does not run Pages Functions. Refresh directly while
-      // the small bundled catalogue keeps the shop usable on slow connections.
-      // Large inline galleries can truncate a single full-catalogue response.
-      // Use bounded batches and publish the result only after all have loaded.
-      const result = [];
-      for (let offset = 0; ; offset += 40) {
-        const batches = await Promise.all([0, 10, 20, 30].map(step =>
-          sbGet(`${PRODUCTS_QUERY}&limit=10&offset=${offset + step}`, 60000)
-        ));
-        if (batches.some(batch => !Array.isArray(batch))) throw new Error('Invalid product catalogue');
-        result.push(...batches.flat());
-        if (batches.some(batch => batch.length < 10)) return result;
-      }
+// Shared source embedded in both standalone pages by build-inventory-pages.cjs.
+const CATALOGUE_FIELDS = 'id,name,nameEn,price,original_price,discount_pct,on_sale,description,stock,category,created_at';
+const SHADE_BATCH = 4;
+function catalogueSelect(start = 0, photos = true) {
+  const fields = [CATALOGUE_FIELDS];
+  for (let i = start; i < start + SHADE_BATCH; i++) {
+    for (const field of ['id', 'name', 'color', 'stock', ...(photos ? ['image'] : [])]) {
+      fields.push(`s${i}_${field}:shades->${i}->${field}`);
+    }
+  }
+  fields.push(`more:shades->${start + SHADE_BATCH}->id`);
+  return fields.join(',');
+}
+async function decodeCatalogueRow(row, photos = true) {
+  const product = Object.fromEntries(CATALOGUE_FIELDS.split(',').map(key => [key, row[key]]));
+  product.shades = [];
+  for (let start = 0; ; start += SHADE_BATCH) {
+    for (let i = start; i < start + SHADE_BATCH; i++) {
+      if (row[`s${i}_id`] == null && row[`s${i}_name`] == null) continue;
+      product.shades.push({ id: row[`s${i}_id`] ?? `shade-${i}`, name: row[`s${i}_name`] || '',
+        color: row[`s${i}_color`] || '#E8A5A5', stock: row[`s${i}_stock`] ?? null,
+        image: row[`s${i}_image`] || '', _index: i });
+    }
+    if (row.more == null) break;
+    const next = await catalogueRequest(`products?id=eq.${encodeURIComponent(product.id)}&select=${catalogueSelect(start + SHADE_BATCH, photos)}`);
+    if (!Array.isArray(next) || !next.length) throw new Error('Product changed; please reload');
+    row = next[0];
+  }
+  product.images = product.shades.map(s => s.image).filter(Boolean);
+  return product;
+}
+async function readCatalogueProduct(id, photos = false) {
+  const rows = await catalogueRequest(`products?id=eq.${encodeURIComponent(id)}&select=${catalogueSelect(0, photos)}`);
+  if (!Array.isArray(rows)) throw new Error('Invalid product catalogue');
+  return rows.length ? decodeCatalogueRow(rows[0], photos) : null;
+}
+async function readCatalogue() {
+  const metadata = [];
+  for (let offset = 0; ; offset += 200) {
+    const rows = await catalogueRequest(`products?select=${CATALOGUE_FIELDS}&order=created_at.desc,id.asc&limit=200&offset=${offset}`);
+    if (!Array.isArray(rows)) throw new Error('Invalid product catalogue');
+    metadata.push(...rows);
+    if (rows.length < 200) break;
+  }
+  const results = new Map();
+  let next = 0;
+  async function worker() {
+    while (next < metadata.length) {
+      const ids = metadata.slice(next, next += 5).map(row => row.id);
+      const rows = await catalogueRequest(`products?id=in.(${ids.map(encodeURIComponent).join(',')})&select=${catalogueSelect()}`);
+      if (!Array.isArray(rows)) throw new Error('Invalid product catalogue');
+      for (const row of rows) results.set(row.id, await decodeCatalogueRow(row));
+    }
+  }
+  await Promise.all(Array.from({length: 4}, worker));
+  return metadata.filter(row => results.has(row.id)).map(row => results.get(row.id));
+}
+
+    const catalogueRequest = path => sbGet(path, 20000);
+    const getProducts = readCatalogue;
+    function shoppingShades(product) {
+      return product.shades?.length ? product.shades : [{ id: '', name: 'الأساسي', color: '#E8A5A5', stock: product.stock, image: product.images?.[0] || '' }];
     }
     async function sbPost(path, body) {
       const res = await fetch(`${supabaseUrl}/rest/v1/${path}`, {
@@ -1338,37 +1385,7 @@
     // Optional gift box wrapping — adds a flat fee at checkout when selected.
     const GIFT_BOX_PRICE = 10;
 
-    let productsLoaded = false; // true once first real data (cache or network) is available
-
-    // ── localStorage cache (stale-while-revalidate) ──
-    const CACHE_KEY    = 'layan_products_v6';
-    // Show the last successful catalogue immediately on repeat visits, then
-    // refresh it in the background. This avoids a long loading skeleton when
-    // the product API is slow, while keeping stock reasonably current.
-    const CACHE_MAX_AGE = 7 * 24 * 60 * 60 * 1000; // discard after one week
-
-    function saveToCache(key, data) {
-      try { localStorage.setItem(key, JSON.stringify({ data, ts: Date.now() })); } catch(e) {}
-    }
-    function loadFromCache(key) {
-      try {
-        const raw = localStorage.getItem(key);
-        if (!raw) return null;
-        const { data, ts } = JSON.parse(raw);
-        if (Date.now() - ts > CACHE_MAX_AGE) { localStorage.removeItem(key); return null; }
-        // Previous deployments cached photo paths whose files were absent.
-        // Never let those saved rows overwrite the embedded working previews.
-        const invalidPhotos = Object.values(data || {}).some(rows =>
-          !Array.isArray(rows) || rows.some(product => (product.shades || []).some(shade =>
-            [shade.image, ...(shade.images || [])].some(src =>
-              typeof src === 'string' && /^(?:\/?product-photos\/|\/api\/product-image\?)/.test(src)
-            )
-          ))
-        );
-        if (invalidPhotos) { localStorage.removeItem(key); return null; }
-        return data;
-      } catch(e) { return null; }
-    }
+    let productsLoaded = false; // true once live inventory is available
 
     async function fetchProducts(source = getProducts()) {
       try {
@@ -1421,7 +1438,7 @@
               description: p.description,
               // Keep 0 intact: it means the product is out of stock.
               stock: p.stock ?? null,
-              shades: p.shades || [],
+              shades: shoppingShades(p),
               created_at: p.created_at || null
             });
           });
@@ -1429,7 +1446,6 @@
           products = newProducts;
           selectedShades = {};
           productsLoaded = true;
-          saveToCache(CACHE_KEY, products); // persist for next visit
         }
       } catch (err) {
         console.error('Error fetching products:', err);
@@ -1682,6 +1698,7 @@
     };
 
     function navigateTo(page, replace = false) {
+      closeProductModal();
       if (!page) page = 'home';
       currentPage = page;
       resetProductPagination();
@@ -1756,18 +1773,19 @@
       }
     }
 
-    async function addToCart(productId, category, shadeId) {
+    async function addToCart(productId, category, shadeId, quantity = 1) {
       let product = products[category].find(p => p.id === productId);
       if (!product) return;
 
       try {
-        const rows = await sbGet(`products?id=eq.${encodeURIComponent(productId)}&select=stock,shades`, 60000);
-        if (!Array.isArray(rows) || !rows.length) {
+        const fresh = await readCatalogueProduct(productId);
+        if (!fresh) {
           showUnavailableFeedback('هذا المنتج لم يعد متوفراً');
           return;
         }
-        product.stock = rows[0].stock ?? null;
-        product.shades = rows[0].shades || [];
+        product.stock = fresh.stock ?? null;
+        product.price = fresh.price;
+        product.shades = shoppingShades(fresh).map(shade => ({ ...product.shades.find(old => old.id === shade.id), ...shade, image: product.shades.find(old => old.id === shade.id)?.image || shade.image }));
         delete selectedShades[productId];
       } catch (error) {
         showUnavailableFeedback('تعذّر التحقق من المخزون — يرجى إعادة المحاولة');
@@ -1782,7 +1800,7 @@
       const reserved = existingItem ? existingItem.quantity : 0;
 
       if (shadeStock !== null) {
-        if (reserved >= shadeStock) {
+        if (!Number.isInteger(quantity) || quantity < 1 || reserved + quantity > shadeStock) {
           showUnavailableFeedback('عذراً، الكمية المتاحة من هذا اللون نفدت');
           return;
         }
@@ -1792,9 +1810,11 @@
       }
 
       if (existingItem) {
-        existingItem.quantity++;
+        existingItem.quantity += quantity;
+        existingItem.product = product;
+        existingItem.shade = shade;
       } else {
-        cart.push({ productId, category, shadeId, quantity: 1, product, shade });
+        cart.push({ productId, category, shadeId, quantity, product, shade });
       }
 
       updateCartCount();
@@ -1809,6 +1829,8 @@
           currency: 'ILS'
         });
       }
+      debouncedRenderPage();
+      return true;
     }
 
     function showToast(message, type = 'success') {
@@ -1863,19 +1885,30 @@
       }
     }
 
-    function openProductModal(productId, category) {
+    let modalRequest = 0;
+    async function openProductModal(productId, category) {
       const product = products[category].find(p => p.id === productId);
       if (!product) return;
+      const request = ++modalRequest;
+      if (!product._galleryLoaded) {
+        try {
+          const rows = await sbGet(`products?id=eq.${encodeURIComponent(productId)}&select=shades,images`, 20000);
+          if (request !== modalRequest) return;
+          if (rows[0]) {
+            product.shades = shoppingShades({ ...product, ...rows[0] });
+            product._galleryLoaded = true;
+          }
+        } catch (error) { showToast('تعذّر تحميل الصور الإضافية، يمكنك إعادة المحاولة', 'error'); }
+      }
+      if (request !== modalRequest) return;
       addToRecentlyViewed(productId, category);
       const modal = document.getElementById('product-modal');
       const wasHidden = modal.classList.contains('hidden');
       const content = document.getElementById('modal-content');
       const productAvailable = isProductAvailable(product);
-      const firstAvailableShade = product.shades.find(s => ((s.stock !== undefined) ? s.stock > 0 : product.stock > 0));
-      const currentShade = (selectedShades[productId] && ((selectedShades[productId].stock !== undefined)
-        ? selectedShades[productId].stock > 0 : product.stock > 0))
-        ? selectedShades[productId]
-        : (firstAvailableShade || product.shades[0]);
+      const firstAvailableShade = product.shades.find(s => getStock(product, s) > 0);
+      const selected = product.shades.find(s => s.id === selectedShades[productId]?.id);
+      const currentShade = (selected && getStock(product, selected) > 0) ? selected : (firstAvailableShade || product.shades[0]);
 
       // Build gallery images for current shade
       const _galleryImgs = (() => {
@@ -2048,6 +2081,7 @@
     }
 
     function closeProductModal() {
+      modalRequest++;
       document.getElementById('product-modal').classList.add('hidden');
       const hint = document.getElementById('modal-scroll-hint');
       if (hint) hint.classList.remove('show');
@@ -2116,8 +2150,7 @@
     }
     async function addToCartFromModal(productId, category, shadeId) {
       const qty = parseInt(document.getElementById('modal-qty')?.textContent) || 1;
-      for (let i = 0; i < qty; i++) await addToCart(productId, category, shadeId);
-      requestCloseProductModal();
+      if (await addToCart(productId, category, shadeId, qty)) requestCloseProductModal();
     }
 
     // ── Recently Viewed ──
@@ -2222,7 +2255,7 @@
     function renderProductCard(product, category, index) {
       const productId = String(product.id);
       const shades = product.shades || [];
-      const selectedShadeObj = selectedShades[productId];
+      const selectedShadeObj = shades.find(s => s.id === selectedShades[productId]?.id);
       const shadeStockMap = {};
       let firstAvailableShade = null;
       let productAvailable = !shades.length && isProductAvailable(product);
@@ -2236,7 +2269,7 @@
 
       const isOutOfStock = !productAvailable;
       const selectedShadeStock = selectedShadeObj ? shadeStockMap[selectedShadeObj.id] : null;
-      const currentShade = (selectedShadeObj && (selectedShadeStock === null || selectedShadeStock > 0))
+      const currentShade = (selectedShadeObj && (selectedShadeStock > 0))
         ? selectedShadeObj : (firstAvailableShade || shades[0]);
 
       let reservedForCurrent = 0;
@@ -2802,6 +2835,25 @@
         }
         phoneAlt = phoneAltPrefix + phoneAltDigits;
       }
+
+      try {
+        const ids = [...new Set(cart.map(item => item.productId))];
+        const fresh = new Map(await Promise.all(ids.map(async id => [id, await readCatalogueProduct(id)])));
+        for (const item of cart) {
+          const product = fresh.get(item.productId);
+          const shade = product && shoppingShades(product).find(s => s.id === item.shadeId);
+          if (!shade || !(getStock(product, shade) >= item.quantity)) {
+            fail('تغيّر المخزون، يرجى مراجعة السلة قبل تأكيد الطلب');
+            return;
+          }
+          if (Number(product.price) !== Number(item.product.price)) {
+            item.product.price = product.price;
+            fail('تغيّر سعر منتج، يرجى مراجعة الإجمالي الجديد');
+            showCheckoutForm();
+            return;
+          }
+        }
+      } catch (error) { fail('تعذّر التحقق من المخزون، يرجى إعادة المحاولة'); return; }
 
       const address = `${city} - ${street}`;
 
