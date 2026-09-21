@@ -1267,13 +1267,14 @@
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1kZnJ2bXNydXd6aGhzem9xdW1uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2NTMyOTksImV4cCI6MjA4ODIyOTI5OX0.rwIAoCZSVecvyvZA6Vhm1tPbzSBhgggpdy_xJ6aKjbM';
     // Direct REST API — no external library needed
     const sbHeaders = { 'apikey': supabaseKey, 'Authorization': `Bearer ${supabaseKey}`, 'Content-Type': 'application/json' };
-    const PRODUCTS_QUERY = 'products?select=id,name,nameEn,price,original_price,discount_pct,on_sale,description,stock,shades,category,created_at&order=created_at.desc';
+    const PRODUCTS_QUERY = 'products?select=id,name,nameEn,price,original_price,discount_pct,on_sale,description,stock,shades,category,created_at&order=created_at.desc,id.asc';
     async function sbGet(path, timeoutMs = 9000) {
       const ctrl = new AbortController();
       const timer = setTimeout(() => ctrl.abort(), timeoutMs);
       try {
         const res = await fetch(`${supabaseUrl}/rest/v1/${path}`, {
           headers: sbHeaders,
+          cache: 'no-store',
           signal: ctrl.signal
         });
         if (!res.ok) {
@@ -1373,7 +1374,8 @@
       try {
         const data = await source;
 
-        if (data && data.length > 0) {
+        if (!Array.isArray(data)) throw new Error('Invalid product catalogue');
+        {
           const newProducts = {
             face: [], lips: [], eyes: [], foundation: [], setting: [], gifts: [], packages: [], nails: [], accessories: [], sale: [], other: []
           };
@@ -1418,17 +1420,16 @@
               on_sale: p.on_sale || false,
               description: p.description,
               // Keep 0 intact: it means the product is out of stock.
-              stock: p.stock === undefined || p.stock === null ? 10 : p.stock,
+              stock: p.stock ?? null,
               shades: p.shades || [],
               created_at: p.created_at || null
             });
           });
 
           products = newProducts;
+          selectedShades = {};
           productsLoaded = true;
           saveToCache(CACHE_KEY, products); // persist for next visit
-        } else {
-          loadDefaultProducts();
         }
       } catch (err) {
         console.error('Error fetching products:', err);
@@ -1756,9 +1757,22 @@
     }
 
     async function addToCart(productId, category, shadeId) {
-      // Use local data (already fresh from page-load fetch) — no live re-fetch needed
       let product = products[category].find(p => p.id === productId);
       if (!product) return;
+
+      try {
+        const rows = await sbGet(`products?id=eq.${encodeURIComponent(productId)}&select=stock,shades`, 60000);
+        if (!Array.isArray(rows) || !rows.length) {
+          showUnavailableFeedback('هذا المنتج لم يعد متوفراً');
+          return;
+        }
+        product.stock = rows[0].stock ?? null;
+        product.shades = rows[0].shades || [];
+        delete selectedShades[productId];
+      } catch (error) {
+        showUnavailableFeedback('تعذّر التحقق من المخزون — يرجى إعادة المحاولة');
+        return;
+      }
 
       const shade = product.shades.find(s => s.id === shadeId);
       if (!shade) return;
@@ -1818,15 +1832,15 @@
         : (product && product.stock !== undefined && product.stock !== null)
           ? product.stock
           : null;
-      if (raw === null) return null;
+      if (raw === null || raw === '' || typeof raw === 'boolean') return null;
       const n = Number(raw);
       return Number.isFinite(n) ? n : null;
     }
 
     function isProductAvailable(product) {
       const shades = product.shades || [];
-      if (!shades.length) return product.stock === undefined || product.stock === null || product.stock > 0;
-      return shades.some(s => { const st = getStock(product, s); return st === null || st > 0; });
+      if (!shades.length) return getStock(product, null) > 0;
+      return shades.some(s => { const st = getStock(product, s); return st > 0; });
     }
 
     function removeFromCart(index) {
@@ -1841,7 +1855,7 @@
       const shadeStock = getStock(item.product, item.shade);
       if (newQty <= 0) {
         removeFromCart(index);
-      } else if (shadeStock === null || newQty <= shadeStock) {
+      } else if (shadeStock !== null && newQty <= shadeStock) {
         item.quantity = newQty;
         renderPage();
       } else {
@@ -1914,7 +1928,7 @@
               <div class="flex flex-wrap gap-3 md:gap-4">
                 ${product.shades.map(shade => {
                   const sStock = getStock(product, shade);
-                  const sOutOfStock = (sStock !== null && sStock <= 0);
+                  const sOutOfStock = (!(sStock > 0));
                   return `<button onclick="event.stopPropagation(); ${sOutOfStock ? `showUnavailableFeedback('عذراً، هذا اللون غير متوفر')` : `selectModalShade('${productId}', '${category}', '${shade.id}')`}"
                     class="shade-btn w-10 h-10 md:w-12 md:h-12 rounded-full border-3 border-white shadow-md transition-all ${currentShade.id === shade.id ? 'selected' : ''}"
                     style="background: ${shade.color};"
@@ -2028,7 +2042,7 @@
       const product = products[category].find(p => p.id === productId);
       const shade = product.shades.find(s => s.id === shadeId);
       const sStock = getStock(product, shade);
-      if (sStock !== null && sStock <= 0) { showUnavailableFeedback('عذراً، هذا اللون غير متوفر'); return; }
+      if (!(sStock > 0)) { showUnavailableFeedback('عذراً، هذا اللون غير متوفر'); return; }
       selectedShades[productId] = shade;
       openProductModal(productId, category);
     }
@@ -2217,7 +2231,7 @@
         const s = shades[i];
         const st = getStock(product, s);
         shadeStockMap[s.id] = st;
-        if (st === null || st > 0) { productAvailable = true; if (!firstAvailableShade) firstAvailableShade = s; }
+        if (st > 0) { productAvailable = true; if (!firstAvailableShade) firstAvailableShade = s; }
       }
 
       const isOutOfStock = !productAvailable;
@@ -2232,8 +2246,8 @@
         if (String(item.productId) === productId && String(item.shadeId) === currentShadeId) reservedForCurrent += item.quantity;
       }
 
-      const currentShadeStock = shadeStockMap[currentShade?.id] || null;
-      const canAddCurrent = (currentShadeStock === null) ? true : (reservedForCurrent < currentShadeStock);
+      const currentShadeStock = shadeStockMap[currentShade?.id] ?? getStock(product, currentShade);
+      const canAddCurrent = (currentShadeStock === null) ? false : (reservedForCurrent < currentShadeStock);
 
       const isNew = product.created_at && (Date.now() - new Date(product.created_at).getTime()) < 30 * 24 * 60 * 60 * 1000;
       const wishlisted = getWishlist().has(String(product.id));
@@ -2269,7 +2283,7 @@
               <div class="flex flex-wrap gap-2">
                 ${shades.map(shade => {
                   const sStock = shadeStockMap[shade.id];
-                  const sOutOfStock = (sStock !== null && sStock <= 0);
+                  const sOutOfStock = (!(sStock > 0));
                   const isSelected = currentShade && currentShade.id === shade.id;
                   return `<button onclick="event.stopPropagation(); ${sOutOfStock ? `showUnavailableFeedback('عذراً، هذا اللون غير متوفر')` : `selectShade('${product.id}', '${shade.id}', '${category}')`}"
                     class="shade-btn w-8 h-8 rounded-full border-2 border-white shadow-md transition-all ${isSelected ? 'selected' : ''}"
@@ -2294,7 +2308,7 @@
       const product = products[category].find(p => p.id === productId);
       const shade = product.shades.find(s => s.id === shadeId);
       const sStock = getStock(product, shade);
-      if (sStock !== null && sStock <= 0) { showUnavailableFeedback('عذراً، هذا اللون غير متوفر'); return; }
+      if (!(sStock > 0)) { showUnavailableFeedback('عذراً، هذا اللون غير متوفر'); return; }
       selectedShades[productId] = shade;
       debouncedRenderPage();
     }
@@ -3372,46 +3386,9 @@
       _showSkeletons(initialPage);
       document.body.classList.remove('disable-animations');
 
-      const cachedProducts = loadFromCache(CACHE_KEY);
-
-      if (cachedProducts) {
-        // Render from cache — feels instant
-        products = cachedProducts;
-        productsLoaded = true;
-        _applyPage(initialPage);
-
-        // Silent background refresh
-        fetchProducts().then(() => renderPage())
-          .catch(e => console.warn('background refresh failed:', e));
-        return;
-      }
-
-      // A static catalogue works even when the host has no server functions.
-      // Only use it for the initial display; refresh current stock below.
-      const snapshotController = new AbortController();
-      const snapshotTimer = setTimeout(() => snapshotController.abort(), 5000);
-      try {
-        const response = await fetch('catalogue.json', { signal: snapshotController.signal, cache: 'no-cache' });
-        if (response.ok) {
-          const snapshot = await response.json();
-          if (Array.isArray(snapshot) && snapshot.length) {
-            await fetchProducts(Promise.resolve(snapshot));
-            if (productsLoaded) _applyPage(_resolveInitialPage());
-          }
-        }
-      } catch (error) {
-        console.warn('Bundled catalogue unavailable; loading live products.', error);
-      } finally {
-        clearTimeout(snapshotTimer);
-      }
-
-      const hadInitialProducts = productsLoaded;
-      await fetchProducts().catch(e => console.warn('products fetch failed:', e));
-      // fetchProducts() shows its own error UI if productsLoaded is still false
-      if (productsLoaded) {
-        if (hadInitialProducts) renderPage();
-        else _applyPage(_resolveInitialPage());
-      }
+      // Inventory must come from the live database, never a saved snapshot.
+      await fetchProducts();
+      if (productsLoaded) _applyPage(_resolveInitialPage());
     }
 
     function loadEmailJS() {
