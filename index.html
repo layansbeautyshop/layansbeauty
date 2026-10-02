@@ -230,6 +230,11 @@
     .drawer-link:hover { background: var(--blush-50); color: var(--plum); }
     .drawer-link .nav-en { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: .95rem; color: var(--muted); font-weight: 600; }
     .drawer-link.sale { color: #B0124A; }
+    .drawer-link .brand-count { font-size: .78rem; color: var(--muted); font-weight: 500; }
+    .brand-index { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    @media (max-width: 900px) { .brand-index { grid-template-columns: repeat(2, 1fr); gap: 10px; } }
+    .brand-index .brand-cell { height: 88px; border: 1px solid var(--line); border-radius: 12px; }
+    .brand-letter { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 600; color: var(--plum); margin: 28px 0 10px; direction: ltr; text-align: right; }
     .drawer-foot { border-top: 1px solid var(--line); padding: 16px 20px; display: flex; gap: 10px; }
     .drawer-foot a { flex: 1; }
     .dropdown-content, #products-dropdown { display: none; }
@@ -901,6 +906,7 @@
           <button onclick="navigateTo('nails')" data-page="nails" class="nav-link">أظافر</button>
           <button onclick="navigateTo('accessories')" data-page="accessories" class="nav-link">اكسسوارات</button>
           <button onclick="navigateTo('sale')" data-page="sale" class="nav-link nav-sale">العروض</button>
+          <button onclick="navigateTo('brands')" data-page="brands" class="nav-link">الماركات</button>
           <span class="nav-sep"></span>
           <button onclick="navigateTo('custom')" data-page="custom" class="nav-link">طلب مخصص</button>
         </div>
@@ -932,6 +938,9 @@
           <button onclick="navigateTo('gifts')" class="drawer-link">هدايا <span class="nav-en">Gifts</span></button>
           <button onclick="navigateTo('nails')" class="drawer-link">أظافر <span class="nav-en">Nails</span></button>
           <button onclick="navigateTo('accessories')" class="drawer-link">اكسسوارات <span class="nav-en">Accessories</span></button>
+          <p class="drawer-label">تسوقي حسب الماركة</p>
+          <div id="drawer-brands"></div>
+          <button onclick="navigateTo('brands')" class="drawer-link" style="color:var(--plum);font-weight:700">كل الماركات <span class="nav-en">All Brands</span></button>
           <p class="drawer-label">حسابي والمساعدة</p>
           <button onclick="navigateTo('wishlist')" class="drawer-link">المفضلة <span class="nav-en">Wishlist</span></button>
           <button onclick="navigateTo('cart')" class="drawer-link">السلة <span class="nav-en">Bag</span></button>
@@ -1679,6 +1688,7 @@
       packages: 'البكجات — متجر ليان', nails: 'أظافر — متجر ليان',
       accessories: 'اكسسوارات — متجر ليان', sale: 'عروض وتخفيضات — متجر ليان',
       all: 'كل المنتجات — متجر ليان', wishlist: 'المفضلة — متجر ليان',
+      brands: 'الماركات — متجر ليان',
       cart: 'السلة — متجر ليان', about: 'من نحن — متجر ليان',
       custom: 'طلب مخصص — متجر ليان'
     };
@@ -3238,6 +3248,31 @@
         </div>`;
     }
 
+    function renderDrawerBrands() {
+      const box = document.getElementById('drawer-brands');
+      if (!box) return;
+      const top = brandCounts().slice(0, 12);
+      box.innerHTML = top.map(([name, count]) => `<button class="drawer-link" onclick="shopByBrand('${name}')"><span dir="ltr">${escapeHtml(name)}</span> <span class="brand-count">${count} منتج</span></button>`).join('');
+    }
+
+    function renderBrandsPage() {
+      const list = brandCounts().sort((a, b) => a[0].localeCompare(b[0], 'en', { sensitivity: 'base' }));
+      const groups = {};
+      list.forEach(([name, count]) => {
+        const letter = name.replace(/^[^A-Za-z]+/, '').charAt(0).toUpperCase() || '#';
+        (groups[letter] = groups[letter] || []).push([name, count]);
+      });
+      return `
+        <div class="fade-in">
+          ${renderPageHero('الماركات', 'Brands', 'الماركات', list.length ? `${list.length} ماركة عالمية — كلها أصلية 100%` : '')}
+          ${!productsLoaded ? renderSkeletonGrid(4) : Object.keys(groups).sort().map(letter => `
+            <p class="brand-letter">${letter}</p>
+            <div class="brand-index">
+              ${groups[letter].map(([name, count]) => `<button class="brand-cell" onclick="shopByBrand('${name}')"><span class="brand-name" dir="ltr">${escapeHtml(name)}</span><span class="brand-count">${count} منتج</span></button>`).join('')}
+            </div>`).join('')}
+        </div>`;
+    }
+
     function renderPage() {
       const mainContent = document.getElementById('main-content');
       switch (currentPage) {
@@ -3257,9 +3292,11 @@
         case 'sale': mainContent.innerHTML = renderSalePage(); break;
         case 'all': mainContent.innerHTML = renderAllProductsPage(); break;
         case 'wishlist': mainContent.innerHTML = renderWishlistPage(); break;
+        case 'brands': mainContent.innerHTML = renderBrandsPage(); break;
         default: mainContent.innerHTML = renderHomePage();
       }
       syncSearchInputs();
+      if (productsLoaded) renderDrawerBrands();
     }
 
     if (window.elementSdk) {
