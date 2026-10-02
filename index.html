@@ -230,10 +230,13 @@
     .drawer-link:hover { background: var(--blush-50); color: var(--plum); }
     .drawer-link .nav-en { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: .95rem; color: var(--muted); font-weight: 600; }
     .drawer-link.sale { color: #B0124A; }
-    .drawer-link .brand-count { font-size: .78rem; color: var(--muted); font-weight: 500; }
     .brand-index { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
     @media (max-width: 900px) { .brand-index { grid-template-columns: repeat(2, 1fr); gap: 10px; } }
     .brand-index .brand-cell { height: 88px; border: 1px solid var(--line); border-radius: 12px; }
+    .brand-search { position: relative; max-width: 520px; margin: 8px 0 8px auto; }
+    .brand-search input { width: 100%; height: 50px; border-radius: 999px; border: 1.5px solid var(--line); background: #fff; padding: 0 48px 0 20px; font: inherit; font-size: .95rem; outline: none; transition: border-color .2s, box-shadow .2s; }
+    .brand-search input:focus { border-color: var(--plum); box-shadow: 0 0 0 4px rgba(123,16,64,.08); }
+    .brand-search .search-icon { position: absolute; right: 18px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
     .brand-letter { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 600; color: var(--plum); margin: 28px 0 10px; direction: ltr; text-align: right; }
     .drawer-foot { border-top: 1px solid var(--line); padding: 16px 20px; display: flex; gap: 10px; }
     .drawer-foot a { flex: 1; }
@@ -350,7 +353,6 @@
     .brand-cell:hover { background: var(--blush-50); }
     .brand-cell .brand-name { font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 1.25rem; letter-spacing: .06em; text-transform: uppercase; color: var(--ink); line-height: 1.1; }
     .brand-cell:hover .brand-name { color: var(--plum); }
-    .brand-cell .brand-count { font-size: .7rem; color: var(--muted); }
     @media (max-width: 900px) { .brand-grid { grid-template-columns: repeat(3, 1fr); } }
     @media (max-width: 480px) { .brand-grid { grid-template-columns: repeat(2, 1fr); } .brand-cell { height: 80px; } .brand-cell .brand-name { font-size: 1.05rem; } }
 
@@ -939,8 +941,8 @@
           <button onclick="navigateTo('nails')" class="drawer-link">أظافر <span class="nav-en">Nails</span></button>
           <button onclick="navigateTo('accessories')" class="drawer-link">اكسسوارات <span class="nav-en">Accessories</span></button>
           <p class="drawer-label">تسوقي حسب الماركة</p>
-          <div id="drawer-brands"></div>
           <button onclick="navigateTo('brands')" class="drawer-link" style="color:var(--plum);font-weight:700">كل الماركات <span class="nav-en">All Brands</span></button>
+          <div id="drawer-brands"></div>
           <p class="drawer-label">حسابي والمساعدة</p>
           <button onclick="navigateTo('wishlist')" class="drawer-link">المفضلة <span class="nav-en">Wishlist</span></button>
           <button onclick="navigateTo('cart')" class="drawer-link">السلة <span class="nav-en">Bag</span></button>
@@ -2542,7 +2544,7 @@
                 <div><p class="eyebrow">Top Brands</p><h2>تسوقي حسب الماركة</h2></div>
               </div>
               <div class="brand-grid">
-                ${brands.map(([name, count]) => `<button class="brand-cell" onclick="shopByBrand('${name}')"><span class="brand-name" dir="ltr">${escapeHtml(name)}</span><span class="brand-count">${count} منتج</span></button>`).join('')}
+                ${brands.map(([name]) => `<button class="brand-cell" onclick="shopByBrand('${name}')"><span class="brand-name" dir="ltr">${escapeHtml(name)}</span></button>`).join('')}
               </div>
             </section>` : ''}
 
@@ -3252,7 +3254,7 @@
       const box = document.getElementById('drawer-brands');
       if (!box) return;
       const top = brandCounts().slice(0, 12);
-      box.innerHTML = top.map(([name, count]) => `<button class="drawer-link" onclick="shopByBrand('${name}')"><span dir="ltr">${escapeHtml(name)}</span> <span class="brand-count">${count} منتج</span></button>`).join('');
+      box.innerHTML = top.map(([name]) => `<button class="drawer-link" onclick="shopByBrand('${name}')"><span dir="ltr">${escapeHtml(name)}</span></button>`).join('');
     }
 
     function renderBrandsPage() {
@@ -3265,12 +3267,36 @@
       return `
         <div class="fade-in">
           ${renderPageHero('الماركات', 'Brands', 'الماركات', list.length ? `${list.length} ماركة عالمية — كلها أصلية 100%` : '')}
-          ${!productsLoaded ? renderSkeletonGrid(4) : Object.keys(groups).sort().map(letter => `
+          ${!productsLoaded ? renderSkeletonGrid(4) : `
+            <div class="brand-search">
+              <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+              <input id="brand-search-input" type="search" autocomplete="off" placeholder="ابحثي عن ماركة... مثل Huda Beauty" aria-label="ابحثي عن ماركة" oninput="filterBrands(this.value)">
+            </div>
+            <p id="brand-search-empty" class="hidden" style="text-align:center;color:var(--muted);padding:32px 0">لا توجد ماركة بهذا الاسم — جرّبي <button class="link-underline" onclick="navigateTo('custom')">الطلب المخصص</button></p>
+          ` + Object.keys(groups).sort().map(letter => `
+            <div class="brand-group">
             <p class="brand-letter">${letter}</p>
             <div class="brand-index">
-              ${groups[letter].map(([name, count]) => `<button class="brand-cell" onclick="shopByBrand('${name}')"><span class="brand-name" dir="ltr">${escapeHtml(name)}</span><span class="brand-count">${count} منتج</span></button>`).join('')}
+              ${groups[letter].map(([name]) => `<button class="brand-cell" data-brand="${escapeHtml(name.toLowerCase())}" onclick="shopByBrand('${name}')"><span class="brand-name" dir="ltr">${escapeHtml(name)}</span></button>`).join('')}
+            </div>
             </div>`).join('')}
         </div>`;
+    }
+
+    function filterBrands(value) {
+      const q = String(value || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+      let shown = 0;
+      document.querySelectorAll('.brand-group').forEach(group => {
+        let any = false;
+        group.querySelectorAll('.brand-cell').forEach(cell => {
+          const match = !q || cell.dataset.brand.replace(/[^a-z0-9]/g, '').includes(q);
+          cell.classList.toggle('hidden', !match);
+          if (match) { any = true; shown++; }
+        });
+        group.classList.toggle('hidden', !any);
+      });
+      const empty = document.getElementById('brand-search-empty');
+      if (empty) empty.classList.toggle('hidden', shown > 0);
     }
 
     function renderPage() {
