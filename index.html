@@ -573,7 +573,10 @@
     .summary-trust svg { color: var(--plum); flex-shrink: 0; }
 
     .checkout-layout { display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 40px; align-items: start; max-width: 1120px; margin: 0 auto; }
-    @media (max-width: 960px) { .checkout-layout { grid-template-columns: 1fr; } .checkout-aside { order: -1; } }
+    @media (max-width: 960px) {
+      .checkout-layout { grid-template-columns: 1fr; gap: 18px; }
+      .summary-card { position: static; }
+    }
     .form-section { background: #fff; border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 26px; margin-bottom: 18px; }
     .form-section-title { display: flex; align-items: center; gap: 12px; font-size: 1.1rem; font-weight: 800; margin: 0 0 20px; }
     .step-num { width: 30px; height: 30px; border-radius: 50%; background: var(--ink); color: #fff; font-size: .85rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
