@@ -787,7 +787,7 @@
     .hero-scene .hero-slide-overlay { background: linear-gradient(270deg, rgba(58,10,32,.85) 0%, rgba(58,10,32,.55) 34%, rgba(58,10,32,0) 58%); }
     .hero-scene .hero-art { position: absolute; z-index: 2; left: max(16px, calc((100vw - var(--container)) / 2)); bottom: 0; width: min(48vw, 660px); height: 94%; overflow: visible; filter: drop-shadow(0 6px 14px rgba(58,10,32,.25)); }
     .hero-scene .hero-caption { z-index: 3; }
-    .collage-art-tile { display: none; }
+    .hero-art-m, .scene-collage img.m-only { display: none; }
     .hero-scene .hero-caption h1 em { font-style: normal; color: var(--blush); }
     .hero-dot { box-shadow: 0 0 0 1px rgba(58,10,32,.25); }
     .hero-arrow, .hero-pause { background: rgba(58,10,32,.45); }
@@ -800,18 +800,15 @@
     .float.f3 { animation-duration: 5.2s; animation-delay: -4s; }
     @keyframes leaf-sway { 0%, 100% { transform: translateY(0) rotate(-10deg); } 50% { transform: translateY(-14px) rotate(12deg); } }
     @media (max-width: 640px) {
-      .hero-stage { height: 560px; }
-      .scene-collage { gap: 4px; }
-      .scene-collage img:nth-child(n+4) { display: none; }
-      .hero-scene .scene-collage img:nth-child(4) { display: block; }
-      .hero-scene .scene-collage img:nth-child(2), .hero-scene .scene-collage img:nth-child(3), .hero-scene .scene-collage img:nth-child(5) { display: none; }
-      .hero-scene .scene-collage img:nth-child(4) { order: 2; }
-      .hero-scene .collage-art-tile { display: block; order: 1; background: radial-gradient(circle at 50% 32%, rgba(249,208,220,.95), transparent 70%), var(--paper), var(--blush-50); }
-      .hero-scene .hero-slide-overlay { background: linear-gradient(0deg, rgba(58,10,32,.9) 0%, rgba(58,10,32,.45) 50%, rgba(58,10,32,0) 68%); }
-      .hero-scene .scene-collage { grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr) minmax(0, 1fr); grid-auto-columns: 0; }
-      .hero-scene .hero-art { left: 28.4%; right: auto; top: 6%; bottom: auto; width: 43.2%; height: 38%; filter: none; }
-      .hero-scene .hero-caption h1 { font-size: 1.75rem; }
-      .hero-scene .hero-caption p { font-size: .9rem; margin-bottom: 20px; }
+      .hero-stage { height: 440px; }
+      .scene-collage { display: block; }
+      .hero-slide .scene-collage img { display: none; }
+      .hero-slide .scene-collage img.m-show { display: block; }
+      .hero-scene .hero-slide-overlay { background: linear-gradient(0deg, rgba(58,10,32,.92) 0%, rgba(58,10,32,.55) 45%, rgba(58,10,32,.05) 75%); }
+      .hero-scene .hero-art { display: none; }
+      .hero-scene .hero-art-m { display: block; position: absolute; z-index: 2; left: 10px; bottom: 82px; width: 40%; height: 104px; overflow: visible; }
+      .hero-scene .hero-caption h1 { font-size: 1.6rem; }
+      .hero-scene .hero-caption p { display: none; }
     }
 
     .fall-band { position: relative; margin-top: 56px; border-radius: var(--radius-lg); overflow: hidden; background: radial-gradient(ellipse at 22% 60%, rgba(249,208,220,.9), transparent 55%), var(--paper), var(--blush-50); border: 1px solid var(--line); display: grid; grid-template-columns: 1.2fr 1fr; align-items: center; min-height: 300px; isolation: isolate; }
@@ -1132,9 +1129,9 @@
      <div class="hero-stage" aria-roledescription="carousel">
       <div class="leaf-fall" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
       <div class="hero-slide hero-scene active" id="hero-slide-0">
-        <div class="scene-collage" aria-hidden="true"><img src="hero-collage-1.webp" alt="" width="480" height="960" decoding="async"><img src="hero-collage-2.webp" alt="" width="480" height="960" decoding="async"><img src="hero-collage-3.webp" alt="" width="480" height="960" decoding="async"><img src="hero-collage-4.webp" alt="" width="480" height="960" decoding="async"><img src="hero-collage-5.webp" alt="" width="480" height="960" decoding="async"><span class="collage-art-tile"></span></div>
+        <div class="scene-collage" aria-hidden="true"><img src="hero-collage-1.webp" alt="" width="480" height="960" decoding="async"><img src="hero-collage-2.webp" alt="" width="480" height="960" decoding="async"><img src="hero-collage-3.webp" alt="" width="480" height="960" decoding="async"><img src="hero-collage-4.webp" alt="" width="480" height="960" decoding="async"><img src="hero-collage-5.webp" alt="" width="480" height="960" decoding="async"><img class="m-show m-only" src="hero-phone-1.webp" alt="" width="640" height="640" loading="lazy" decoding="async"></div>
         <div class="hero-slide-overlay"></div>
-        <svg class="hero-art" viewBox="0 0 640 470" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
+        <svg class="hero-art" viewBox="0 0 640 470" preserveAspectRatio="xMidYMax meet" aria-hidden="true"><g id="scene-art">
           <use href="#maple" x="40" y="60" width="50" height="50" style="color:#C9A24B" class="float f1"/>
           <use href="#oak" x="540" y="70" width="40" height="40" style="color:#EE9DB5" class="float f2"/>
           <use href="#maple" x="440" y="150" width="32" height="32" style="color:#B0124A" class="float f3"/>
@@ -1149,7 +1146,8 @@
           <use href="#bean" x="372" y="446" width="14" height="18" transform="rotate(60 379 455)"/>
           <use href="#maple" x="470" y="430" width="34" height="34" style="color:#E8833A" transform="rotate(-25 487 447)"/>
           <use href="#oak" x="150" y="436" width="28" height="28" style="color:#B0124A" transform="rotate(70 164 450)"/>
-        </svg>
+        </g></svg>
+        <svg class="hero-art-m" viewBox="-10 160 660 310" preserveAspectRatio="xMinYMax meet" aria-hidden="true"><use href="#scene-art"/></svg>
         <div class="hero-caption">
           <span class="hero-eyebrow" dir="ltr">Pumpkin Spice Season</span>
           <h1>أفضل منتجات الميك اب الأصلية <em>لموسم الخريف</em></h1>
@@ -1158,7 +1156,7 @@
         </div>
       </div>
       <div class="hero-slide" id="hero-slide-1">
-        <div class="scene-collage" aria-hidden="true"><img data-src="slide-photo-13.webp" alt="" width="560" height="800" decoding="async"><img data-src="slide-photo-15.webp" alt="" width="560" height="800" decoding="async"><img data-src="slide-photo-21.webp" alt="" width="560" height="800" decoding="async"><img data-src="slide-photo-5.webp" alt="" width="560" height="800" decoding="async"></div>
+        <div class="scene-collage" aria-hidden="true"><img data-src="slide-photo-13.webp" alt="" width="560" height="800" decoding="async"><img data-src="slide-photo-15.webp" alt="" width="560" height="800" decoding="async"><img class="m-show" data-src="slide-photo-21.webp" alt="" width="560" height="800" decoding="async"><img data-src="slide-photo-5.webp" alt="" width="560" height="800" decoding="async"></div>
         <div class="hero-slide-overlay"></div>
         <div class="hero-caption">
           <span class="hero-eyebrow" dir="ltr">100% Authentic Beauty</span>
@@ -1168,7 +1166,7 @@
         </div>
       </div>
       <div class="hero-slide" id="hero-slide-2">
-        <div class="scene-collage" aria-hidden="true"><img data-src="slide-photo-20.webp" alt="" width="560" height="800" decoding="async"><img data-src="slide-photo-6.webp" alt="" width="560" height="800" decoding="async"><img data-src="slide-photo-23.webp" alt="" width="560" height="800" decoding="async"><img data-src="slide-photo-2.webp" alt="" width="560" height="800" decoding="async"></div>
+        <div class="scene-collage" aria-hidden="true"><img data-src="slide-photo-20.webp" alt="" width="560" height="800" decoding="async"><img data-src="slide-photo-6.webp" alt="" width="560" height="800" decoding="async"><img class="m-show" data-src="slide-photo-23.webp" alt="" width="560" height="800" decoding="async"><img data-src="slide-photo-2.webp" alt="" width="560" height="800" decoding="async"></div>
         <div class="hero-slide-overlay"></div>
         <div class="hero-caption">
           <span class="hero-eyebrow" dir="ltr">The Lip Edit</span>
@@ -1178,7 +1176,7 @@
         </div>
       </div>
       <div class="hero-slide" id="hero-slide-3">
-        <div class="scene-collage" aria-hidden="true"><img data-src="slide-photo-22.webp" alt="" width="560" height="800" decoding="async"><img data-src="slide-photo-18.webp" alt="" width="560" height="800" decoding="async"><img data-src="slide-photo-4.webp" alt="" width="560" height="800" decoding="async"><img data-src="slide-photo-16.webp" alt="" width="560" height="800" decoding="async"></div>
+        <div class="scene-collage" aria-hidden="true"><img class="m-show" data-src="slide-photo-22.webp" alt="" width="560" height="800" decoding="async"><img data-src="slide-photo-18.webp" alt="" width="560" height="800" decoding="async"><img data-src="slide-photo-4.webp" alt="" width="560" height="800" decoding="async"><img data-src="slide-photo-16.webp" alt="" width="560" height="800" decoding="async"></div>
         <div class="hero-slide-overlay"></div>
         <div class="hero-caption">
           <span class="hero-eyebrow" dir="ltr">Eyes on You</span>
@@ -1188,7 +1186,7 @@
         </div>
       </div>
       <div class="hero-slide" id="hero-slide-4">
-        <div class="scene-collage" aria-hidden="true"><img data-src="slide-photo-19.webp" alt="" width="560" height="800" decoding="async"><img data-src="slide-photo-17.webp" alt="" width="560" height="800" decoding="async"><img data-src="slide-photo-14.webp" alt="" width="560" height="800" decoding="async"><img data-src="slide-photo-24.webp" alt="" width="560" height="800" decoding="async"></div>
+        <div class="scene-collage" aria-hidden="true"><img data-src="slide-photo-19.webp" alt="" width="560" height="800" decoding="async"><img data-src="slide-photo-17.webp" alt="" width="560" height="800" decoding="async"><img data-src="slide-photo-14.webp" alt="" width="560" height="800" decoding="async"><img class="m-show" data-src="slide-photo-24.webp" alt="" width="560" height="800" decoding="async"></div>
         <div class="hero-slide-overlay"></div>
         <div class="hero-caption">
           <span class="hero-eyebrow" dir="ltr">Gifting</span>
