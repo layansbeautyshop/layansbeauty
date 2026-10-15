@@ -781,14 +781,13 @@
     @media (max-width: 640px) { .leaf-fall i:nth-child(n+7) { display: none; } }
     @media (prefers-reduced-motion: reduce) { .leaf-fall { display: none; } }
 
-    .hero-scene .scene-bg { position: absolute; inset: 0; background: radial-gradient(ellipse at 24% 70%, rgba(249,208,220,.95), transparent 55%), radial-gradient(ellipse at 72% 25%, rgba(232,131,58,.12), transparent 45%), var(--paper), var(--blush-50); }
-    .hero-scene .hero-art { position: absolute; left: max(16px, calc((100vw - var(--container)) / 2)); bottom: 0; width: min(48vw, 660px); height: 94%; overflow: visible; }
-    .hero-scene .hero-caption { color: var(--plum-900); }
-    .hero-scene .hero-eyebrow { color: var(--plum); }
-    .hero-scene .hero-caption p { opacity: 1; color: var(--ink-2); }
-    .hero-scene .hero-caption h1 em { font-style: normal; color: var(--plum); }
-    .hero-scene .hero-caption-btn { background: var(--plum); color: #fff; }
-    .hero-scene .hero-caption-btn:hover { background: var(--plum-800); }
+    .scene-collage { position: absolute; inset: 0; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); gap: 6px; background: var(--blush-50); }
+    .hero-slide .scene-collage img { width: 100%; height: 100%; min-height: 0; object-fit: cover; display: block; transform: none; }
+    .hero-scene .scene-collage img:nth-child(3) { object-position: 50% 25%; }
+    .hero-scene .hero-slide-overlay { background: linear-gradient(270deg, rgba(58,10,32,.85) 0%, rgba(58,10,32,.55) 34%, rgba(58,10,32,0) 58%); }
+    .hero-scene .hero-art { position: absolute; z-index: 2; left: max(16px, calc((100vw - var(--container)) / 2)); bottom: 0; width: min(48vw, 660px); height: 94%; overflow: visible; filter: drop-shadow(0 6px 14px rgba(58,10,32,.25)); }
+    .hero-scene .hero-caption { z-index: 3; }
+    .hero-scene .hero-caption h1 em { font-style: normal; color: var(--blush); }
     .hero-dot { box-shadow: 0 0 0 1px rgba(58,10,32,.25); }
     .hero-arrow, .hero-pause { background: rgba(58,10,32,.45); }
     .steam path { stroke-dasharray: 60; stroke-dashoffset: 60; opacity: 0; animation: steam-rise 3.4s ease-in-out infinite; }
@@ -801,7 +800,12 @@
     @keyframes leaf-sway { 0%, 100% { transform: translateY(0) rotate(-10deg); } 50% { transform: translateY(-14px) rotate(12deg); } }
     @media (max-width: 640px) {
       .hero-stage { height: 560px; }
-      .hero-scene .scene-bg { background: radial-gradient(ellipse at 50% 28%, rgba(249,208,220,.95), transparent 55%), var(--paper), var(--blush-50); }
+      .scene-collage { gap: 4px; }
+      .scene-collage img:nth-child(n+4) { display: none; }
+      .hero-scene .scene-collage img:nth-child(4) { display: block; }
+      .hero-scene .scene-collage img:nth-child(3), .hero-scene .scene-collage img:nth-child(5) { display: none; }
+      .hero-scene .scene-collage img:nth-child(2) { order: 1; }
+      .hero-scene .hero-slide-overlay { background: linear-gradient(0deg, rgba(58,10,32,.9) 0%, rgba(58,10,32,.45) 50%, rgba(58,10,32,0) 68%); }
       .hero-scene .hero-art { left: 0; right: 0; top: 4px; bottom: auto; width: 100%; height: 36%; }
       .hero-scene .hero-caption h1 { font-size: 1.75rem; }
       .hero-scene .hero-caption p { font-size: .9rem; margin-bottom: 20px; }
@@ -1125,13 +1129,9 @@
      <div class="hero-stage" aria-roledescription="carousel">
       <div class="leaf-fall" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
       <div class="hero-slide hero-scene active" id="hero-slide-0">
-        <div class="scene-bg"></div>
+        <div class="scene-collage" aria-hidden="true"><img src="hero-collage-1.webp" alt="" width="480" height="960" decoding="async"><img src="hero-collage-2.webp" alt="" width="480" height="960" decoding="async"><img src="hero-collage-3.webp" alt="" width="480" height="960" decoding="async"><img src="hero-collage-4.webp" alt="" width="480" height="960" decoding="async"><img src="hero-collage-5.webp" alt="" width="480" height="960" decoding="async"></div>
+        <div class="hero-slide-overlay"></div>
         <svg class="hero-art" viewBox="0 0 640 470" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
-          <g filter="url(#rough)" fill="none" stroke="#3A0A20" stroke-linecap="round">
-            <circle cx="300" cy="230" r="150" fill="#F9D0DC" fill-opacity=".55" stroke-width="1.6" stroke-dasharray="7 9"/>
-            <path d="M10 452 C120 444 230 458 330 450 S540 446 636 454" stroke-width="2.2"/>
-            <path d="M40 462 l22 -6 M90 464 l20 -6 M300 464 l22 -6 M420 463 l20 -6 M560 464 l22 -6" stroke-width="1.2" opacity=".6"/>
-          </g>
           <use href="#maple" x="40" y="60" width="50" height="50" style="color:#C9A24B" class="float f1"/>
           <use href="#oak" x="540" y="70" width="40" height="40" style="color:#EE9DB5" class="float f2"/>
           <use href="#maple" x="440" y="150" width="32" height="32" style="color:#B0124A" class="float f3"/>
@@ -1155,7 +1155,7 @@
         </div>
       </div>
       <div class="hero-slide" id="hero-slide-1">
-        <img data-src="CT.webp" width="1600" height="703" alt="متجر ليان - Layan's Beauty Shop - مكياج ومنتجات عناية أصلية 100%" loading="lazy" decoding="async">
+        <div class="scene-collage" aria-hidden="true"><img data-src="slide-photo-13.webp" alt="" width="560" height="800" decoding="async"><img data-src="slide-photo-15.webp" alt="" width="560" height="800" decoding="async"><img data-src="slide-photo-21.webp" alt="" width="560" height="800" decoding="async"><img data-src="slide-photo-5.webp" alt="" width="560" height="800" decoding="async"></div>
         <div class="hero-slide-overlay"></div>
         <div class="hero-caption">
           <span class="hero-eyebrow" dir="ltr">100% Authentic Beauty</span>
@@ -1165,7 +1165,7 @@
         </div>
       </div>
       <div class="hero-slide" id="hero-slide-2">
-        <img data-src="BNFT.webp" width="1600" height="703" alt="Lip Products" loading="lazy" decoding="async">
+        <div class="scene-collage" aria-hidden="true"><img data-src="slide-photo-20.webp" alt="" width="560" height="800" decoding="async"><img data-src="slide-photo-6.webp" alt="" width="560" height="800" decoding="async"><img data-src="slide-photo-23.webp" alt="" width="560" height="800" decoding="async"><img data-src="slide-photo-2.webp" alt="" width="560" height="800" decoding="async"></div>
         <div class="hero-slide-overlay"></div>
         <div class="hero-caption">
           <span class="hero-eyebrow" dir="ltr">The Lip Edit</span>
@@ -1175,7 +1175,7 @@
         </div>
       </div>
       <div class="hero-slide" id="hero-slide-3">
-        <img data-src="Multi.webp" width="1600" height="703" alt="Eye Makeup" loading="lazy" decoding="async">
+        <div class="scene-collage" aria-hidden="true"><img data-src="slide-photo-22.webp" alt="" width="560" height="800" decoding="async"><img data-src="slide-photo-18.webp" alt="" width="560" height="800" decoding="async"><img data-src="slide-photo-4.webp" alt="" width="560" height="800" decoding="async"><img data-src="slide-photo-16.webp" alt="" width="560" height="800" decoding="async"></div>
         <div class="hero-slide-overlay"></div>
         <div class="hero-caption">
           <span class="hero-eyebrow" dir="ltr">Eyes on You</span>
@@ -1185,7 +1185,7 @@
         </div>
       </div>
       <div class="hero-slide" id="hero-slide-4">
-        <img data-src="red.webp" width="1600" height="703" alt="Gifts" loading="lazy" decoding="async">
+        <div class="scene-collage" aria-hidden="true"><img data-src="slide-photo-19.webp" alt="" width="560" height="800" decoding="async"><img data-src="slide-photo-17.webp" alt="" width="560" height="800" decoding="async"><img data-src="slide-photo-14.webp" alt="" width="560" height="800" decoding="async"><img data-src="slide-photo-24.webp" alt="" width="560" height="800" decoding="async"></div>
         <div class="hero-slide-overlay"></div>
         <div class="hero-caption">
           <span class="hero-eyebrow" dir="ltr">Gifting</span>
@@ -3784,10 +3784,11 @@
       // when a visitor is about to see them, instead of delaying first paint.
       function loadSlideImage(index) {
         const slide = document.getElementById('hero-slide-' + index);
-        const image = slide && slide.querySelector('img[data-src]');
-        if (!image) return;
-        image.src = image.dataset.src;
-        image.removeAttribute('data-src');
+        if (!slide) return;
+        slide.querySelectorAll('img[data-src]').forEach(image => {
+          image.src = image.dataset.src;
+          image.removeAttribute('data-src');
+        });
       }
 
       const dotsEl = document.getElementById('hero-dots');
